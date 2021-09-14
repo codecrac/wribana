@@ -7,12 +7,12 @@
         <div class="container">
             <div class="row align-items-center justify-content-between">
                 <div class="col-lg-8">
-                    <h1 class="page-title">Contact Us</h1>
+                    <h1 class="page-title">Contactez Nous</h1>
                 </div>
                 <div class="col-auto">
                     <ul class="page-breadcrumb">
-                        <li><a href="index.html">Home</a></li>
-                        <li>Contact Us</li>
+                        <li><a href="{{route('accueil')}}">Accueil</a></li>
+                        <li>Contactez Nous</li>
                     </ul>
                 </div>
             </div>
@@ -29,15 +29,15 @@
                     <div class="contact-info-text mb-md-70">
                         <div class="common-heading mb-30">
                             <span class="tagline">
-                                <i class="fas fa-plus"></i> Donate Projects
-                                <span class="heading-shadow-text">Donate</span>
+                                <i class="fas fa-plus"></i>
+                                <span class="heading-shadow-text">Allo !</span>
                             </span>
-                            <h2 class="title">Ready to Get More Information</h2>
+                            <h2 class="title">Près a en savoir plus</h2>
                         </div>
                         <p>
-                            Sedut perspiciatis unde omnis natus voluptatem accusantium dolore dantiumy totam apeam eaquey quaventore veritatis architecto beatae.
+                            Besoin de plus d'information,Nous sommes là pour vous.<br/>
+                            Rendez-vous dans nos locaux ou contactez nous.
                         </p>
-                        <a href="events.html" class="main-btn mt-35">Get Free Quote <i class="far fa-arrow-right"></i></a>
                     </div>
                 </div>
                 <div class="col-xl-6 col-lg-7 offset-xl-1">
@@ -49,9 +49,9 @@
                                         <i class="flaticon-place"></i>
                                     </div>
                                     <div class="info-content">
-                                        <h5>Our Location</h5>
+                                        <h5>Adresse</h5>
                                         <p>
-                                            5075 Main Road, D- Block, 2nd Floor, New York
+                                            Cocody, Riviera Palmeraie
                                         </p>
                                     </div>
                                 </div>
@@ -60,10 +60,9 @@
                                         <i class="flaticon-envelope"></i>
                                     </div>
                                     <div class="info-content">
-                                        <h5>Email Address</h5>
+                                        <h5>Addresse email</h5>
                                         <p>
-                                            <a href="https://webtend.net/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fb888e8b8b94898f92959d94bb9c969a9297d5989496">[email&#160;protected]</a> <br>
-                                            www.funden.com
+                                            <a href="mailto:info@waribana.ci" class="__cf_email__">info@waribana.ci</a>
                                         </p>
                                     </div>
                                 </div>

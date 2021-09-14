@@ -16,10 +16,22 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     $is_home=true; return view('welcome',['is_home'=>$is_home]);
 })->name('accueil');
-Route::get('/comment-ca-marche', function () { return view('comment_ca_marche'); })->name('comment_ca_marche');
-Route::get('/qui-sommes-nous', function () { return view('apropos'); })->name('apropos');
-Route::get('/faq', function () { return view('faq'); })->name('faq');
-Route::get('/contact', function () { return view('contact'); })->name('contact');
+
+Route::get('/comment-ca-marche', function () {
+    $current=true; return view('comment_ca_marche',['is_comment_ca_marche'=>$current]);
+})->name('comment_ca_marche');
+
+Route::get('/qui-sommes-nous', function () {
+    $current=true; return view('apropos',['is_apropos'=>$current]);
+})->name('apropos');
+
+Route::get('/faq', function () {
+    $current=true; return view('faq',['is_faq'=>$current]);
+})->name('faq');
+
+Route::get('/contact', function () {
+    $current=true; return view('contact',['is_contact'=>$current]);
+})->name('contact');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');

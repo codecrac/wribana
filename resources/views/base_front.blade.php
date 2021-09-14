@@ -9,10 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
     <!--====== Title ======-->
-    <title> Funden - Crowdfunding & Charity HTML Template || Home One </title>
+    <title> Waribana </title>
 
     <!--====== Favicon Icon ======-->
-    <link rel="shortcut icon" href="/template/assets/img/favicon.ico" type="img/png" />
+    <link rel="shortcut icon" href="/assets/images/favicon-wari.ico" type="img/ico" />
     <!--====== Animate Css ======-->
     <link rel="stylesheet" href="/template/assets/css/animate.min.css">
     <!--====== Bootstrap css ======-->
@@ -57,15 +57,13 @@
             <div class="row justify-content-between align-items-center">
                 <div class="col-auto">
                     <ul class="contact-info">
-                        <li><a href="#"><i class="far fa-envelope"></i> <span class="__cf_email__"
-                                                                              data-cfemail="bac9cfcacad5c8cefaddd7dbd3d694d9d5d7">
-                                    info@waribana.ci </span></a></li>
+                        <li><a href="#"><i class="far fa-envelope"></i> <span class="__cf_email__" > info@waribana.ci </span></a></li>
                         <li><a href="#"><i class="far fa-map-marker-alt"></i> Cocody, Riviera Palmeraie</a></li>
                     </ul>
                 </div>
                 <div class="col-auto d-none d-md-block">
                     <ul class="social-icons">
-                        <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
                         <li><a href="#"><i class="fab fa-twitter"></i></a></li>
                         <li><a href="#"><i class="fab fa-youtube"></i></a></li>
                     </ul>
@@ -77,28 +75,29 @@
         <div class="container">
             <div class="navbar-inner">
                 <div class="site-logo">
-                    <a href="index.html"><img src="/template/assets/img/logo.png" alt="Funden"></a>
+                    <a href="{{route('accueil')}}"><img src="/assets/images/logo-waribana.png" style="max-height: 40px;" alt="Waribana"></a>
                 </div>
                 <div class="nav-menu">
                     <ul>
-                        <li class="current">
+                        <li class="{{isset($is_home) ? 'current' : '' }}">
                             <a href="{{route('accueil')}}">Accueil</a>
                         </li>
-                        <li>
+                        <li class="{{isset($is_comment_ca_marche) ? 'current' : '' }}">
                             <a href="{{route('comment_ca_marche')}}">Comment ça marche</a>
                         </li>
-                        <li>
+                        <li class="{{isset($is_apropos) ? 'current' : '' }}">
                             <a href="{{route('apropos')}}">Qui Sommes Nous</a>
                         </li>
-                        <li>
+                        <li class="{{isset($is_faq) ? 'current' : '' }}">
                             <a href="{{route('faq')}}">FAQ</a>
                         </li>
-                        <li><a href="{{route('contact')}}">Contact</a></li>
+                        <li class="{{isset($is_contact) ? 'current' : '' }}">
+                            <a href="{{route('contact')}}">Contact</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="navbar-extra d-flex align-items-center">
-                    <a href="events.html" class="main-btn nav-btn d-none d-sm-inline-block">
-                        Se Connecter <i class="far fa-arrow-right"></i>
+                    <a href="events.html" class="main-btn nav-btn d-none d-sm-inline-block">Se Connecter <i class="far fa-arrow-right"></i>
                     </a>
                     <a href="#" class="nav-toggler">
                         <span></span>
@@ -109,50 +108,31 @@
     </div>
     <div class="mobile-menu-panel">
         <div class="panel-logo">
-            <a href="index.html"><img src="/template/assets/img/logo-white.png" alt="Funden"></a>
+            <a href="{{route('accueil')}}"><img src="/assets/images/logo-waribana.png" style="max-height: 40px;" alt="Waribana"></a>
         </div>
         <ul class="panel-menu">
-            <li class="current">
-                <a href="index.html">Home</a>
-                <ul class="submenu">
-                    <li><a href="index.html">Home One</a></li>
-                    <li><a href="index-2.html">Home Two</a></li>
-                </ul>
+            <li class="{{isset($is_home) ? 'current' : '' }}">
+                <a href="{{route('accueil')}}">Accueil</a>
+            </li>
+            <li class="{{isset($is_comment_ca_marche) ? 'current' : '' }}">
+                <a href="{{route('comment_ca_marche')}}">Comment ça marche</a>
+            </li>
+            <li class="{{isset($is_apropos) ? 'current' : '' }}">
+                <a href="{{route('apropos')}}">Qui Sommes Nous</a>
+            </li>
+            <li class="{{isset($is_faq) ? 'current' : '' }}">
+                <a href="{{route('faq')}}">FAQ</a>
+            </li>
+            <li class="{{isset($is_contact) ? 'current' : '' }}">
+                <a href="{{route('contact')}}">Contact</a>
             </li>
             <li>
-                <a href="project-1.html">Project</a>
-                <ul class="submenu">
-                    <li><a href="project-1.html">Project One</a></li>
-                    <li><a href="project-2.html">Project Two</a></li>
-                    <li><a href="project-3.html">Project Three</a></li>
-                    <li><a href="project-details.html">Project Details</a></li>
-                </ul>
+                <a href="#">Se Connecter</a>
             </li>
-            <li>
-                <a href="events.html">Events</a>
-            </li>
-            <li>
-                <a href="news-standard.html">News</a>
-                <ul class="submenu">
-                    <li><a href="news-standard.html">News Standard</a></li>
-                    <li><a href="news-details.html">News Details</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#">Pages</a>
-                <ul class="submenu">
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="company-overview.html">Company Overview</a></li>
-                    <li><a href="team-member.html">Team Member</a></li>
-                    <li><a href="pricing.html">Pricing</a></li>
-                    <li><a href="{{route('faq')}}">FAQ</a></li>
-                </ul>
-            </li>
-            <li><a href="contact.html">Contact</a></li>
         </ul>
         <div class="panel-extra">
-            <a href="#" class="main-btn btn-white">
-                Donate Now <i class="far fa-arrow-right"></i>
+            <a href="events.html" class="main-btn nav-btn d-none d-sm-inline-block">
+                Se Connecter <i class="far fa-arrow-right"></i>
             </a>
         </div>
         <a href="#" class="panel-close">
@@ -174,8 +154,6 @@
                             <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
                             <li><a href="#"><i class="fab fa-twitter"></i></a></li>
                             <li><a href="#"><i class="fab fa-youtube"></i></a></li>
-                            <li><a href="#"><i class="fab fa-behance"></i></a></li>
-                            <li><a href="#"><i class="fab fa-google-plus-g"></i></a></li>
                         </ul>
                     </div>
                     <div class="col-md-6">

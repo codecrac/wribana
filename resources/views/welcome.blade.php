@@ -68,8 +68,8 @@
                         <i class="flaticon-finance"></i>
                     </div>
                     <div class="content">
-                        <h4 class="title"><a href="project-details.html">Garantie</a></h4>
-                        <p>Nous vous remboursons en cas de litige</p>
+                        <h4 class="title"><a href="project-details.html">Flexible</a></h4>
+                        <p>Faire de la tontine avec des personnes de confiance sans être à proximité.</p>
                     </div>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                     </div>
                     <div class="content">
                         <h4 class="title"><a href="project-details.html">Commençons</a></h4>
-                        <p>Faites un pas vers une epargne plus sur </p>
+                        <p>Faites un pas vers une epargne plus sûr </p>
                     </div>
                 </div>
             </div>
