@@ -97,7 +97,7 @@
                     </ul>
                 </div>
                 <div class="navbar-extra d-flex align-items-center">
-                    <a href="events.html" class="main-btn nav-btn d-none d-sm-inline-block">Se Connecter <i class="far fa-arrow-right"></i>
+                    <a  href="{{route('connexion_menbre')}}" class="main-btn nav-btn d-none d-sm-inline-block">Se Connecter <i class="far fa-arrow-right"></i>
                     </a>
                     <a href="#" class="nav-toggler">
                         <span></span>
@@ -131,7 +131,7 @@
             </li>
         </ul>
         <div class="panel-extra">
-            <a href="events.html" class="main-btn nav-btn d-none d-sm-inline-block">
+            <a href="{{route('connexion_menbre')}}" class="main-btn nav-btn d-none d-sm-inline-block">
                 Se Connecter <i class="far fa-arrow-right"></i>
             </a>
         </div>

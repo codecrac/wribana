@@ -1,16 +1,12 @@
 <?php
 
+use App\Http\Controllers\EspaceMenbre;
+use App\Http\Controllers\MenbreController;
 use Illuminate\Support\Facades\Route;
 
 /*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
+|********* |*********|********* Routes  Vitrine |*********|*********|*********
+|********* |*********|********* Routes  Vitrine |*********|*********|*********
 */
 
 Route::get('/', function () {
@@ -32,6 +28,22 @@ Route::get('/faq', function () {
 Route::get('/contact', function () {
     $current=true; return view('contact',['is_contact'=>$current]);
 })->name('contact');
+
+Route::get('/connexion-menbre', function () { return view('connexion_menbre'); })->name('connexion_menbre');
+
+Route::get('/inscription-menbre', function () {return view('inscription_menbre');})->name('inscription_menbre');
+
+Route::post('/inscription-menbre', [MenbreController::class,'enregistrer_un_menbre'])->name('post_inscription_menbre');
+Route::post('/connexion-menbre',  [MenbreController::class,'connexion'])->name('post_connexion_menbre');
+
+
+#===================================================================
+Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function (){
+    Route::get("/",[EspaceMenbre::class,'accueil'])->name('espace_menbre.accueil');
+    Route::get("/deconnexion",[EspaceMenbre::class,'deconnexion'])->name('espace_menbre.deconnexion');
+});
+
+
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
