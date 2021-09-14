@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTontinesTable extends Migration
+class CreateParticipantTontinesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateTontinesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tontines', function (Blueprint $table) {
+        Schema::create('participant_tontines', function (Blueprint $table) {
             $table->id();
-            $table->string('titre');
-            $table->string('montant'); //montant a payer par personne
-            $table->string('frequence_depot_en_jours');
-            $table->integer('nombre_participant');
-            $table->foreignId('id_menbre'); //menbre createur
+            $table->foreignId('id_tontine');
+            $table->foreignId('id_menbre');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class CreateTontinesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tontines');
+        Schema::dropIfExists('participant_tontines');
     }
 }

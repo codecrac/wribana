@@ -41,6 +41,23 @@ Route::post('/connexion-menbre',  [MenbreController::class,'connexion'])->name('
 Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function (){
     Route::get("/",[EspaceMenbre::class,'accueil'])->name('espace_menbre.accueil');
     Route::get("/deconnexion",[EspaceMenbre::class,'deconnexion'])->name('espace_menbre.deconnexion');
+
+//    ===================Tontines======================
+    Route::get("/mes-tontines",[EspaceMenbre::class,'liste_tontine'])->name('espace_menbre.liste_tontine');
+
+    Route::get("/inviter-des-amis-dans-la-tontine/{id_tontine}",[EspaceMenbre::class,'inviter_des_amis'])->name('espace_menbre.inviter_des_amis');
+    Route::post("/inviter-des-amis-dans-la-tontine/{id_tontine}",[EspaceMenbre::class,'envoyer_invitation'])->name('espace_menbre.post_inviter_des_amis');
+
+    Route::get("/editer-une-tontine/{id_tontine}",[EspaceMenbre::class,'editer_tontine'])->name('espace_menbre.editer_tontine');
+    Route::put("/editer-une-tontine/{id_tontine}",[EspaceMenbre::class,'modifier_tontine'])->name('espace_menbre.post_editer_tontine');
+
+    Route::get("/creer-une-tontine",[EspaceMenbre::class,'ajouter_tontine'])->name('espace_menbre.ajouter_tontine');
+    Route::post("/creer-une-tontine",[EspaceMenbre::class,'enregistrer_tontine'])->name('espace_menbre.post_ajouter_tontine');
+
+
+    Route::get("/invitations",[EspaceMenbre::class,'invitations'])->name('espace_menbre.invitations');
+    Route::post("/invitations/{id_invitation}",[EspaceMenbre::class,'reponse_invitation'])->name('espace_menbre.reponse_invitation');
+
 });
 
 

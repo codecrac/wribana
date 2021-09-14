@@ -34,7 +34,7 @@
 <body>
 
 <!--====== Preloader ======-->
-{{--<div id="preloader">
+<div id="preloader">
     <div id="loading-center">
         <div id="loading-center-absolute">
             <div class="object" id="object_one"></div>
@@ -43,7 +43,7 @@
             <div class="object" id="object_four"></div>
         </div>
     </div>
-</div>--}}
+</div>
 
 
 <!--====== Header Start ======-->
@@ -58,7 +58,7 @@
                 <div class="col-auto">
                     <ul class="contact-info">
                         <li><a href="#"><i class="far fa-envelope"></i> <span class="__cf_email__" > info@waribana.ci </span></a></li>
-                        <li><a href="#"><i class="far fa-map-marker-alt"></i> Cocody, Riviera Palmeraie</a></li>
+                        <li><a href="#"><i class="far fa-map-marker-alt"></i> Cocody, Riviera 3 Sideci</a></li>
                     </ul>
                 </div>
                 <div class="col-auto d-none d-md-block">

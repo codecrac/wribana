@@ -51,7 +51,7 @@
                                     <div class="info-content">
                                         <h5>Adresse</h5>
                                         <p>
-                                            Cocody, Riviera Palmeraie
+                                            Cocody, Riviera 3 Sideci
                                         </p>
                                     </div>
                                 </div>
@@ -75,8 +75,7 @@
                                     <div class="info-content">
                                         <h5>Support 24/7</h5>
                                         <p>
-                                            +012 (345) 689 37 <br>
-                                            012345687
+                                            +225 01 03 57 00 00 <br>
                                         </p>
                                     </div>
                                 </div>

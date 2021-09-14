@@ -1,11 +1,16 @@
+@php
+    $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+@endphp
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Majestic Admin</title>
+    <title>Waribana</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="/template_menbre/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="/template_menbre/vendors/base/vendor.bundle.base.css">
@@ -17,6 +22,8 @@
     <link rel="stylesheet" href="/template_menbre/css/style.css">
     <!-- endinject -->
     <link rel="shortcut icon" href="/assets/images/favicon-wari.ico"/>
+
+    @yield('style_completmentaire')
 </head>
 <body>
 <div class="container-scroller">
@@ -24,10 +31,14 @@
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="navbar-brand-wrapper d-flex justify-content-center">
             <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">
-                <a class="navbar-brand brand-logo" href="index.html"><img src="/assets/images/logo-waribana.png"
-                                                                          alt="logo"/></a>
-                <a class="navbar-brand brand-logo-mini" href="index.html"><img src="/assets/images/logo-waribana.png"
-                                                                               alt="logo"/></a>
+                <a class="navbar-brand brand-logo" href="index.html">
+                    Waribana
+{{--                    <img src="/assets/images/logo-waribana.png" alt="logo"/>--}}
+                </a>
+                <a class="navbar-brand brand-logo-mini" href="index.html">
+{{--                    <img src="/assets/images/logo-waribana.png" alt="logo"/>--}}
+                    Waribana
+                </a>
                 <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
                     <span class="mdi mdi-sort-variant"></span>
                 </button>
@@ -146,17 +157,16 @@
                 </li>
                 <li class="nav-item nav-profile dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                        <img src="/template_menbre/images/faces/face5.jpg" alt="profile"/>
-                        <span class="nav-profile-name">Louis Barnett</span>
+                        <span class="nav-profile-name"> {{$la_session['nom_complet']}} </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                         <a class="dropdown-item">
                             <i class="mdi mdi-settings text-primary"></i>
-                            Settings
+                            Profil
                         </a>
-                        <a class="dropdown-item">
+                        <a class="dropdown-item" href="{{route('espace_menbre.deconnexion')}}">
                             <i class="mdi mdi-logout text-primary"></i>
-                            Logout
+                            Deconnexion
                         </a>
                     </div>
                 </li>
@@ -179,24 +189,17 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">
-                        <i class="mdi mdi-home menu-icon"></i>
-                        <span class="menu-title">Tontines (0)</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
                        aria-controls="ui-basic">
                         <i class="mdi mdi-circle-outline menu-icon"></i>
-                        <span class="menu-title">UI Elements</span>
+                        <span class="menu-title">Tontines</span>
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="collapse" id="ui-basic">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a>
-                            </li>
-                            <li class="nav-item"><a class="nav-link"
-                                                    href="pages/ui-features/typography.html">Typography</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.liste_tontine')}}"> Mes Tontines  </a> </li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.ajouter_tontine')}}">Creer une Tontine</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.invitations')}}">Invitations</a></li>
                         </ul>
                     </div>
                 </li>
@@ -258,11 +261,7 @@
 
                 <div class="row">
                     <div class="col-md-12 grid-margin">
-                        <div class="d-flex justify-content-between flex-wrap">
-
-                            @yield('content')
-
-                        </div>
+                        @yield('content')
                     </div>
                 </div>
             </div>
@@ -303,6 +302,10 @@
 <script src="/template_menbre/js/dataTables.bootstrap4.js"></script>
 <!-- End custom js for this page-->
 <script src="/template_menbre/js/jquery.cookie.js" type="text/javascript"></script>
+
+
+@yield('script_completmentaire')
+
 </body>
 
 </html>
