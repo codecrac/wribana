@@ -36,7 +36,16 @@
                         <li>Crée par : {{$la_tontine->createur->nom_complet}}</li>
                         <li>Montant à cotiser : {{number_format($la_tontine->montant,0,',',' ')}} F <small>par personnes</small> </li>
                         <li> Nombre de participant : {{sizeof($la_tontine->participants)}} / {{$la_tontine->nombre_participant}} </li>
-                        <li> Tour de : <mark class="badge badge-primary"> {{$la_tontine->caisse->menbre_qui_prend->nom_complet}} </mark> </li>
+                        <li> Frequence de depot : {{formater_frequence($la_tontine->frequence_depot_en_jours)}}</li>
+                        <li> Tour de :
+                            <mark class="badge badge-primary marquer_presence">
+                                @if($la_tontine->caisse !=null)
+                                    {{$la_tontine->caisse->menbre_qui_prend->nom_complet}}
+                                @else
+                                    #
+                                @endif
+                            </mark>
+                        </li>
                     </ul>
 
 
@@ -105,14 +114,24 @@
                         <h4 class="text-center text-uppercase" >Cotisation courante</h4>
                     <hr/>
                     <br/>
-                        <p>Tour de : <b class="badge badge-info"> {{$la_tontine->caisse->menbre_qui_prend->nom_complet}} </b> </p>
+                        <p>Tour de :
+                            <b class="badge badge-info marquer_presence">
+                                @if($la_tontine->caisse !=null)
+                                    {{$la_tontine->caisse->menbre_qui_prend->nom_complet}}
+                                @else
+                                    #
+                                @endif
+                            </b>
+                        </p>
                         <p>Date limite : <b class="badge badge-warning"> {{$la_tontine->caisse->prochaine_date_encaissement}} </b> </p>
 {{--                        <p>Montant Total Objectif : <span class="marquer_presence text-dark">{{number_format( ($la_tontine->montant * $la_tontine->nombre_participant),0,',',' ')}} F</span> </p>--}}
                         <p>Montant à cotiser : <b> {{number_format($la_tontine->montant,0,',',' ')}} F</b> </p>
                         <p>
-                            Montant en caisse : <span class="marquer_presence text-info">{{number_format($la_tontine->caisse->montant,0,',',' ')}} / {{$la_tontine->caisse->montant_objectif}} F</span>
+                            Montant en caisse : <span class="marquer_presence text-info">
+                                {{number_format($la_tontine->caisse->montant,0,',',' ')}} / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} F
+                            </span>
                         </p>
-                        <p> de : <small> de 0 personnes/{{sizeof($la_tontine->participants)}} <a href="#liste_cotiseur">Voir</a> </small> </p>
+                        <p> de : <small> de {{sizeof($liste_ayant_cotiser)}} personne(s)/{{sizeof($la_tontine->participants)}} <a href="#liste_cotiseur">Voir</a> </small> </p>
                     <br/>
                         @if($a_deja_cotiser)
                         <h5 class="text-center"> <b style="padding: 15px" class="badge-success">Vous avez dejà payer votre cotisation pour ce tour.</b> </h5>
@@ -144,9 +163,11 @@
                             @foreach($la_tontine->participants as $item_particpant)
                                 <tr>
                                     <td>
-                                        <b class="{{$la_tontine->caisse->menbre_qui_prend->id == $item_particpant->id ? 'badge badge-info' : '' }}">
-                                            {{$i++}}
-                                        </b>
+                                        @if($la_tontine->caisse !=null)
+                                            <b class="{{$la_tontine->caisse->menbre_qui_prend->id == $item_particpant->id ? 'badge badge-info' : '' }}">
+                                                {{$i++}}
+                                            </b>
+                                        @endif
                                     </td>
                                     <td>{{$item_particpant->nom_complet}}</td>
                                 </tr>
@@ -228,3 +249,17 @@
     </div>
     @endif
 @endsection
+
+@php
+    function formater_frequence($frequence_en_jour){
+
+    $resultat = "$frequence_en_jour jours";
+        if($frequence_en_jour >= 7){
+            if($frequence_en_jour%7==0){
+                $nb_semaines = $frequence_en_jour/7;
+                $resultat = "$nb_semaines semaines";
+            }
+        }
+        return $resultat;
+    }
+@endphp

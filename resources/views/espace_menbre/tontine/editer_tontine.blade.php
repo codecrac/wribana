@@ -8,6 +8,7 @@
                 <div class="card-body">
                     {!! Session::get('notification','') !!}
 
+                    <a href="{{route('espace_menbre.details_tontine',[$la_tontine['id']])}}">RETOUR</a>
                     <h4 class="card-title text-center">Editer la tontine</h4>
                     <p class="card-description text-center badge-info text-white">
                         Vous ne pourrez plus changer les termes apres le debut des paiements

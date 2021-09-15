@@ -135,15 +135,21 @@ class EspaceMenbre extends Controller
             $pret = true;
         }
 
-        //Eviter paiement multiple de cotisation par la meme personne pour le meme tour
-        $a_deja_cotiser = Transaction::where("id_menbre",'=',$id_menbre_connecter)
-            ->where('id_tontine','=',$id_tontine)
-            ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)->first();
-        $a_deja_cotiser = ($a_deja_cotiser!=null) ? true : false;
+        if($la_tontine->caisse!=null){
 
-        //Liste des transaction pour le tour courant
-        $liste_ayant_cotiser = Transaction::where('id_tontine','=',$id_tontine)
-            ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)->get();
+            //Eviter paiement multiple de cotisation par la meme personne pour le meme tour
+            $a_deja_cotiser = Transaction::where("id_menbre",'=',$id_menbre_connecter)
+                ->where('id_tontine','=',$id_tontine)
+                ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)->first();
+            $a_deja_cotiser = ($a_deja_cotiser!=null) ? true : false;
+
+            //Liste des transaction pour le tour courant
+            $liste_ayant_cotiser = Transaction::where('id_tontine','=',$id_tontine)
+                ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)->get();
+        }else{
+            $liste_ayant_cotiser = [];
+            $a_deja_cotiser = false;
+        }
 
 
         return view("espace_menbre.tontine.details_tontine",compact('la_tontine','invitations_envoyees','pret','a_deja_cotiser','liste_ayant_cotiser'));
@@ -273,7 +279,6 @@ class EspaceMenbre extends Controller
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
         $la_tontine = Tontine::find($id_tontine);
-
         $montant = $la_tontine->montant;
 
         $la_transaction = new Transaction();
@@ -289,9 +294,36 @@ class EspaceMenbre extends Controller
             $nouveau_montant = $la_caisse_de_la_tontine->montant;
             $nouveau_montant += $montant;
             $la_caisse_de_la_tontine->montant = $nouveau_montant;
+
             if($la_caisse_de_la_tontine->save()){
                 $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
             }
+            //Montant atteinds
+            if($nouveau_montant == $la_caisse_de_la_tontine->montant_objectif){
+                $index_menbre_qui_prend = $la_caisse_de_la_tontine->index_menbre_qui_prend;
+                $nouvel_index = $index_menbre_qui_prend + 1;
+
+                //SI ON EST PAS AU DERNIER PARTICIPANTS
+                if($nouvel_index < sizeof($la_tontine->participants)){
+                    $liste_participant = $la_tontine->participants->toArray();
+                    $nouvel_id_menbre_qui_prend = $liste_participant[$nouvel_index]['id'];
+
+                    $date_encaissement = $la_caisse_de_la_tontine->prochaine_date_encaissement;
+                    $nombre_de_jours_en_plus = $la_tontine->frequence_depot_en_jours;
+                    $prochaine_date_encaissement = date('d-m-Y', strtotime($date_encaissement. " + $nombre_de_jours_en_plus days"));
+
+                    $la_caisse_de_la_tontine->index_menbre_qui_prend = $nouvel_index;
+                    $la_caisse_de_la_tontine->id_menbre_qui_prend = $nouvel_id_menbre_qui_prend;
+                    $la_caisse_de_la_tontine->prochaine_date_encaissement = $prochaine_date_encaissement;
+                    $la_caisse_de_la_tontine->montant = 0;
+                    $la_caisse_de_la_tontine->save();
+                }else{
+                    $la_tontine->etat = 'fermee';
+                    $la_tontine->save();
+                    $notification = " <div class='alert alert-warning text-center'> Operation bien effectuée, Fin de la tontine est complete </div>";
+                }
+            }
+
         }
         return redirect()->back()->with('notification',$notification);
     }

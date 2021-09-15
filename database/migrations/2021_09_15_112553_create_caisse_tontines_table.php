@@ -16,9 +16,10 @@ class CreateCaisseTontinesTable extends Migration
         Schema::create('caisse_tontines', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_tontine');
-            $table->integer('montant');
+            $table->integer('montant')->default(0);
             $table->integer('montant_objectif');
             $table->integer('id_menbre_qui_prend');
+            $table->integer('index_menbre_qui_prend')->default(0);
             $table->string('prochaine_date_encaissement');
             $table->timestamps();
         });

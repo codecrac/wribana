@@ -32,9 +32,8 @@
                         <th class="tr_bordered">Titre</th>
                         <th class="tr_bordered">Nombres de participants</th>
                         <th class="tr_bordered">Montant à cotiser</th>
-                        <th class="tr_bordered">Frequence de cotisation</th>
+                        <th class="tr_bordered">Statut</th>
                         <th class="tr_bordered">Tour de</th>
-                        <th class="tr_bordered">Creer par</th>
                         <th class="tr_bordered">#</th>
                         </thead>
                         <tbody>
@@ -42,15 +41,23 @@
                             <tr class="tr_bordered text-center">
                                 <td class="tr_bordered">{{$ma_tontine['titre']}}</td>
                                 <td class="tr_bordered">{{sizeof($ma_tontine->participants)}}/{{$ma_tontine['nombre_participant']}}</td>
-                                <td class="tr_bordered">{{number_format($ma_tontine['montant'],0,',',' ')}}F</td>
-                                <td class="tr_bordered">{{formater_frequence($ma_tontine['frequence_depot_en_jours'])}}</td>
-                                <td class="tr_bordered text-danger">Tour de</td>
                                 <td class="tr_bordered">
-                                    {{$ma_tontine->createur->nom_complet}}
+                                    {{number_format($ma_tontine['montant'],0,',',' ')}} F
+                                    {{formater_frequence($ma_tontine['frequence_depot_en_jours'])}}
+                                </td>
+                                <td class="tr_bordered text-danger">
+                                    <b class="badge badge-{{$ma_tontine->etat=='ouverte' ? 'success' : 'danger'}}">
+                                        {{$ma_tontine->etat}}
+                                    </b>
+                                </td>
+                                <td class="tr_bordered">
+                                    <b class="badge badge-info">
+                                        {{$ma_tontine->caisse->menbre_qui_prend->nom_complet}}
+                                    </b>
+
                                 </td>
                                 <td class="tr_bordered" style="padding: 8px">
-
-                                    <a href="{{route('espace_menbre.details_tontine',[$ma_tontine['id']])}}" class="btn btn-primary">Details</a>
+                                    <a href="{{route('espace_menbre.details_tontine',[$ma_tontine['id']])}}" class="btn btn-primary">Voir</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -69,11 +76,11 @@
 @php
     function formater_frequence($frequence_en_jour){
 
-    $resultat = "$frequence_en_jour jours";
+    $resultat = "chaque $frequence_en_jour jours";
         if($frequence_en_jour >= 7){
             if($frequence_en_jour%7 ==0){
                 $nb_semaines = $frequence_en_jour/7;
-                $resultat = "$nb_semaines semaines";
+                $resultat = "chaque $nb_semaines semaines";
             }
         }
         return $resultat;
