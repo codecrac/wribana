@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateParticipantTontinesTable extends Migration
+class CreateMenbreTontineTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateParticipantTontinesTable extends Migration
      */
     public function up()
     {
-        Schema::create('participant_tontines', function (Blueprint $table) {
+        Schema::create('menbre_tontine', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_tontine');
-            $table->foreignId('id_menbre');
+            $table->foreignId('tontine_id');
+            $table->foreignId('menbre_id');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateParticipantTontinesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('participant_tontines');
+        Schema::dropIfExists('menbre_tontine');
     }
 }

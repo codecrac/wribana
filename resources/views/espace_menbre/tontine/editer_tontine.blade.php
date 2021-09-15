@@ -24,6 +24,7 @@
                         <div class="form-group">
                             <label for="exampleInputPassword1">Montant ( montant par personne ) </label>
                             <input required type="number" class="form-control" name="montant" value="{{$la_tontine['montant']}}" placeholder="17500">
+
                         </div>
                         <div class="form-group">
                             <label for="exampleInputConfirmPassword1">Frequence de depot (en jours)</label>

@@ -13,7 +13,7 @@ class Invitation extends Model
         return $this->belongsTo(Tontine::class,'id_tontine');
     }
 
-    public function menbre(){
+    public function menbre_inviteur(){
         return $this->belongsTo(Menbre::class,'menbre_qui_invite');
     }
 }

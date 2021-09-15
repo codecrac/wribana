@@ -12,4 +12,9 @@ class Tontine extends Model
     public function createur(){
         return $this->belongsTo(Menbre::class,'id_menbre');
     }
+
+    public function participants()
+    {
+        return $this->belongsToMany(Menbre::class);
+    }
 }

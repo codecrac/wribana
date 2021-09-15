@@ -18,7 +18,7 @@ class CreateInvitationsTable extends Migration
             $table->string('email_inviter');
             $table->foreignId('id_tontine');
             $table->foreignId('menbre_qui_invite');
-            $table->enum('etat',['attente','acceptee','refusee']);
+            $table->enum('etat',['attente','acceptee','refusee','expiree']);
             $table->timestamps();
         });
     }
