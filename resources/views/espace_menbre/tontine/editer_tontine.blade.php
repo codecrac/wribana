@@ -9,31 +9,50 @@
                     {!! Session::get('notification','') !!}
 
                     <h4 class="card-title text-center">Editer la tontine</h4>
-                    <p class="card-description">
-                        Creer votre tontine et invitez vos amis a y participer.
+                    <p class="card-description text-center badge-info text-white">
+                        Vous ne pourrez plus changer les termes apres le debut des paiements
                     </p>
                     <form class="forms-sample" method="post" action="{{route('espace_menbre.post_editer_tontine',[$la_tontine['id']])}}">
                         <div class="form-group">
                             <label for="exampleInputUsername1">Titre</label>
-                            <input required type="text" class="form-control" name="titre" value="{{$la_tontine['titre']}}" placeholder="Tontine Elegante">
+                            <input
+                                required type="text" class="form-control" name="titre" value="{{$la_tontine['titre']}}"
+                                placeholder="Tontine Elegante"
+                                {{sizeof($la_tontine->transactions) >0 ? "readonly" :""}}
+                            >
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Nombre de particpant</label>
-                            <input required type="number" class="form-control" name="nombre_participant" value="{{$la_tontine['nombre_participant']}}" placeholder="14">
+                            <input
+                                required type="number"
+                                class="form-control" name="nombre_participant" value="{{$la_tontine['nombre_participant']}}"
+                                placeholder="14"
+                                {{sizeof($la_tontine->transactions) >0 ? "readonly" :""}}
+                            >
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Montant ( montant par personne ) </label>
-                            <input required type="number" class="form-control" name="montant" value="{{$la_tontine['montant']}}" placeholder="17500">
+                            <input required type="number"
+                                   class="form-control" name="montant" value="{{$la_tontine['montant']}}" placeholder="17500"
+                                   {{sizeof($la_tontine->transactions) >0 ? "readonly" :""}}
+                            >
 
                         </div>
                         <div class="form-group">
                             <label for="exampleInputConfirmPassword1">Frequence de depot (en jours)</label>
-                            <input required type="number" class="form-control" name="frequence_depot_en_jours" value="{{$la_tontine['frequence_depot_en_jours']}}" placeholder="7">
+                            <input required type="number" class="form-control" name="frequence_depot_en_jours"
+                                   value="{{$la_tontine['frequence_depot_en_jours']}}"
+                                   placeholder="7"
+                                    {{sizeof($la_tontine->transactions) >0 ? "readonly" :""}}
+                            >
                         </div>
                         <h3 class="text-center">
-                            @csrf
-                            @method('put')
-                            <button type="submit" class="btn btn-danger mr-2">Modifier la tontine</button>
+
+                            @if(sizeof($la_tontine->transactions) <1)
+                                @csrf
+                                @method('put')
+                                <button type="submit" class="btn btn-danger mr-2">Modifier la tontine</button>
+                            @endif
                         </h3>
 
                     </form>
