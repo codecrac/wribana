@@ -23,6 +23,18 @@
     <!-- endinject -->
     <link rel="shortcut icon" href="/assets/images/favicon-wari.ico"/>
 
+    <style>
+        .clignote {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+
     @yield('style_completmentaire')
 </head>
 <body>

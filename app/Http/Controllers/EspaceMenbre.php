@@ -64,7 +64,8 @@ class EspaceMenbre extends Controller
                 $menbre_tontine->menbre_id = $id_menbre_connecter;
                 $menbre_tontine->tontine_id = $la_tontine->id;
                 if($menbre_tontine->save()){
-                    $notification = "<div class='alert alert-success text-center'> Operation bien éffectuée </div>";
+                    $route_liste_tontine = route('espace_menbre.liste_tontine');
+                    $notification = "<div class='alert alert-success text-center'> Votre tontine a bien été créé, <a href='$route_liste_tontine'>INVITER VOS AMI(E)S</a>  </div>";
                 }else{
                     $notification = "<div class='alert alert-danger text-center'> Un probleme est survenu </div>";
                 }
@@ -161,7 +162,7 @@ class EspaceMenbre extends Controller
         $la_tontine->save();
 
         //la date prochaine on ajoute le nombre de jour definit dans la frequence de pot a partir d'aujourd'hui
-        $aujourdhui = $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
+        $aujourdhui = new \DateTime("now", new \DateTimeZone("UTC"));
         $aujourdhui = $aujourdhui->format("d-m-Y");
         $nombre_de_jours_en_plus = $la_tontine->frequence_depot_en_jours;
         $prochaine_date_encaissement = date('d-m-Y', strtotime($aujourdhui. " + $nombre_de_jours_en_plus days"));
@@ -318,6 +319,9 @@ class EspaceMenbre extends Controller
                     $la_caisse_de_la_tontine->montant = 0;
                     $la_caisse_de_la_tontine->save();
                 }else{
+                    $la_caisse_de_la_tontine->montant = 0;
+                    $la_caisse_de_la_tontine->save();
+
                     $la_tontine->etat = 'fermee';
                     $la_tontine->save();
                     $notification = " <div class='alert alert-warning text-center'> Operation bien effectuée, Fin de la tontine est complete </div>";

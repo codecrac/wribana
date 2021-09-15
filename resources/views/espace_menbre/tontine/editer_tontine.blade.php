@@ -26,7 +26,7 @@
                             <label for="exampleInputEmail1">Nombre de particpant</label>
                             <input
                                 required type="number"
-                                class="form-control" name="nombre_participant" value="{{$la_tontine['nombre_participant']}}"
+                                class="form-control" min="2" name="nombre_participant" value="{{$la_tontine['nombre_participant']}}"
                                 placeholder="14"
                                 {{sizeof($la_tontine->transactions) >0 ? "readonly" :""}}
                             >
@@ -34,14 +34,14 @@
                         <div class="form-group">
                             <label for="exampleInputPassword1">Montant ( montant par personne ) </label>
                             <input required type="number"
-                                   class="form-control" name="montant" value="{{$la_tontine['montant']}}" placeholder="17500"
+                                   class="form-control" min="500" name="montant" value="{{$la_tontine['montant']}}" placeholder="17500"
                                    {{sizeof($la_tontine->transactions) >0 ? "readonly" :""}}
                             >
 
                         </div>
                         <div class="form-group">
                             <label for="exampleInputConfirmPassword1">Frequence de depot (en jours)</label>
-                            <input required type="number" class="form-control" name="frequence_depot_en_jours"
+                            <input required min="1" type="number" class="form-control" name="frequence_depot_en_jours"
                                    value="{{$la_tontine['frequence_depot_en_jours']}}"
                                    placeholder="7"
                                     {{sizeof($la_tontine->transactions) >0 ? "readonly" :""}}

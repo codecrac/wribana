@@ -1,5 +1,8 @@
 @php
     $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+
+    $prochaine_date_encaissement = $la_tontine->caisse->prochaine_date_encaissement;
+    $en_retard = time() >= strtotime($prochaine_date_encaissement) ;
 @endphp
 
 
@@ -29,6 +32,14 @@
                             @if($la_tontine->createur->id == $la_session['id'])
                                 <a href="{{route('espace_menbre.editer_tontine',[$la_tontine['id']])}}" class="btn btn-warning">Editer la tontine</a>
                             @endif
+                            <br/>
+                            @if($la_tontine->etat !='fermee')
+                                @if($en_retard)
+                                    <span class="clignote badge badge-danger">
+                                            Cotisation en retard
+                                        </span>
+                                @endif
+                            @endif
                         </h4>
                     <hr/>
                     <ul>
@@ -46,6 +57,7 @@
                                 @endif
                             </mark>
                         </li>
+
                     </ul>
 
 
@@ -111,7 +123,14 @@
             <div class="card">
                 <div class="card-body">
                     <hr/>
-                        <h4 class="text-center text-uppercase" >Cotisation courante</h4>
+                        <h4 class="text-center text-uppercase" >
+                            Cotisation courante
+                            @if($en_retard)
+                                <span class="clignote badge badge-danger">
+                                    Cotisation en retard
+                                </span>
+                            @endif
+                        </h4>
                     <hr/>
                     <br/>
                         <p>Tour de :

@@ -1,15 +1,22 @@
 
 @extends('espace_menbre.base_espace_menbre')
-
-
 @section('style_completmentaire')
     <style>
         .tr_bordered{
             border: 1px solid gray !important;
         }
+
+        .clignote {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
     </style>
 @endsection
-
 @section('content')
 
 <div class="container">
@@ -33,7 +40,7 @@
                         <th class="tr_bordered">Nombres de participants</th>
                         <th class="tr_bordered">Montant à cotiser</th>
                         <th class="tr_bordered">Statut</th>
-                        <th class="tr_bordered">Tour de</th>
+                        <th class="tr_bordered">Prochaine cotisation</th>
                         <th class="tr_bordered">#</th>
                         </thead>
                         <tbody>
@@ -51,10 +58,41 @@
                                     </b>
                                 </td>
                                 <td class="tr_bordered">
-                                    <b class="badge badge-info">
-                                        {{$ma_tontine->caisse->menbre_qui_prend->nom_complet}}
-                                    </b>
+                                        @if($ma_tontine->caisse !=null && $ma_tontine->etat =='ouverte')
+                                            @php
+                                                $aujourdhui = new DateTime("now", new \DateTimeZone("UTC"));
+                                                $aujourdhui = $aujourdhui->format("d-m-Y");
+                                                $aujourdhui = new DateTime($aujourdhui);
 
+                                                $prochaine_date = $ma_tontine->caisse->prochaine_date_encaissement;
+                                                $prochaine_date = new DateTime($prochaine_date);
+
+                                                $interval = $prochaine_date->diff($aujourdhui);
+                                                $intervals = $interval->format('%a');
+
+                                                $prochaine_date_encaissement = $ma_tontine->caisse->prochaine_date_encaissement;
+                                                $en_retard = time() >= strtotime($prochaine_date_encaissement) ;
+
+                                            @endphp
+
+                                            <br/>
+                                            @if($en_retard)
+
+                                            <span class="clignote badge badge-danger">
+                                                Cotisation en retard
+                                            </span>
+                                            @else
+                                                <b class="badge badge-warning">
+                                                    Date limite dans {{$intervals}} jours
+                                                </b>
+                                                <br/><br/>
+                                                <b class="badge badge-info">
+                                                    Tour de : {{$ma_tontine->caisse->menbre_qui_prend->nom_complet}}
+                                                </b>
+                                            @endif
+                                        @else
+                                            #
+                                        @endif
                                 </td>
                                 <td class="tr_bordered" style="padding: 8px">
                                     <a href="{{route('espace_menbre.details_tontine',[$ma_tontine['id']])}}" class="btn btn-primary">Voir</a>
