@@ -42,6 +42,9 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
     Route::get("/",[EspaceMenbre::class,'accueil'])->name('espace_menbre.accueil');
     Route::get("/deconnexion",[EspaceMenbre::class,'deconnexion'])->name('espace_menbre.deconnexion');
 
+    Route::get("/mon-compte/{id_menbre}",[EspaceMenbre::class,'profil'])->name('espace_menbre.profil');
+    Route::post("/mon-compte/{id_menbre}",[EspaceMenbre::class,'modifier_profil'])->name('espace_menbre.post_profil');
+
 //    ===================Tontines======================
     Route::get("/mes-tontines",[EspaceMenbre::class,'liste_tontine'])->name('espace_menbre.liste_tontine');
     Route::get("/details-tontines/{id_tontine}",[EspaceMenbre::class,'details_tontine'])->name('espace_menbre.details_tontine');

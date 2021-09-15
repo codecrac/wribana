@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CompteMenbre;
 use App\Models\Menbre;
 use Illuminate\Http\Request;
 
@@ -52,6 +53,12 @@ class MenbreController extends Controller
             $le_menbre->mot_de_passe = $mot_de_passe_cacher;
 
             if($le_menbre->save()){
+
+                $le_compte = CompteMenbre::findOrNew($le_menbre->id);
+                $le_compte->id_menbre = $le_menbre->id;
+                $le_compte->solde = 0;
+                $le_compte->save();
+
                 $couleur = "success";
                 $message = "Inscription éffectuée, connectez-vous";
                 $notification = "<div class='alert alert-$couleur'> $message  </div>";

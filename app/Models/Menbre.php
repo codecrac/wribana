@@ -13,4 +13,12 @@ class Menbre extends Model
     {
         return $this->belongsToMany(Tontine::class);
     }
+
+    public function compte(){
+        return $this->hasOne(CompteMenbre::class,'id_menbre');
+    }
+
+    public function historique_virement_tontine(){
+        return $this->hasMany(CahierCompteTontine::class,'id_menbre');
+    }
 }

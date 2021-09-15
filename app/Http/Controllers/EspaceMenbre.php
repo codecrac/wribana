@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CahierCompteTontine;
 use App\Models\CaisseTontine;
+use App\Models\CompteMenbre;
 use App\Models\Invitation;
 use App\Models\Menbre;
 use App\Models\MenbreTontine;
@@ -182,6 +184,8 @@ class EspaceMenbre extends Controller
         return redirect()->back()->with('notification',$notification);
     }
 
+//    =============================INVITATIONA==============================
+
     public function inviter_des_amis($id_tontine){
         $la_tontine = Tontine::find($id_tontine);
         if($la_tontine == null){
@@ -299,11 +303,29 @@ class EspaceMenbre extends Controller
             if($la_caisse_de_la_tontine->save()){
                 $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
             }
-            //Montant atteinds
+
+//===================Montant atteinds
             if($nouveau_montant == $la_caisse_de_la_tontine->montant_objectif){
                 $index_menbre_qui_prend = $la_caisse_de_la_tontine->index_menbre_qui_prend;
                 $nouvel_index = $index_menbre_qui_prend + 1;
 
+//===================Virer l'argent sur son compte et le noter dans le cahier
+                $id_menbre_qui_prend = $la_caisse_de_la_tontine->id_menbre_qui_prend;
+                $le_compte = CompteMenbre::findOrNew($id_menbre_qui_prend);
+                $le_compte->id_menbre = $id_menbre_qui_prend;
+                $le_solde = $le_compte->montant;
+                $nouveau_solde = $le_solde + $nouveau_montant;
+                $le_compte->solde = $nouveau_solde;
+                //noter le virement dans le cahier comptable
+                if($le_compte->save()){
+                    $nouvelle_note = new CahierCompteTontine();
+                    $nouvelle_note->id_menbre = $id_menbre_qui_prend;
+                    $nouvelle_note->id_tontine = $id_tontine;
+                    $nouvelle_note->montant = $nouveau_montant;
+                    $nouvelle_note->save();
+                }
+
+//====================Rotation
                 //SI ON EST PAS AU DERNIER PARTICIPANTS
                 if($nouvel_index < sizeof($la_tontine->participants)){
                     $liste_participant = $la_tontine->participants->toArray();
@@ -318,7 +340,8 @@ class EspaceMenbre extends Controller
                     $la_caisse_de_la_tontine->prochaine_date_encaissement = $prochaine_date_encaissement;
                     $la_caisse_de_la_tontine->montant = 0;
                     $la_caisse_de_la_tontine->save();
-                }else{
+                }
+                else{
                     $la_caisse_de_la_tontine->montant = 0;
                     $la_caisse_de_la_tontine->save();
 
@@ -326,10 +349,116 @@ class EspaceMenbre extends Controller
                     $la_tontine->save();
                     $notification = " <div class='alert alert-warning text-center'> Operation bien effectuée, Fin de la tontine est complete </div>";
                 }
+
             }
 
         }
         return redirect()->back()->with('notification',$notification);
+    }
+
+//====================== PROFIL=======================
+    public function profil($id_menbre){
+        $le_menbre = Menbre::find($id_menbre);
+        return view('espace_menbre/profil',compact('le_menbre'));
+    }
+
+    public function modifier_profil(Request $request,$id_menbre){
+            $couleur = "danger";
+
+            $donnee_formulaire = $request->all();
+//        dd($donnee_formulaire);
+            $mot_de_passe_actuel = $donnee_formulaire['mot_de_passe_actuel'];
+            $bon_mot_de_passe = $this->VerifieLeMotDePasse($mot_de_passe_actuel,$id_menbre);
+
+            if($bon_mot_de_passe){
+                $nom_complet = $donnee_formulaire['nom_complet'];
+                $telephone = $donnee_formulaire['telephone'];
+                $email = $donnee_formulaire['email'];
+                $mot_de_passe = $donnee_formulaire['mot_de_passe'];
+                $confirmer_mot_de_passe = $donnee_formulaire['confirmer_mot_de_passe'];
+
+//        ---------------Verifie existence des identifiant
+                if($email !=null){
+                    $route_connexion = route('connexion_menbre');
+                    $email_existe_deja = $this->checkExistenceEmailPourAutrePersonne($email,$id_menbre);
+                    if($email_existe_deja){
+                        $message = "Cette adresse email est déja utilisée par une autre personne";
+                        $notification = "<div class='alert alert-$couleur'> $message  </div>";
+                        return redirect()->back()->with('notification',$notification);
+                    }
+                }
+
+                $telephone_existe_deja = $this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre);
+                if($telephone_existe_deja){
+                    $message = "Ce numero de telephone a déja utilisé par une autre personne";
+                    $notification = "<div class='alert alert-$couleur'> $message  </div>";
+                    return redirect()->back()->with('notification',$notification);
+                }
+
+//        ---------------Verifie mot de passe et enregistrement
+
+                $le_menbre = Menbre::find($id_menbre);
+                $le_menbre->nom_complet = $nom_complet;
+                $le_menbre->telephone = $telephone;
+                $le_menbre->email = $email;
+
+                if(!empty($mot_de_passe) && !empty($confirmer_mot_de_passe) ){
+                    if($mot_de_passe != $confirmer_mot_de_passe){
+                        $couleur = "danger";
+                        $message = "Les mots de passe ne sont pas identiques.";
+                        $notification = "<div class='alert alert-$couleur'> $message  </div>";
+                        return redirect()->back()->with('notification',$notification);
+                    }
+                    $mot_de_passe_cacher = md5($confirmer_mot_de_passe);
+                    $le_menbre->mot_de_passe = $mot_de_passe_cacher;
+                }
+
+                if($le_menbre->save()){
+                    $couleur = "success";
+                    $message = "Operation bien effectuée";
+                    $notification = "<div class='alert alert-$couleur'> $message  </div>";
+                    return redirect()->back()->with('notification',$notification);
+                }
+
+            }else{
+                $message = "Mot de passe actuel incorrect";
+                $notification = "<div class='alert alert-$couleur'> $message  </div>";
+            }
+
+
+        $notification = "<div class='alert alert-$couleur'> $message  </div>";
+        return redirect()->back()->with('notification',$notification);
+    }
+
+
+
+
+    private function checkExistenceEmailPourAutrePersonne($email,$id_menbre){
+        $menbre_existant = Menbre::where('email','=',$email)->where('id','!=',$id_menbre)->first();
+        if($menbre_existant != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private function checkExistenceNumeroPourAutrePersonne($numero,$id_menbre){
+        $menbre_existant = Menbre::where('telephone','=',$numero)->where('id','!=',$id_menbre)->first();
+        if($menbre_existant != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private function VerifieLeMotDePasse($mdp,$id_menbre){
+        $mdp_cacher = md5($mdp);
+        $menbre_existant = Menbre::where('mot_de_passe','=',$mdp_cacher)->where('id','=',$id_menbre)->first();
+        if($menbre_existant != null){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

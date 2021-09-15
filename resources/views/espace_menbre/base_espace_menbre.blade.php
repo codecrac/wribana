@@ -57,21 +57,8 @@
             </div>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-            <ul class="navbar-nav mr-lg-4 w-100">
-                <li class="nav-item nav-search d-none d-lg-block w-100">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                <span class="input-group-text" id="search">
-                  <i class="mdi mdi-magnify"></i>
-                </span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Search now" aria-label="search"
-                               aria-describedby="search">
-                    </div>
-                </li>
-            </ul>
             <ul class="navbar-nav navbar-nav-right">
-                <li class="nav-item dropdown mr-1">
+                {{--<li class="nav-item dropdown mr-1">
                     <a class="nav-link count-indicator dropdown-toggle d-flex justify-content-center align-items-center"
                        id="messageDropdown" href="#" data-toggle="dropdown">
                         <i class="mdi mdi-message-text mx-0"></i>
@@ -166,13 +153,13 @@
                             </div>
                         </a>
                     </div>
-                </li>
+                </li>--}}
                 <li class="nav-item nav-profile dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
                         <span class="nav-profile-name"> {{$la_session['nom_complet']}} </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                        <a class="dropdown-item">
+                        <a class="dropdown-item" href="{{route('espace_menbre.profil',[$la_session['id']] ) }}">
                             <i class="mdi mdi-settings text-primary"></i>
                             Profil
                         </a>
