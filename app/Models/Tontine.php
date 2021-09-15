@@ -13,8 +13,19 @@ class Tontine extends Model
         return $this->belongsTo(Menbre::class,'id_menbre');
     }
 
+    public function caisse()
+    {
+        return $this->hasOne(CaisseTontine::class,'id_tontine');
+    }
+
     public function participants()
     {
         return $this->belongsToMany(Menbre::class);
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class,'id_tontine');
+    }
+
 }

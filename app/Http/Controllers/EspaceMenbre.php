@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CaisseTontine;
 use App\Models\Invitation;
 use App\Models\Menbre;
 use App\Models\MenbreTontine;
 use App\Models\Tontine;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class EspaceMenbre extends Controller
@@ -123,7 +125,51 @@ class EspaceMenbre extends Controller
         if($la_tontine ==null){
             return redirect()->route('espace_menbre.liste_tontine');
         }
-        return view("espace_menbre.tontine.details_tontine",compact('la_tontine','invitations_envoyees'));
+
+        //afficher les autre section seulement si le nombre de particpant est atteinds
+        $pret = false;
+        if($la_tontine->nombre_participant == sizeof($la_tontine->participants)){
+            $pret = true;
+        }
+
+        //Eviter paiement multiple de cotisation par la meme personne pour le meme tour
+        $a_deja_cotiser = Transaction::where("id_menbre",'=',$id_menbre_connecter)
+            ->where('id_tontine','=',$id_tontine)
+            ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)->first();
+        $a_deja_cotiser = ($a_deja_cotiser!=null) ? true : false;
+
+        //Liste des transaction pour le tour courant
+        $liste_ayant_cotiser = Transaction::where('id_tontine','=',$id_tontine)
+            ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)->get();
+
+
+        return view("espace_menbre.tontine.details_tontine",compact('la_tontine','invitations_envoyees','pret','a_deja_cotiser','liste_ayant_cotiser'));
+    }
+
+    public function ouvrir_tontine($id_tontine){
+        $la_tontine = Tontine::find($id_tontine);
+        $la_tontine->etat = 'ouverte';
+        $la_tontine->save();
+
+        //la date prochaine on ajoute le nombre de jour definit dans la frequence de pot a partir d'aujourd'hui
+        $aujourdhui = $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
+        $aujourdhui = $aujourdhui->format("d-m-Y");
+        $nombre_de_jours_en_plus = $la_tontine->frequence_depot_en_jours;
+        $prochaine_date_encaissement = date('d-m-Y', strtotime($aujourdhui. " + $nombre_de_jours_en_plus days"));
+
+        // on cree la caisse dedie a la tontine et on commence par le menbre qui a creer la tontine
+        $la_caisse_de_la_tontine = CaisseTontine::findOrNew($id_tontine);
+        $la_caisse_de_la_tontine->id_tontine= $la_tontine->id;
+
+        $la_caisse_de_la_tontine->montant_objectif= $la_tontine->montant * $la_tontine->nombre_participant;
+//        $la_caisse_de_la_tontine->montant= 0;
+        $la_caisse_de_la_tontine->id_menbre_qui_prend= $la_tontine->id_menbre;
+        $la_caisse_de_la_tontine->prochaine_date_encaissement= $prochaine_date_encaissement;
+        $la_caisse_de_la_tontine->save();
+
+
+        $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
+        return redirect()->back()->with('notification',$notification);
     }
 
     public function inviter_des_amis($id_tontine){
@@ -215,6 +261,35 @@ class EspaceMenbre extends Controller
             }
         }
 
+        return redirect()->back()->with('notification',$notification);
+    }
+
+//    ===================Cotisation======================
+    public function paiement_cotisation($id_tontine){
+
+        $la_session = session(MenbreController::$cle_session);
+        $id_menbre_connecter = $la_session['id'];
+        $la_tontine = Tontine::find($id_tontine);
+
+        $montant = $la_tontine->montant;
+
+        $la_transaction = new Transaction();
+        $la_transaction->id_tontine = $id_tontine;
+        $la_transaction->id_menbre = $id_menbre_connecter;
+        $la_transaction->montant = $montant;
+        $la_transaction->id_menbre_qui_prend = $la_tontine->caisse->menbre_qui_prend->id;
+
+        $notification = " <div class='alert alert-danger text-center'> Quelque chose s'est mal passé, veuillez reessayez </div>";
+        if($la_transaction->save()){
+            $la_caisse_de_la_tontine = CaisseTontine::findOrNew($id_tontine);
+            $la_caisse_de_la_tontine->id_tontine= $id_tontine;
+            $nouveau_montant = $la_caisse_de_la_tontine->montant;
+            $nouveau_montant += $montant;
+            $la_caisse_de_la_tontine->montant = $nouveau_montant;
+            if($la_caisse_de_la_tontine->save()){
+                $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
+            }
+        }
         return redirect()->back()->with('notification',$notification);
     }
 

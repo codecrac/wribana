@@ -45,6 +45,7 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
 //    ===================Tontines======================
     Route::get("/mes-tontines",[EspaceMenbre::class,'liste_tontine'])->name('espace_menbre.liste_tontine');
     Route::get("/details-tontines/{id_tontine}",[EspaceMenbre::class,'details_tontine'])->name('espace_menbre.details_tontine');
+    Route::post("/details-tontines/{id_tontine}",[EspaceMenbre::class,'ouvrir_tontine'])->name('espace_menbre.ouvrir_tontine');
 
     Route::get("/inviter-des-amis-dans-la-tontine/{id_tontine}",[EspaceMenbre::class,'inviter_des_amis'])->name('espace_menbre.inviter_des_amis');
     Route::post("/inviter-des-amis-dans-la-tontine/{id_tontine}",[EspaceMenbre::class,'envoyer_invitation'])->name('espace_menbre.post_inviter_des_amis');
@@ -58,7 +59,9 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
 
     Route::get("/invitations",[EspaceMenbre::class,'invitations'])->name('espace_menbre.invitations');
     Route::post("/invitations/{id_invitation}",[EspaceMenbre::class,'reponse_invitation'])->name('espace_menbre.reponse_invitation');
+//    ===================Tontines======================
 
+    Route::post("/payer-ma-cotisation/{id_tontine}",[EspaceMenbre::class,'paiement_cotisation'])->name('espace_menbre.paiement_cotisation');
 });
 
 

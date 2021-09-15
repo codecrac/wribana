@@ -19,7 +19,7 @@ class CreateTontinesTable extends Migration
             $table->string('montant'); //montant a payer par personne
             $table->string('frequence_depot_en_jours');
             $table->integer('nombre_participant');
-            $table->enum('etat',['ouverte','fermee']);
+            $table->enum('etat',['constitution','ouverte','fermee']);
             $table->foreignId('id_menbre'); //menbre createur
             $table->timestamps();
         });
