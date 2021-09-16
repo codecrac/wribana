@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class CahierCompteTontine extends Model
 {
     use HasFactory;
+    protected $guarded = [];
+
     public function tontine(){
         return $this->belongsTo(Tontine::class,'id_tontine');
     }

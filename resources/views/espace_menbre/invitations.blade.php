@@ -1,5 +1,6 @@
 @php
     $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+    
 @endphp
 
 
@@ -35,6 +36,7 @@
               </thead>
               <tbody class="text-center">
                   @foreach($invitation_recues as $item_iv_recue)
+                
                       <tr>
                           <td class="tr_bordered">{{$item_iv_recue->menbre_inviteur->nom_complet}}</td>
                           <td class="tr_bordered">{{$item_iv_recue->tontine->titre}}</td>

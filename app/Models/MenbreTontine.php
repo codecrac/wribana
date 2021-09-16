@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MenbreTontine extends Model
 {
-    protected $table = 'menbre_tontine';
+    use HasFactory;
     protected $guarded = [];
+    protected $table = 'menbre_tontine';
 }

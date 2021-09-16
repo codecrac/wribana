@@ -5,10 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CompteMenbre extends Model
+class CaisseWaricrowd extends Model
 {
     use HasFactory;
     protected $guarded = [];
-
-    public $primaryKey = "id_menbre";
+    public $primaryKey = 'id_waricrowd';
 }

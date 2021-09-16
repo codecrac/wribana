@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tontine extends Model
 {
+    use HasFactory;
     protected $guarded = [];
 
     public function createur(){

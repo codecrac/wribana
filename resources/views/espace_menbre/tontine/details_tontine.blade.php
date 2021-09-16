@@ -1,8 +1,12 @@
 @php
     $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
 
-    $prochaine_date_encaissement = $la_tontine->caisse->prochaine_date_encaissement;
-    $en_retard = time() >= strtotime($prochaine_date_encaissement) ;
+    $en_retard=false;
+    if($la_tontine->caisse !=null){
+        $prochaine_date_encaissement = $la_tontine->caisse->prochaine_date_encaissement;
+        $en_retard = time() >= strtotime($prochaine_date_encaissement) ;
+    }
+
 @endphp
 
 
@@ -200,33 +204,34 @@
     @endif
 
 {{-- Liste des personnes ayants cotisee et statut invitation envoye --}}
-    @if($la_tontine->etat =='ouverte')
-        <div class="row">
-        <div class="col-md-6 grid-margin stretch-card" id="liste_cotiseur">
-            <div class="card">
-                <div class="card-header">
-                    <hr/>
-                        <h4 class="text-center text-uppercase"> Personnes ayant payer leur cotisation </h4>
-                    <hr/>
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <th>Menbre</th>
-                            <th>Date paiement</th>
-                        </thead>
-                        <tbody>
-                            @foreach($liste_ayant_cotiser as $item_ayant_cotiser)
-                                <tr>
-                                    <td>{{$item_ayant_cotiser->cotiseur->nom_complet}}</td>
-                                    <td>{{date("d/m/Y H:m",strtotime($item_ayant_cotiser->updated_at))}}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+    <div class="row">
+        @if($la_tontine->etat =='ouverte')
+            <div class="col-md-6 grid-margin stretch-card" id="liste_cotiseur">
+                <div class="card">
+                    <div class="card-header">
+                        <hr/>
+                            <h4 class="text-center text-uppercase"> Personnes ayant payer leur cotisation </h4>
+                        <hr/>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <th>Menbre</th>
+                                <th>Date paiement</th>
+                            </thead>
+                            <tbody>
+                                @foreach($liste_ayant_cotiser as $item_ayant_cotiser)
+                                    <tr>
+                                        <td>{{$item_ayant_cotiser->cotiseur->nom_complet}}</td>
+                                        <td>{{date("d/m/Y H:m",strtotime($item_ayant_cotiser->updated_at))}}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
 
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
@@ -266,7 +271,6 @@
             </div>
         </div>
     </div>
-    @endif
 @endsection
 
 @php

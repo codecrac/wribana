@@ -12,6 +12,8 @@ use App\Models\Tontine;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
+
+include EspaceMenbreWaricrowdController::class;
 class EspaceMenbre extends Controller
 {
     public function accueil(){
@@ -431,8 +433,7 @@ class EspaceMenbre extends Controller
     }
 
 
-
-
+//=========================================FONCTION UTILITAIRE
     private function checkExistenceEmailPourAutrePersonne($email,$id_menbre){
         $menbre_existant = Menbre::where('email','=',$email)->where('id','!=',$id_menbre)->first();
         if($menbre_existant != null){
@@ -460,5 +461,6 @@ class EspaceMenbre extends Controller
             return false;
         }
     }
+
 
 }
