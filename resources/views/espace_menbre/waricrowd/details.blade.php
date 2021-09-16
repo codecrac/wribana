@@ -81,7 +81,7 @@
                         <iframe width="100%" src="{{$le_crowd->lien_pitch_video}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     @else
                         <h3 class="text-center">
-                            <span class="badge badge-info"> Non fourni  </span>
+                            <img src="{{url($le_crowd->image_illustration)}}" style="max-width: 200px" />
                         </h3>
                     @endif
                 </div>

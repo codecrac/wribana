@@ -1,3 +1,13 @@
+@php
+    $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+
+    $est_connecter  = false;
+    if($la_session !=null){
+        $est_connecter =true;
+        $id_menbre_connecter  = $la_session['id'];
+    }
+@endphp
+
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -6,6 +16,8 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="description" content="" />
+    <meta name="language" content="fr">
+    <meta http-equiv="content-language" content="fr">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
     <!--====== Title ======-->
@@ -82,6 +94,9 @@
                         <li class="{{isset($is_home) ? 'current' : '' }}">
                             <a href="{{route('accueil')}}">Accueil</a>
                         </li>
+                        <li class="{{isset($is_decouvrir_projets) ? 'current' : '' }}">
+                            <a href="{{route('decouvrir_projets')}}">Decouvrir les projets</a>
+                        </li>
                         <li class="{{isset($is_comment_ca_marche) ? 'current' : '' }}">
                             <a href="{{route('comment_ca_marche')}}">Comment ça marche</a>
                         </li>
@@ -97,11 +112,19 @@
                     </ul>
                 </div>
                 <div class="navbar-extra d-flex align-items-center">
+                    @if($est_connecter)
+                        <a  href="{{route('espace_menbre.accueil')}}" class="main-btn nav-btn d-none d-sm-inline-block"> Mon Compte <i class="far fa-arrow-right"></i>
+                        </a>
+                        <a href="#" class="nav-toggler">
+                            <span></span>
+                        </a>
+                    @else
                     <a  href="{{route('connexion_menbre')}}" class="main-btn nav-btn d-none d-sm-inline-block">Se Connecter <i class="far fa-arrow-right"></i>
                     </a>
                     <a href="#" class="nav-toggler">
                         <span></span>
                     </a>
+                    @endif
                 </div>
             </div>
         </div>

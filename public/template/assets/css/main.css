@@ -1985,7 +1985,7 @@ a:hover {
 }
 
 .project-items .project-item .content {
-	padding: 55px 40px 35px;
+	padding: 55px 15px 35px;
 	background-color: var(--white);
 	position: relative;
 	-webkit-box-shadow: 0px 10px 30px 0px rgba(223, 223, 223, 0.3);

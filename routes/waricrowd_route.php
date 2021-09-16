@@ -10,6 +10,9 @@ Route::get("/mes-waricrowd",[EspaceMenbreWaricrowdController::class,'liste_waric
 Route::get("/creer-un-waricrowd",[EspaceMenbreWaricrowdController::class,'creer_un_waricrowd'])->name('espace_menbre.creer_un_waricrowd');
 Route::post("/creer-un-waricrowd",[EspaceMenbreWaricrowdController::class,'enregistrer_un_waricrowd'])->name('espace_menbre.post_creer_un_waricrowd');
 
+Route::get("/editer-le-waricrowd/{id_crowd}",[EspaceMenbreWaricrowdController::class,'editer_crowd'])->name('espace_menbre.editer_crowd');
+Route::post("/editer-le-waricrowd/{id_crowd}",[EspaceMenbreWaricrowdController::class,'modifier_un_waricrowd'])->name('espace_menbre.post_editer_crowd');
+
 Route::get("/details-waricrowd/{id_crowd}",[EspaceMenbreWaricrowdController::class,'details_waricrowd'])->name('espace_menbre.details_waricrowd');
 Route::get("/editer-waricrowd/{id_crowd}",[EspaceMenbreWaricrowdController::class,'editer_crowd'])->name('espace_menbre.editer_crowd');
 

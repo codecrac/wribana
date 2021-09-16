@@ -10,6 +10,17 @@ class MenbreController extends Controller
 {
 
     public static $cle_session = "menbre_waribana_connecter";
+
+
+    public function connexion_menbre(){
+        return view('connexion_menbre');
+
+    }
+    public function inscription_menbre(){
+        return view('inscription_menbre');
+
+    }
+
     public function enregistrer_un_menbre(Request $request){
         $couleur = "danger";
 

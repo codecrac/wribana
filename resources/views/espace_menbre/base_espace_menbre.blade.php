@@ -89,6 +89,12 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <ul class="nav">
                 <li class="nav-item">
+                    <a class="nav-link" href="{{route('accueil')}}">
+                        <i class="mdi mdi-circle-outline menu-icon"></i>
+                        <span class="menu-title">Retour à l'accueil</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="index.html">
                         <i class="mdi mdi-home menu-icon"></i>
                         <span class="menu-title">Tableau de bord</span>
@@ -112,7 +118,7 @@
 
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-                        <i class="mdi mdi-account menu-icon"></i>
+                        <i class="mdi mdi-account-multiple menu-icon"></i>
                             <span class="menu-title">Waricrowd</span>
                         <i class="menu-arrow"></i>
                     </a>
@@ -126,14 +132,14 @@
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('espace_menbre.projets_soutenus')}}">
-                        <i class="mdi mdi-home menu-icon"></i>
+                        <i class="mdi mdi-circle-outline menu-icon"></i>
                         <span class="menu-title">Projets Soutenus</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="index.html">
-                        <i class="mdi mdi-home menu-icon"></i>
+                        <i class="mdi mdi-circle-outline menu-icon"></i>
                         <span class="menu-title">Chat</span>
                     </a>
                 </li>

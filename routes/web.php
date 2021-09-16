@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EspaceMenbre;
+use App\Http\Controllers\FrontController;
 use App\Http\Controllers\MenbreController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,29 +10,23 @@ use Illuminate\Support\Facades\Route;
 |********* |*********|********* Routes  Vitrine |*********|*********|*********
 */
 
-Route::get('/', function () {
-    $is_home=true; return view('welcome',['is_home'=>$is_home]);
-})->name('accueil');
 
-Route::get('/comment-ca-marche', function () {
-    $current=true; return view('comment_ca_marche',['is_comment_ca_marche'=>$current]);
-})->name('comment_ca_marche');
 
-Route::get('/qui-sommes-nous', function () {
-    $current=true; return view('apropos',['is_apropos'=>$current]);
-})->name('apropos');
+Route::get('/', [FrontController::class,'accueil'])->name('accueil');
 
-Route::get('/faq', function () {
-    $current=true; return view('faq',['is_faq'=>$current]);
-})->name('faq');
+Route::get('/projets-waricrowd', [FrontController::class,'decouvrir_projets'])->name('decouvrir_projets');
+Route::get('/details-projet/{id_crowd}', [FrontController::class,'details_projet'])->name('details_projet');
 
-Route::get('/contact', function () {
-    $current=true; return view('contact',['is_contact'=>$current]);
-})->name('contact');
+Route::get('/comment-ca-marche', [FrontController::class,'comment_ca_marche'])->name('comment_ca_marche');
 
-Route::get('/connexion-menbre', function () { return view('connexion_menbre'); })->name('connexion_menbre');
+Route::get('/qui-sommes-nous', [FrontController::class,'apropos'])->name('apropos');
 
-Route::get('/inscription-menbre', function () {return view('inscription_menbre');})->name('inscription_menbre');
+Route::get('/faq', [FrontController::class,'faq'])->name('faq');
+
+Route::get('/contactez-nous', [FrontController::class,'contact'])->name('contact');
+
+Route::get('/connexion-menbre', [MenbreController::class,'connexion_menbre'])->name('connexion_menbre');
+Route::get('/inscription-menbre', [MenbreController::class,'inscription_menbre'])->name('inscription_menbre');
 
 Route::post('/inscription-menbre', [MenbreController::class,'enregistrer_un_menbre'])->name('post_inscription_menbre');
 Route::post('/connexion-menbre',  [MenbreController::class,'connexion'])->name('post_connexion_menbre');

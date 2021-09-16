@@ -21,7 +21,7 @@ class CreateWaricrowdsTable extends Migration
             $table->text("description_complete");
             $table->integer("montant_objectif")->nullable();
             $table->string("lien_pitch_video")->nullable();
-            $table->string("image_illustration")->nullable();
+            $table->string("image_illustration")->default('images/waricrowd/statiques/crowfunding.png');
             $table->enum("etat",['attente','valider','recaler','terminer','annuler']);
             $table->timestamps();
         });

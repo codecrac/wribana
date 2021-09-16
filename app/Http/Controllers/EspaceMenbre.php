@@ -13,7 +13,6 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 
-include EspaceMenbreWaricrowdController::class;
 class EspaceMenbre extends Controller
 {
     public function accueil(){

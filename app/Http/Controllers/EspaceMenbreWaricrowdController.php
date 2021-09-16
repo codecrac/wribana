@@ -27,6 +27,10 @@ class EspaceMenbreWaricrowdController extends Controller
     public function creer_un_waricrowd(){
         return view('espace_menbre/waricrowd/ajouter');
     }
+    public function editer_crowd($id_crowd){
+        $le_crowd = Waricrowd::find($id_crowd);
+        return view('espace_menbre/waricrowd/editer',compact('le_crowd'));
+    }
 
     public function enregistrer_un_waricrowd(Request $request){
         $donnees_formulaire = $request->all();
@@ -50,8 +54,8 @@ class EspaceMenbreWaricrowdController extends Controller
         $nom_image_illustration=null;
         if($request->hasFile('image_illustration')){
 //            dd("have file");
-            $uploaddir = public_path('images/waricrowd');
-            $nom_image_illustration = $uploaddir . basename($_FILES['image_illustration']['name']);
+            $uploaddir = public_path('images/waricrowd/');
+            $nom_image_illustration = 'images/waricrowd/'. basename($_FILES['image_illustration']['name']);
             move_uploaded_file($_FILES['image_illustration']['tmp_name'], $nom_image_illustration);
 
 //            $nom_image_illustration = time().'.'.request()->img->getClientOriginalExtension();
@@ -67,6 +71,52 @@ class EspaceMenbreWaricrowdController extends Controller
             $la_caisse_de_crowd->id_waricrowd = $le_crowd->id;
             $la_caisse_de_crowd->montant_objectif = $montant_objectif;
             $la_caisse_de_crowd->montant = 0;
+            $la_caisse_de_crowd->save();
+
+            $notification = "<div class='alert alert-success text-center'> Operation effectuée avec succes </div>";
+        }else{
+            $notification = "<div class='alert alert-danger text-center'> Quelquechose s'est mal passée, veuillez rééssayer </div>";
+        }
+
+        return redirect()->back()->with("notification",$notification);
+    }
+
+    public function modifier_un_waricrowd(Request $request,$id_crowd){
+        $donnees_formulaire = $request->all();
+
+        $titre = $donnees_formulaire['titre'];
+        $description_courte = $donnees_formulaire['description_courte'];
+        $description_complete = $donnees_formulaire['description_complete'];
+        $montant_objectif = $donnees_formulaire['montant_objectif'];
+        $pitch_video = $this->formaterLienPitch($donnees_formulaire['lien_pitch_video']);
+
+        $la_session = session(MenbreController::$cle_session);
+        $id_menbre_connecter = $la_session['id'];
+
+        $le_crowd = Waricrowd::find($id_crowd);
+        $le_crowd->id_menbre = $id_menbre_connecter;
+        $le_crowd->titre = $titre;
+        $le_crowd->description_courte = $description_courte;
+        $le_crowd->description_complete = $description_complete;
+        $le_crowd->montant_objectif = $montant_objectif;
+        $le_crowd->lien_pitch_video = $pitch_video;
+
+        $nom_image_illustration=null;
+        if($request->hasFile('image_illustration')){
+//            dd("have file");
+            $uploaddir = public_path('images/waricrowd/');
+            $nom_image_illustration = 'images/waricrowd/'. basename($_FILES['image_illustration']['name']);
+            move_uploaded_file($_FILES['image_illustration']['tmp_name'], $nom_image_illustration);
+
+            $le_crowd->image_illustration = $nom_image_illustration;
+        }
+
+//dd("no file");
+        if($le_crowd->save()){
+            //creer la caisse qui va avec
+            $la_caisse_de_crowd = CaisseWaricrowd::findOrNew($le_crowd->id);
+            $la_caisse_de_crowd->id_waricrowd = $le_crowd->id;
+            $la_caisse_de_crowd->montant_objectif = $montant_objectif;
             $la_caisse_de_crowd->save();
 
             $notification = "<div class='alert alert-success text-center'> Operation effectuée avec succes </div>";
