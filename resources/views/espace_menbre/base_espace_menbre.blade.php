@@ -89,7 +89,7 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <ul class="nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{route('accueil')}}">
+                    <a class="nav-link" href="{{route('decouvrir_projets')}}">
                         <i class="mdi mdi-circle-outline menu-icon"></i>
                         <span class="menu-title">Retour à l'accueil</span>
                     </a>

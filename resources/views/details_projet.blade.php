@@ -20,15 +20,16 @@
                 <div class="col-lg-6 col-md-10">
                     <div class="project-thumb mb-md-50">
                         @if($le_crowd->lien_pitch_video!=null)
-                            <iframe width="100%" src="{{$le_crowd->lien_pitch_video}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe width="100%" height="400px" src="{{$le_crowd->lien_pitch_video}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         @else
                             <img src="{{url($le_crowd->image_illustration)}}" style="max-width: 100%" />
                         @endif
                     </div>
                 </div>
                 <div class="col-lg-6">
+                    <br/>
                     <div class="project-summery">
-                        <a href="#" class="category">#{{$le_crowd->id}}</a>
+                        <a href="{{route('decouvrir_projets')}}" class="category">Retour</a>
                         <h3 class="project-title">
                             {{$le_crowd->titre}}
                         </h3>
@@ -41,17 +42,13 @@
                             <a href="#" class="date"><i class="far fa-calendar-alt"></i>{{date('d-m/Y',strtotime($le_crowd->created_at))}}</a>
                         </div>
                         <div class="project-funding-info">
-                            <div class="info-box">
+                            <div class="info-box" style="width: 185px">
                                 <span>{{number_format($le_crowd->montant_objectif,0,',',' ')}}F</span>
                                 <span class="info-title">Objectif</span>
                             </div>
-                            <div class="info-box">
+                            <div class="info-box" style="width: 185px">
                                 <span>{{sizeof($le_crowd->transactions)}}</span>
-                                <span class="info-title">Soutien</span>
-                            </div>
-                            <div class="info-box">
-                                <span>29</span>
-                                <span class="info-title">Days Left</span>
+                                <span class="info-title">Soutien(s)</span>
                             </div>
                         </div>
                         <div class="project-raised clearfix">

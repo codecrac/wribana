@@ -13,7 +13,7 @@ class FrontController extends Controller
     }
 
     public function decouvrir_projets(){
-        $liste_waricrowd = Waricrowd::where('etat','!=','annuler')->where('etat','!=','recaler')->get();
+        $liste_waricrowd = Waricrowd::where('etat','!=','attente')->where('etat','!=','annuler')->where('etat','!=','recaler')->get();
 //        dd($liste_waricrowd);
         return view('liste_waricrowd',compact('liste_waricrowd'));
     }
