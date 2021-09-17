@@ -16,7 +16,17 @@ use Illuminate\Http\Request;
 class EspaceMenbre extends Controller
 {
     public function accueil(){
-        return view('espace_menbre/index');
+        $la_session = session(MenbreController::$cle_session);
+        $id_menbre_connecter = $la_session['id'];
+        $le_menbre = Menbre::find($id_menbre_connecter);
+
+        $email_inviter = $le_menbre->email;
+        $invitation_recues = [];
+        if($email_inviter!=null){
+            $invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->where('etat','=','attente')->get();
+        }
+        $nombre_invitation_recues = sizeof($invitation_recues);
+        return view('espace_menbre/index',compact('le_menbre','nombre_invitation_recues','invitation_recues'));
     }
 
     public function deconnexion(){
