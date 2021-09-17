@@ -19,6 +19,8 @@ class CreateMenbresTable extends Migration
             $table->string("telephone")->unique();
             $table->string("email")->nullable()->unique();
             $table->string("mot_de_passe");
+            $table->enum("etat",['attente','actif','suspendu']);
+            $table->string('motif_intervention_admin')->nullable();
             $table->timestamps();
         });
     }

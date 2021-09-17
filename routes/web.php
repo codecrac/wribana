@@ -65,7 +65,19 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
 });
 
 
+//    ===================Administrateur======================
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
+    $nombre_tontine = \App\Models\Tontine::count();
+
+    $nombre_waricrowd = \App\Models\Waricrowd::count();
+    $nombre_waricrowd_attente = \App\Models\Waricrowd::where('etat','=','attente')->count();
+
+    $nombre_menbre= \App\Models\Menbre::count();
+    $nombre_menbre_banni= \App\Models\Menbre::where('etat','=','suspendu')->count();
+    return view('dashboard',compact('nombre_tontine','nombre_waricrowd','nombre_menbre','nombre_waricrowd_attente','nombre_menbre_banni'));
 })->name('dashboard');
+
+Route::prefix('administrateur')->middleware(['auth:sanctum', 'verified'])->group(function (){
+    include 'admin_route.php';
+});

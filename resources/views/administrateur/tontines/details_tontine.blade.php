@@ -10,7 +10,7 @@
 @endphp
 
 
-@extends('espace_menbre.base_espace_menbre')
+@extends('administrateur.base_administrateur')
 
 @section('style_completmentaire')
     <style>
@@ -37,7 +37,7 @@
                                 <a href="{{route('espace_menbre.editer_tontine',[$la_tontine['id']])}}" class="btn btn-warning">Editer la tontine</a>
                             @endif
                             <br/>
-                            @if($la_tontine->etat !='fermee')
+                            @if($la_tontine->etat !='fermee' && $la_tontine->etat !='suspendue')
                                 @if($en_retard)
                                     <span class="clignote badge badge-danger">
                                             Cotisation en retard
@@ -65,72 +65,56 @@
 
                     </ul>
 
-
-                    @if($la_tontine->createur->id == $la_session['id'] && $la_tontine->etat =='constitution')
-                         <p class="badge badge-info">La tontine pourra être ouverte une fois le nombre de participant specifié atteinds.</p>
-                        @if($pret)
-                            <form method="post" action="{{route('espace_menbre.ouvrir_tontine',[$la_tontine['id']])}}">
-                                @if($la_tontine->createur->id == $la_session['id'])
-                                    @csrf
-                                   <h3 class="text-center">
-                                       <p class="badge badge-warning">Ouvrez la tontine uniquement si vous êtes pret a commencer les cotisations.</p>
-                                       <button type="submit" class="btn btn-success">Ouvrir la tontine</button>
-                                   </h3>
-                                @endif
-                            </form>
-                        @else
-                            <h3 class="text-center">
-                                <input type="button" class="btn btn-dark" style="cursor: not-allowed" value="Ouvrir la tontine" />
-                            </h3>
-                        @endif
-                    @endif
-
                     <br/>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6">
-            @if($la_tontine->etat !='fermee')
-                <div class="card">
+            <div class="card">
                 <div class="card-body">
                     <hr>
-                        <h4 class="text-uppercase text-center"> Inviter des amis </h4>
+                        <h4 class="text-uppercase text-center"> Changer l'etat de la tontine </h4>
                     <hr>
-                    @if(sizeof($la_tontine->participants) < $la_tontine->nombre_participant)
                         <br/>
                         <p class="card-description">
-                            Entrez la liste des emails separés des virgules(,)
+{{--                            Entrez la liste des emails separés des virgules(,)--}}
                         </p>
-                        <form class="forms-sample" method="post" action="{{route('espace_menbre.post_inviter_des_amis',[$la_tontine['id']])}}">
+                        <form class="forms-sample" method="post" action="{{route('admin.changer_etat_tontine',[$la_tontine['id']])}}">
                             <div class="form-group">
-                                <label for="exampleInputUsername1">Liste des Emails</label>
-                                <input required type="text" class="form-control" name="liste_emails" placeholder="adresse1@gmail.com,adresse2@gmail.com">
+                                <h6 for="exampleInputUsername1">Etat de la tontine *</h6>
+                                <select class="form-control" required name="nouvel_etat">
+                                    <option selected value="{{$la_tontine->etat}}" >{{$la_tontine->etat}}</option>
+                                    <option value="constitution">constitution</option>
+                                    <option value="ouverte">ouverte</option>
+                                    <option value="fermee" >fermee</option>
+                                    <option value="suspendue" >suspendue</option>
+                                </select>
+                                <br/>
+                                <h6>Motif</h6>
+                                <textarea name="motif_intervention" class="form-control" rows="4"></textarea>
                             </div>
                             <h3 class="text-center">
+                                @method('put')
                                 @csrf
-                                <button type="submit" class="btn btn-primary mr-2">Envoyer les invitations</button>
+                                <button type="submit" class="btn btn-warning mr-2 text-white">Appliquer les changements</button>
                             </h3>
                         </form>
-                    @else
-                        <h3 class="text-center"> <b class="badge badge-success">Complet !</b></h3>
-                    @endif
+
                 </div>
             </div>
-            @endif
         </div>
     </div>
 
 {{-- Cotisation et rotation --}}
-    @if($la_tontine->etat =='ouverte')
-        <div class="row">
+    <div class="row">
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <hr/>
                         <h4 class="text-center text-uppercase" >
                             Cotisation courante
-                            @if($en_retard)
+                            @if($en_retard && $la_tontine->etat =='ouverte')
                                 <span class="clignote badge badge-danger">
                                     Cotisation en retard
                                 </span>
@@ -157,16 +141,6 @@
                         </p>
                         <p> de : <small> de {{sizeof($liste_ayant_cotiser)}} personne(s)/{{sizeof($la_tontine->participants)}} <a href="#liste_cotiseur">Voir</a> </small> </p>
                     <br/>
-                        @if($a_deja_cotiser)
-                        <h5 class="text-center"> <b style="padding: 15px" class="badge-success">Vous avez dejà payer votre cotisation pour ce tour.</b> </h5>
-                        @else
-                            <h3 class="text-center">
-                                <form action="{{route('espace_menbre.paiement_cotisation',[$la_tontine->id])}}" method="post">
-                                    @csrf
-                                    <button type="submit" class="btn btn-primary" style="">Payer ma cotisation</button>
-                                </form>
-                            </h3>
-                        @endif
                 </div>
             </div>
         </div>
@@ -174,13 +148,14 @@
             <div class="card">
                 <div class="card-body">
                     <hr/>
-                        <h4 class="text-center text-uppercase" >Ordre de rotation</h4>
-                        <h6 class="text-center"> <small> par date d'adhesion </small> </h6>
+                        <h4 class="text-center text-uppercase" >Liste des membres</h4>
+                        <h6 class="text-center"> <small> dans l'ordre de rotation </small> </h6>
                     <hr/>
                     <table class="table table-bordered table-striped" >
                         <thead>
                             <th>#</th>
-                            <th>Menbre</th>
+                            <th>Membre</th>
+                            <th>#</th>
                         </thead>
                         <tbody>
                         @php $i=1; @endphp
@@ -193,7 +168,36 @@
                                             </b>
                                         @endif
                                     </td>
-                                    <td>{{$item_particpant->nom_complet}}</td>
+                                    <td>
+                                        {{$item_particpant->nom_complet}}
+                                        <h3>
+                                            <span class="badge badge-{{$item_particpant->etat =='suspendu'? 'danger' : 'success'}}">{{$item_particpant->etat}}</span>
+                                        </h3>
+                                    </td>
+                                    <td>
+                                        <button type="button" onclick="deplier_garde_fou('garde_fou_menbre_{{$item_particpant['id']}}')">Agir</button>
+                                        <div class="col-12 garde_fou" id="garde_fou_menbre_{{$item_particpant['id']}}">
+
+                                            <form method="post" action="{{route('admin.suspendre_menbre',[$item_particpant['id']])}}">
+                                                <br/>
+                                                <h6>Etat du compte utilisateur</h6>
+                                                <br/>
+                                                    <select class="form-control" required name="nouvel_etat">
+                                                        <option selected value="{{$item_particpant->etat}}" >{{$item_particpant->etat}}</option>
+                                                        <option value="actif">actif</option>
+                                                        <option value="suspendu">suspendu</option>
+                                                    </select>
+                                                <br/>
+                                                    <h6>Motif</h6>
+                                                    <br/>
+                                                    <textarea name="motif_intervention" class="form-control" placeholder="Entrer le motif de votre intervention" rows="4">{{$item_particpant->motif_intervention_admin}}</textarea>
+                                                <br/>
+                                                @method('put')
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger"> Appliquer les modifications</button>
+                                            </form>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -202,12 +206,10 @@
             </div>
         </div>
     </div>
-    @endif
 
 {{-- Liste des personnes ayants cotisee et statut invitation envoye --}}
     <div class="row">
-        @if($la_tontine->etat =='ouverte')
-            <div class="col-md-6 grid-margin stretch-card" id="liste_cotiseur">
+        <div class="col-md-6 grid-margin stretch-card" id="liste_cotiseur">
                 <div class="card">
                     <div class="card-header">
                         <hr/>
@@ -232,7 +234,6 @@
                     </div>
                 </div>
             </div>
-        @endif
 
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
@@ -244,12 +245,14 @@
                 <div class="card-body">
                     <table class="table table-bordered">
                         <thead>
-                            <th>Email</th>
+                            <th>Envoyer par</th>
+                            <th>Email Inviter</th>
                             <th>Statut</th>
                         </thead>
                         <tbody>
                             @foreach($invitations_envoyees as $item_envoyee)
                                 <tr>
+                                    <td>{{$item_envoyee->menbre_inviteur->nom_complet}}</td>
                                     <td>{{$item_envoyee->email_inviter}}</td>
                                     <td>
                                         @php
@@ -272,6 +275,39 @@
             </div>
         </div>
     </div>
+
+
+    {{-- Liste des transactions sur la tontine --}}
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card" >
+            <div class="card">
+                <div class="card-header">
+                    <hr/>
+                    <h4 class="text-center text-uppercase"> Toutes Les Transactions </h4>
+                    <hr/>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped " id="datatable">
+                        <thead>
+                        <th>Menbre</th>
+                        <th>Date paiement</th>
+                        <th>Tour de</th>
+                        </thead>
+                        <tbody>
+                        @foreach($transactions_de_la_tontine as $item_transaction)
+                            <tr>
+                                <td>{{$item_transaction->cotiseur->nom_complet}}</td>
+                                <td>{{date("d/m/Y H:m",strtotime($item_ayant_cotiser->updated_at))}}</td>
+                                <td>{{$item_transaction->menbre_qui_prend->nom_complet}}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
 @endsection
 
 @php
@@ -287,3 +323,29 @@
         return $resultat;
     }
 @endphp
+
+
+@section('script_completmentaire')
+    <script>
+        window.onload = function() {
+            fermer_tous_les_garde_fou();
+        };
+
+        function deplier_garde_fou(id){
+            var le_garde_fou = document.getElementById(id);
+            if(le_garde_fou.style.display =='none'){
+                le_garde_fou.style.display = '';
+            }else{
+                le_garde_fou.style.display = 'none';
+            }
+
+        }
+
+        function fermer_tous_les_garde_fou(){
+            var tous_les_garde_fou = document.querySelectorAll('.garde_fou');
+            for(var i=0; i<tous_les_garde_fou.length; i++){
+                tous_les_garde_fou[i].style.display = "none";
+            }
+        }
+    </script>
+@endsection

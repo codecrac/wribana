@@ -1,5 +1,5 @@
 
-@extends('espace_menbre.base_espace_menbre')
+@extends('administrateur.base_administrateur')
 @section('style_completmentaire')
     <style>
         .tr_bordered{
@@ -26,7 +26,6 @@
                     <hr/>
                     <h3 class="text-center">
                         Mes Waricrowds ( {{sizeof($liste_waricrowd)}} )
-                        <a class="btn btn-success" href="{{route('espace_menbre.creer_un_waricrowd')}}">Creer un waricrowd</a>
                     </h3>
                     <hr/>
 
@@ -34,7 +33,7 @@
                 <br/><br/>
                 <div class="row">
                     <div class="table-responsive">
-                        <table width="100%" class="table" border="1">
+                        <table width="100%" class="table dataTable" border="1">
                             <thead class="text-center">
                             <th class="tr_bordered">Titre</th>
                             <th class="tr_bordered">Montant Objectif</th>
@@ -63,7 +62,6 @@
                                         <span class="badge badge-{{$couleur}}">{{$pourcentage}} %</span>
                                     </td>
                                     <td class="tr_bordered text-danger">
-                                    <td class="tr_bordered text-danger">
                                         @php
                                             if($item->etat == 'valider'){
                                                 $couleur= "success";
@@ -77,10 +75,9 @@
                                             {{$item->etat}}
                                         </b>
                                     </td>
-                                    </td>
 
                                     <td class="tr_bordered" style="padding: 8px">
-                                        <a href="{{route('espace_menbre.details_waricrowd',[$item['id']])}}" class="btn btn-primary">Details</a>
+                                        <a href="{{route('admin.details_waricrowd',[$item['id']])}}" class="btn btn-primary">Details</a>
                                     </td>
                                 </tr>
                             @endforeach

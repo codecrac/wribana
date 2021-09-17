@@ -10,4 +10,8 @@ class TransactionWaricrowd extends Model
     use HasFactory;
     protected $guarded = [];
 
+    public function souteneur(){
+        return $this->belongsTo(Menbre::class,'id_menbre');
+    }
+
 }

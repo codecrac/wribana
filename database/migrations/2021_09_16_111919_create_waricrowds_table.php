@@ -23,6 +23,7 @@ class CreateWaricrowdsTable extends Migration
             $table->string("lien_pitch_video")->nullable();
             $table->string("image_illustration")->default('images/waricrowd/statiques/crowfunding.png');
             $table->enum("etat",['attente','valider','recaler','terminer','annuler']);
+            $table->string("motif_intervention_admin")->nullable();
             $table->timestamps();
         });
     }

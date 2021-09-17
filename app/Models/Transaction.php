@@ -13,4 +13,8 @@ class Transaction extends Model
     public function cotiseur(){
         return $this->belongsTo(Menbre::class,'id_menbre');
     }
+
+    public function menbre_qui_prend(){
+        return $this->belongsTo(Menbre::class,'id_menbre_qui_prend')->orderBy('id','desc');
+    }
 }
