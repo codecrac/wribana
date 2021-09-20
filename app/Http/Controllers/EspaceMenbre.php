@@ -211,20 +211,24 @@ class EspaceMenbre extends Controller
         #envoi d'email ici
 
 
-        $adresse =  "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . "connexion-menbre";
+        $adresse =  "https://" . $_SERVER['SERVER_NAME'] . "connexion-menbre";
 
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        $nom_complet = $le_menbre->nom_complet;
 
         $la_tontine = Tontine::find($id_tontine);
         $titre = $la_tontine->titre;
         $liste_emails = explode(',',$donnees_formulaire['liste_emails']);
+        $emails_to_string = implode(",",$liste_emails);
 //        dd($liste_emails);
-        mail($liste_emails,
+        mail($emails_to_string,
             "REJOINS LA TONTINE $titre",
             "
-                        Bonjour, le menbre de waribana vous invite a rejoindre la tontine $titre,
-                        <a href='$adresse'>Connectez vous</a> pour repondre a son invitation;
+                        Bonjour, le menbre $nom_complet de waribana vous invite a rejoindre la tontine <<$titre>>,
+                        Connecte ou inscris-toi pour repondre a son invitation;<br/>
+                        $adresse
             "
         );
 
