@@ -43,6 +43,7 @@
                                 $couleur = "danger";
                             }
                         @endphp
+                        <li>Categorie : {{$le_crowd->categorie->titre}} </li>
                         <li>Statut : <mark class="badge badge-{{$couleur}}">{{$le_crowd->etat}}</mark> </li>
                         <li>Crée par : {{$le_crowd->createur->nom_complet}}</li>
                         <li>Montant objectif : {{number_format($le_crowd->montant_objectif,0,',',' ')}} F </li>

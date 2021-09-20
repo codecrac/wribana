@@ -2,7 +2,50 @@
 
 @section('content')
 
+    <div class="col-auto">
+        <div class="common-heading mb-30">
+							<span class="tagline">
+								<i class="fas fa-plus"></i> +
+								<span class="heading-shadow-text">Soutenez ou faites financer votre projet </span>
+							</span>
+            <h2 class="title text-center">WARICROWDS</h2>
+        </div>
+    </div>
 
+    <div class="container">
+        <form>
+            <div class="row">
+             <div class="col-md-3 text-center">
+                <h3>Categorie</h3>
+                <select name="id_categorie">
+                    @if($la_categorie !=null)
+                        <option value="{{$la_categorie->id}}">{{$la_categorie->titre}}</option>
+                    @else
+                        <option value>(selectionner)</option>
+                        <option value="0">Tout</option>
+                    @endif
+                    @foreach($liste_categorie as $item)
+                        <option value="{{$item['id']}}">{{$item->titre}}</option>
+                    @endforeach
+                </select>
+                 <br/>
+                 <button type="submit" class="btn btn-dark">Trier</button>
+             </div>
+            {{--<div class="col-md-3">
+                <h3>date de publication</h3>
+                <input type="date" name="date_publication" value="{{$date_publication}}" />
+            </div>
+            <div class="col-md-3">
+                <h3>Nom du projet</h3>
+                <input type="text" name="mot_cle" value="{{$mot_cle}}" />
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-dark">Trier</button>
+            </div>
+                --}}
+         </div>
+        </form>
+    </div>
     <!--====== Project Area Start ======-->
     <section class="project-section section-gap-extra-bottom primary-soft-bg">
         <div class="container">
@@ -14,14 +57,14 @@
                         <div class="thumb" style="background-image: url({{$item_crowd['image_illustration']}});"></div>
                         <div class="content">
                             <div class="cats">
-                                <a href="{{route('details_projet',[$item_crowd->id])}}">{{$item_crowd['titre']}}</a>
+                                <a href="{{route('details_projet',[$item_crowd->id])}}">{{$item_crowd->categorie->titre}}</a>
                             </div>
                        {{--     <div class="author">
                                 <img src="assets/img/author-thumbs/01.jpg" alt="Thumb">
                                 <a href="#">James W. Barrows</a>
                             </div>--}}
                             <h5>
-                                <a href="{{route('details_projet',[$item_crowd->id])}}">{{Str::limit($item_crowd['description_courte'], $limit = 120, $end = '...')}}</a>
+                                <a href="{{route('details_projet',[$item_crowd->id])}}">{{Str::limit($item_crowd['titre'], $limit = 120, $end = '...')}}</a>
                             </h5>
                             <div class="project-stats">
                                 @php

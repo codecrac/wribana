@@ -3,6 +3,7 @@
 
 @section('content')
 
+
     <div class="row">
         <div class=" col-md-8 grid-margin stretch-card">
             <div class="card">
@@ -14,6 +15,16 @@
                         Lancer une collecte de fond pour realiser mon projet
                     </p>
                     <form class="forms-sample" method="post" action="{{route('espace_menbre.post_editer_crowd',[$le_crowd->id])}}" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="exampleInputUsername1">Categories</label>
+                            <select required class="form-control" name="id_categorie_waricrowd">
+                                <option value="{{$le_crowd->id_categorie}}">{{$le_crowd->categorie->titre}}</option>
+                                @foreach($liste_categorie_waricrowd as $item_categorie)
+                                    <option value="{{$item_categorie['id']}}">{{$item_categorie['titre']}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="form-group">
                             <label for="exampleInputUsername1">Titre *</label>
                             <input required type="text" class="form-control" name="titre" value="{{$le_crowd->titre}}" placeholder="Tontine Elegante">

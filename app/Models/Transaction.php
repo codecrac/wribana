@@ -10,6 +10,10 @@ class Transaction extends Model
     use HasFactory;
     protected $guarded = [];
 
+    public function tontine(){
+        return $this->belongsTo(Tontine::class,'id_tontine');
+    }
+
     public function cotiseur(){
         return $this->belongsTo(Menbre::class,'id_menbre');
     }

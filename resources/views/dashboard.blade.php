@@ -13,17 +13,6 @@
                     <div class="d-flex">
                     </div>
                 </div>
-                {{--<div class="d-flex justify-content-between align-items-end flex-wrap">
-                    <a href="{{route('espace_menbre.ajouter_tontine')}}" type="button" class="btn btn-primary mr-3 mt-2 mt-xl-0">
-                        <i class="mdi mdi-plus text-muted"></i>
-                        Creer un tontine
-                    </a>
-
-                    <a href="{{route('espace_menbre.creer_un_waricrowd')}}" class="btn btn-success mt-2 mt-xl-0">
-                        <i class="mdi mdi-plus text-muted"></i>
-                        Lancer une collecte pour mon projet
-                    </a>
-                </div>--}}
             </div>
         </div>
     </div>
@@ -86,7 +75,32 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <hr/>
+                        <h4>STATISTIQUE DE FREQUENTATION</h4>
+                    <hr/>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered text-center">
+                        <thead>
+                            <th>Periode</th>
+                            <th>Visiteurs</th>
+                        </thead>
+                        <tbody>
+                            @foreach($statistique_frequentation as $item)
+                            <tr>
+                                <td>{{$item['mois_annee']}}</td>
+                                <td>{{$item['visiteur']}}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-body text-center">
                     <img src="/assets/images/logo-waribana.png" />

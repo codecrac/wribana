@@ -21,19 +21,19 @@
                             <form class="form-group" method="post" action="{{route('post_inscription_menbre')}}">
                                 <div class="form-group">
                                     <label>Nom complet *</label>
-                                        <input required class="form-control" placeholder="Email ou Telephone" type="text" name="nom_complet" />
+                                        <input required class="form-control" placeholder="LADDE Yves" type="text" name="nom_complet" />
                                     <br/>
                                     <label>Telephone *</label>
-                                        <input required class="form-control" placeholder="Email ou Telephone" type="number" name="telephone" />
+                                        <input required class="form-control" placeholder="0708080809" type="number" name="telephone" />
                                     <br/>
                                     <label>Email</label>
-                                        <input class="form-control" placeholder="Email ou Telephone" type="text" name="email" />
+                                        <input class="form-control" placeholder="monadresse@gmail.com" type="text" name="email" />
                                     <br/>
                                     <label>Mot de passe *</label>
                                         <input required class="form-control" placeholder="Mot de passe" type="password" name="mot_de_passe" />
                                     <br/>
                                     <label>Confirmation du mot de passe *</label>
-                                        <input required class="form-control" placeholder="Mot de passe" type="password" name="confirmer_mot_de_passe" />
+                                        <input required class="form-control" placeholder="Confirmer le mot de passe" type="password" name="confirmer_mot_de_passe" />
                                     <br/>
 
                                     @csrf

@@ -15,6 +15,7 @@ class CreateWaricrowdsTable extends Migration
     {
         Schema::create('waricrowds', function (Blueprint $table) {
             $table->id();
+            $table->string("id_categorie"); //proprietaire
             $table->foreignId("id_menbre"); //proprietaire
             $table->string("titre");
             $table->string("description_courte");

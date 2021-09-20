@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CaisseWaricrowd;
+use App\Models\CategorieWaricrowd;
 use App\Models\Menbre;
 use App\Models\TransactionWaricrowd;
 use App\Models\Waricrowd;
@@ -25,15 +26,18 @@ class EspaceMenbreWaricrowdController extends Controller
     }
 
     public function creer_un_waricrowd(){
-        return view('espace_menbre/waricrowd/ajouter');
+        $liste_categorie_waricrowd = CategorieWaricrowd::all();
+        return view('espace_menbre/waricrowd/ajouter',compact('liste_categorie_waricrowd'));
     }
     public function editer_crowd($id_crowd){
         $le_crowd = Waricrowd::find($id_crowd);
-        return view('espace_menbre/waricrowd/editer',compact('le_crowd'));
+        $liste_categorie_waricrowd = CategorieWaricrowd::all();
+        return view('espace_menbre/waricrowd/editer',compact('le_crowd','liste_categorie_waricrowd'));
     }
 
     public function enregistrer_un_waricrowd(Request $request){
         $donnees_formulaire = $request->all();
+        $id_categorie_waricrowd = $donnees_formulaire['id_categorie_waricrowd'];
         $titre = $donnees_formulaire['titre'];
         $description_courte = $donnees_formulaire['description_courte'];
         $description_complete = $donnees_formulaire['description_complete'];
@@ -44,6 +48,7 @@ class EspaceMenbreWaricrowdController extends Controller
         $id_menbre_connecter = $la_session['id'];
 
         $le_crowd = new Waricrowd();
+        $le_crowd->id_categorie = $id_categorie_waricrowd;
         $le_crowd->id_menbre = $id_menbre_connecter;
         $le_crowd->titre = $titre;
         $le_crowd->description_courte = $description_courte;
@@ -84,6 +89,7 @@ class EspaceMenbreWaricrowdController extends Controller
     public function modifier_un_waricrowd(Request $request,$id_crowd){
         $donnees_formulaire = $request->all();
 
+        $id_categorie_waricrowd = $donnees_formulaire['id_categorie_waricrowd'];
         $titre = $donnees_formulaire['titre'];
         $description_courte = $donnees_formulaire['description_courte'];
         $description_complete = $donnees_formulaire['description_complete'];
@@ -94,12 +100,15 @@ class EspaceMenbreWaricrowdController extends Controller
         $id_menbre_connecter = $la_session['id'];
 
         $le_crowd = Waricrowd::find($id_crowd);
+        $le_crowd->id_categorie = $id_categorie_waricrowd;
         $le_crowd->id_menbre = $id_menbre_connecter;
         $le_crowd->titre = $titre;
         $le_crowd->description_courte = $description_courte;
         $le_crowd->description_complete = $description_complete;
         $le_crowd->montant_objectif = $montant_objectif;
-        $le_crowd->lien_pitch_video = $pitch_video;
+        if(!empty($pitch_video)){
+            $le_crowd->lien_pitch_video = $pitch_video;
+        }
 
         $nom_image_illustration=null;
         if($request->hasFile('image_illustration')){

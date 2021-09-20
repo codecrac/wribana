@@ -131,16 +131,19 @@
                                 @endif
                             </b>
                         </p>
-                        <p>Date limite : <b class="badge badge-warning"> {{$la_tontine->caisse->prochaine_date_encaissement}} </b> </p>
 {{--                        <p>Montant Total Objectif : <span class="marquer_presence text-dark">{{number_format( ($la_tontine->montant * $la_tontine->nombre_participant),0,',',' ')}} F</span> </p>--}}
                         <p>Montant à cotiser : <b> {{number_format($la_tontine->montant,0,',',' ')}} F</b> </p>
+                        @if($la_tontine->etat =='ouverte')
+                        <p>Date limite : <b class="badge badge-warning"> {{$la_tontine->caisse->prochaine_date_encaissement}} </b> </p>
+
                         <p>
-                            Montant en caisse : <span class="marquer_presence text-info">
-                                {{number_format($la_tontine->caisse->montant,0,',',' ')}} / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} F
-                            </span>
-                        </p>
-                        <p> de : <small> de {{sizeof($liste_ayant_cotiser)}} personne(s)/{{sizeof($la_tontine->participants)}} <a href="#liste_cotiseur">Voir</a> </small> </p>
-                    <br/>
+                                    Montant en caisse : <span class="marquer_presence text-info">
+                                        {{number_format($la_tontine->caisse->montant,0,',',' ')}} / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} F
+                                    </span>
+                                </p>
+                                <p> de : <small> de {{sizeof($liste_ayant_cotiser)}} personne(s)/{{sizeof($la_tontine->participants)}} <a href="#liste_cotiseur">Voir</a> </small> </p>
+                            <br/>
+                        @endif
                 </div>
             </div>
         </div>
@@ -207,13 +210,14 @@
         </div>
     </div>
 
+    @if($la_tontine->etat =='ouverte')
 {{-- Liste des personnes ayants cotisee et statut invitation envoye --}}
     <div class="row">
         <div class="col-md-6 grid-margin stretch-card" id="liste_cotiseur">
                 <div class="card">
                     <div class="card-header">
                         <hr/>
-                            <h4 class="text-center text-uppercase"> Personnes ayant payer leur cotisation </h4>
+                            <h4 class="text-center text-uppercase"> Personnes ayant payer leur cotisation pour le tour courant </h4>
                         <hr/>
                     </div>
                     <div class="card-body">
@@ -275,10 +279,11 @@
             </div>
         </div>
     </div>
+    @endif
 
-
-    {{-- Liste des transactions sur la tontine --}}
-    <div class="row">
+    @if($la_tontine->caisse !=null)
+        {{-- Liste des transactions sur la tontine --}}
+        <div class="row">
         <div class="col-md-12 grid-margin stretch-card" >
             <div class="card">
                 <div class="card-header">
@@ -297,7 +302,7 @@
                         @foreach($transactions_de_la_tontine as $item_transaction)
                             <tr>
                                 <td>{{$item_transaction->cotiseur->nom_complet}}</td>
-                                <td>{{date("d/m/Y H:m",strtotime($item_ayant_cotiser->updated_at))}}</td>
+                                <td>{{date("d/m/Y H:m",strtotime($item_transaction->updated_at))}}</td>
                                 <td>{{$item_transaction->menbre_qui_prend->nom_complet}}</td>
                             </tr>
                         @endforeach
@@ -308,6 +313,8 @@
         </div>
 
     </div>
+    @endif
+
 @endsection
 
 @php

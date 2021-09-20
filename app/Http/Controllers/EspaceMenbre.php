@@ -172,7 +172,7 @@ class EspaceMenbre extends Controller
     public function ouvrir_tontine($id_tontine){
         $la_tontine = Tontine::find($id_tontine);
         $la_tontine->etat = 'ouverte';
-        $la_tontine->save();
+//        $la_tontine->save();
 
         //la date prochaine on ajoute le nombre de jour definit dans la frequence de pot a partir d'aujourd'hui
         $aujourdhui = new \DateTime("now", new \DateTimeZone("UTC"));
@@ -210,11 +210,23 @@ class EspaceMenbre extends Controller
 
         #envoi d'email ici
 
+
+        $adresse =  "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . "connexion-menbre";
+
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
 
+        $la_tontine = Tontine::find($id_tontine);
+        $titre = $la_tontine->titre;
         $liste_emails = explode(',',$donnees_formulaire['liste_emails']);
 //        dd($liste_emails);
+        mail($liste_emails,
+            "REJOINS LA TONTINE $titre",
+            "
+                        Bonjour, le menbre de waribana vous invite a rejoindre la tontine $titre,
+                        <a href='$adresse'>Connectez vous</a> pour repondre a son invitation;
+            "
+        );
 
         foreach ($liste_emails as $mail_item){
             $invitation_existante = Invitation::where('email_inviter','=',$mail_item)->where('id_tontine','=',$id_tontine)->first();

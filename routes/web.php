@@ -3,6 +3,7 @@
 use App\Http\Controllers\EspaceMenbre;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\MenbreController;
+use App\Models\StatistiqueFrequentation;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -75,7 +76,10 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 
     $nombre_menbre= \App\Models\Menbre::count();
     $nombre_menbre_banni= \App\Models\Menbre::where('etat','=','suspendu')->count();
-    return view('dashboard',compact('nombre_tontine','nombre_waricrowd','nombre_menbre','nombre_waricrowd_attente','nombre_menbre_banni'));
+
+    $statistique_frequentation = StatistiqueFrequentation::orderBy('id','desc')->limit(5)->get();
+    return view('dashboard',compact('nombre_tontine','nombre_waricrowd',
+        'nombre_menbre','nombre_waricrowd_attente','nombre_menbre_banni','statistique_frequentation'));
 })->name('dashboard');
 
 Route::prefix('administrateur')->middleware(['auth:sanctum', 'verified'])->group(function (){

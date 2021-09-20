@@ -11,6 +11,10 @@ class Waricrowd extends Model
     protected $guarded = [];
 
 
+    public function categorie(){
+        return $this->belongsTo(CategorieWaricrowd::class,'id_categorie');
+    }
+
     public function caisse(){
         return $this->hasOne(CaisseWaricrowd::class,'id_waricrowd');
     }

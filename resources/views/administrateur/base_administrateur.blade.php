@@ -89,12 +89,6 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <ul class="nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{route('accueil')}}">
-                        <i class="mdi mdi-home-outline menu-icon"></i>
-                        <span class="menu-title">Retour à l'accueil</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="{{route('dashboard')}}">
                         <i class="mdi mdi-home menu-icon"></i>
                         <span class="menu-title">Tableau de bord</span>
@@ -104,6 +98,12 @@
                     <a class="nav-link" href="{{route('admin.les_tontines')}}">
                         <i class="mdi mdi-arrow-right-circle menu-icon"></i>
                         <span class="menu-title">Gestion Tontines</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('admin.ajouter_categorie_waricrowd')}}">
+                        <i class="mdi mdi-arrow-right-circle menu-icon"></i>
+                        <span class="menu-title">Categorie Waricrowd</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -122,15 +122,27 @@
                     <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
                        aria-controls="ui-basic">
                         <i class="mdi mdi-account-multiple menu-icon"></i>
-                        <span class="menu-title">Administrateur</span>
+                        <span class="menu-title">Historique Transactions</span>
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="collapse" id="ui-basic">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.liste_tontine')}}"> Nouveau  </a> </li>
-                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.ajouter_tontine')}}">Liste</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('admin.historique_transactions_tontine')}}"> Tontines  </a> </li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('admin.historique_transactions_waricrowd')}}"> Waricrowd </a></li>
                         </ul>
                     </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('admin.definir_contenu_notifications')}}">
+                        <i class="mdi mdi-home-outline menu-icon"></i>
+                        <span class="menu-title">Contenu Notifications</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('accueil')}}">
+                        <i class="mdi mdi-home-outline menu-icon"></i>
+                        <span class="menu-title">Retour à l'accueil</span>
+                    </a>
                 </li>
             </ul>
         </nav>

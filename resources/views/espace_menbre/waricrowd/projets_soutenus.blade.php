@@ -63,7 +63,7 @@
                                         <span class="badge badge-{{$couleur}}">{{$pourcentage}} %</span>
                                     </td>
                                     <td class="tr_bordered text-danger">
-                                        <b class="badge badge-{{$item->etat=='valider' ? 'success' : $item->etat=='recaler' ? 'danger' : "dark"}}">
+                                        <b class="badge badge-{{($item->etat=='valider' ? 'success' : $item->etat=='recaler') ? 'danger' : "dark"}}">
                                             {{$item->etat}}
                                         </b>
                                     </td>

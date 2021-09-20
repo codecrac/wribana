@@ -62,17 +62,17 @@
 
                         <div class="form-group">
                             <label>Nom complet *</label>
-                            <input required class="form-control" value="{{$le_menbre->nom_complet}}" placeholder="Email ou Telephone" type="text" name="nom_complet" />
+                            <input required class="form-control" value="{{$le_menbre->nom_complet}}" placeholder="LADDE Yves" type="text" name="nom_complet" />
                             <br/>
                         </div>
                         <div class="form-group">
                             <label>Telephone *</label>
-                            <input required class="form-control" value="{{$le_menbre->telephone}}" placeholder="Email ou Telephone" type="number" name="telephone" />
+                            <input required class="form-control" value="{{$le_menbre->telephone}}" placeholder="monadresse@gmail.com" type="number" name="telephone" />
                             <br/>
                         </div>
                         <div class="form-group">
                             <label>Email</label>
-                            <input class="form-control" value="{{$le_menbre->email}}" placeholder="Email ou Telephone" type="text" name="email" />
+                            <input class="form-control" value="{{$le_menbre->email}}" placeholder="0708080809" type="text" name="email" />
                             <br/>
                         </div>
                         <div class="form-group">
@@ -82,7 +82,7 @@
                         </div>
                         <div class="form-group">
                             <label>Confirmation du mot de passe *</label>
-                            <input  class="form-control" placeholder="Mot de passe" type="password" name="confirmer_mot_de_passe" />
+                            <input  class="form-control" placeholder="Confirmer le mot de passe" type="password" name="confirmer_mot_de_passe" />
                             <br/>
                         </div>
                         <h3 class="text-center">

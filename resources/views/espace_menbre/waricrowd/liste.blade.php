@@ -63,7 +63,6 @@
                                         <span class="badge badge-{{$couleur}}">{{$pourcentage}} %</span>
                                     </td>
                                     <td class="tr_bordered text-danger">
-                                    <td class="tr_bordered text-danger">
                                         @php
                                             if($item->etat == 'valider'){
                                                 $couleur= "success";
@@ -76,7 +75,6 @@
                                         <b class="badge badge-{{$couleur}}">
                                             {{$item->etat}}
                                         </b>
-                                    </td>
                                     </td>
 
                                     <td class="tr_bordered" style="padding: 8px">
