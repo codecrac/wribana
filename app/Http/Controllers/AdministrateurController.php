@@ -107,7 +107,7 @@ class AdministrateurController extends Controller
         $donnees_formulaire = $request->all();
         $titre = $donnees_formulaire['titre'];
         $la_categorie_existe = CategorieWaricrowd::where('titre','=',$titre)->first();
-        if($la_categorie_existe!null){
+        if($la_categorie_existe==null){
             $la_categorie = new CategorieWaricrowd();
             $la_categorie->slug = $titre;
             $la_categorie->titre = $titre;

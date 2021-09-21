@@ -33,6 +33,11 @@ Route::post('/inscription-menbre', [MenbreController::class,'enregistrer_un_menb
 Route::post('/connexion-menbre',  [MenbreController::class,'connexion'])->name('post_connexion_menbre');
 
 
+Route::get('/espace-menbre/confirmation',  [MenbreController::class,'confirmer_compte_menbre'])->name('espace_menbre.confirmer_compte_menbre');
+Route::post('/espace-menbre/confirmation',  [MenbreController::class,'post_confirmer_compte_menbre'])->name('espace_menbre.post_confirmer_compte_menbre');
+
+Route::get('/espace-menbre/entrer-code-de-confirmation',  [MenbreController::class,'entrer_code_confirmation'])->name('espace_menbre.entrer_code_confirmation');
+Route::post('/espace-menbre/entrer-code-de-confirmation',  [MenbreController::class,'post_entrer_code_confirmation'])->name('post_espace_menbre.entrer_code_confirmation');
 #===================================================================
 Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function (){
     Route::get("/",[EspaceMenbre::class,'accueil'])->name('espace_menbre.accueil');
