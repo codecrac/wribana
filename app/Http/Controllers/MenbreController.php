@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CompteMenbre;
 use App\Models\Menbre;
+use App\Models\SmsContenuNotification;
 use Illuminate\Http\Request;
 
 class MenbreController extends Controller
@@ -157,7 +158,9 @@ class MenbreController extends Controller
                 $le_numero = "225$telephone";
                 $code = $le_menbre->code_de_confirmation;
 //                dd($code);
-                $le_message = "Votre code de cobnfirmation est $code";
+                $contenu_notification = SmsContenuNotification::first();
+                $message_confirmation = $contenu_notification['confirmation_compte'];
+                $le_message = str_replace('$code$',$code,$message_confirmation);
 //                dd($le_numero);
                 SmsController::sms_info_bip($le_numero, $le_message);
                 return redirect()->route('espace_menbre.entrer_code_confirmation');

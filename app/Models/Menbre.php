@@ -12,7 +12,7 @@ class Menbre extends Model
 
     public function tontines()
     {
-        return $this->belongsToMany(Tontine::class);
+        return $this->belongsToMany(Tontine::class)->orderBy('id','desc');
     }
 
     public function compte(){

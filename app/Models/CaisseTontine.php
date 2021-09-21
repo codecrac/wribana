@@ -12,6 +12,9 @@ class CaisseTontine extends Model
 
     public $primaryKey = 'id_tontine';
 
+    public function tontine(){
+        return $this->belongsTo(Tontine::class,'id_tontine');
+    }
     public function menbre_qui_prend(){
         return $this->belongsTo(Menbre::class,'id_menbre_qui_prend');
     }

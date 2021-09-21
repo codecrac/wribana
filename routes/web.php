@@ -69,6 +69,7 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
     //    ===================WARICROWD======================
     include 'waricrowd_route.php';
 });
+Route::get("/notifier-les-retards-de-paiement-sur-tontine",[\App\Http\Controllers\SmsController::class,'notifier_retard_de_paiement_tontine'])->name('tontine.notifier_retard_de_paiement_tontine');
 
 
 //    ===================Administrateur======================

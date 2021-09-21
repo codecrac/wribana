@@ -172,7 +172,7 @@ class EspaceMenbre extends Controller
     public function ouvrir_tontine($id_tontine){
         $la_tontine = Tontine::find($id_tontine);
         $la_tontine->etat = 'ouverte';
-//        $la_tontine->save();
+        $la_tontine->save();
 
         //la date prochaine on ajoute le nombre de jour definit dans la frequence de pot a partir d'aujourd'hui
         $aujourdhui = new \DateTime("now", new \DateTimeZone("UTC"));
@@ -310,6 +310,7 @@ class EspaceMenbre extends Controller
 
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
+        $le_menbre = Menbre::find($id_menbre_connecter);
         $la_tontine = Tontine::find($id_tontine);
         $montant = $la_tontine->montant;
 
@@ -330,6 +331,12 @@ class EspaceMenbre extends Controller
             if($la_caisse_de_la_tontine->save()){
                 $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
             }
+
+            $maintenant = date('d/m/Y H:i', strtotime(now()));
+//            dd($maintenant);
+            $liste_participants = $la_tontine->participants;
+//            dd($liste_participants);
+            $this->notifier_paiement_cotisation($liste_participants,$le_menbre->nom_complet,$montant,$la_tontine->titre,$maintenant);
 
 //===================Montant atteinds
             if($nouveau_montant == $la_caisse_de_la_tontine->montant_objectif){
@@ -485,6 +492,18 @@ class EspaceMenbre extends Controller
         }else{
             return false;
         }
+    }
+
+    private function notifier_paiement_cotisation($liste_participants,$nom_cotiseur,$montant_cotisation,$titre_de_la_tontine,$date_paiement){
+        foreach($liste_participants as $item_participant){
+            $numero = "225$item_participant->telephone";
+//            dd($montant_cotisation);
+//            $montant_cotisation = number_format($montant_cotisation,0,',',' ');
+            $message_sms = "Paiement de $montant_cotisation F par $nom_cotiseur sur $titre_de_la_tontine le $date_paiement ";
+//            dd($message_sms);
+            SmsController::sms_info_bip("$numero",$message_sms);
+        }
+//        die();
     }
 
 
