@@ -67,6 +67,8 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
 
     Route::post("/payer-ma-cotisation/{id_tontine}",[EspaceMenbre::class,'paiement_cotisation'])->name('espace_menbre.paiement_cotisation');
 
+
+    Route::get("/recu_de_paiement",[EspaceMenbre::class,'recu_de_paiement'])->name('espace_menbre.recu_de_paiement');
     //    ===================WARICROWD======================
     include 'waricrowd_route.php';
 });

@@ -203,7 +203,7 @@ class EspaceMenbre extends Controller
         return redirect()->back()->with('notification',$notification);
     }
 
-//    =============================INVITATIONA==============================
+//    =============================INVITATIONS==============================
 
     public function inviter_des_amis($id_tontine){
         $la_tontine = Tontine::find($id_tontine);
@@ -451,7 +451,11 @@ class EspaceMenbre extends Controller
         }
         return redirect()->back()->with('notification',$notification);
     }
-
+    public function recu_de_paiement(){
+        //pour tontine
+        $infos_pour_recu = ['nom_complet'=>'sh sdfds','type_section'=>'tontine','titre_section'=>'tontine ice','nom_menbre_qui_prend'=>'djsdh dskhdsjk'];
+        return view('espace_menbre/recu_paiement',compact('infos_pour_recu'));
+    }
 //====================== PROFIL=======================
     public function profil($id_menbre){
         $le_menbre = Menbre::find($id_menbre);
