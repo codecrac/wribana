@@ -5,6 +5,8 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\MenbreController;
 use App\Models\StatistiqueFrequentation;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\File;
+
 
 /*
 |********* |*********|********* Routes  Vitrine |*********|*********|*********
@@ -31,6 +33,23 @@ Route::get('/inscription-menbre', [MenbreController::class,'inscription_menbre']
 
 Route::post('/inscription-menbre', [MenbreController::class,'enregistrer_un_menbre'])->name('post_inscription_menbre');
 Route::post('/connexion-menbre',  [MenbreController::class,'connexion'])->name('post_connexion_menbre');
+
+Route::get('/linkstorage', function () {
+    Artisan::call('storage:link');
+});
+
+Route::get('/storage/recu/{filename}', function ($filename)
+{
+    $path = storage_path('public/' . "recu/$filename");
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    $response = Response::make($file, 200);
+    $response->header("Content-Type", $type);
+
+    return $response;
+})->name('get_recu');
 
 
 Route::get('/espace-menbre/confirmation',  [MenbreController::class,'confirmer_compte_menbre'])->name('espace_menbre.confirmer_compte_menbre');
@@ -68,7 +87,7 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
     Route::post("/payer-ma-cotisation/{id_tontine}",[EspaceMenbre::class,'paiement_cotisation'])->name('espace_menbre.paiement_cotisation');
 
 
-    Route::get("/recu_de_paiement",[EspaceMenbre::class,'recu_de_paiement'])->name('espace_menbre.recu_de_paiement');
+    Route::get("/recu_de_paiement_tontine",[EspaceMenbre::class,'recu_de_paiement_tontine'])->name('espace_menbre.recu_de_paiement');
     //    ===================WARICROWD======================
     include 'waricrowd_route.php';
 });

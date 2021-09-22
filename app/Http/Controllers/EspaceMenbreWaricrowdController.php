@@ -11,6 +11,7 @@ use App\Models\WaricrowdMenbre;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class EspaceMenbreWaricrowdController extends Controller
 {
@@ -198,7 +199,9 @@ class EspaceMenbreWaricrowdController extends Controller
 
             $le_menbre = Menbre::find($id_menbre_connecter);
             $le_crowd = Waricrowd::find($id_crowd);
-            $infos_pour_recu = ['nom_complet'=>$le_menbre->nom_complet,
+            $infos_pour_recu = [
+                'nom_complet'=>$le_menbre->nom_complet,
+                'email_souteneur'=>$le_menbre->email,
                 'type_section'=>'tontine',
                 'montant'=>$montant_soutien,
                 'titre_waricrowd'=>$le_crowd->titre,
@@ -214,8 +217,14 @@ class EspaceMenbreWaricrowdController extends Controller
 
     public function recu_de_paiement_waricrowd($infos_pour_recu){
         $pdf = PDF::loadView('espace_menbre/recu_paiement_waricrowd',compact('infos_pour_recu'));
-        $nom = time();
-        Storage::put("public/recu/$nom.pdf", $pdf->output());
+        $nom_fichier = time().'.pdf';
+        Storage::put("public/recu/waricrowd/$nom_fichier", $pdf->output());
+
+        $email = $infos_pour_recu['email_souteneur'];
+        $message = "Felicitations, votre paiement a bien ete effectue, ci-joint votre recu de paiement.";
+        $chemin_fichier = Storage::disk('public')->path("recu/waricrowd/".$nom_fichier);
+        $this->envoyer_email_avec_fichier($email,"RECU DE PAIEMENT WARICROWD",$message,$chemin_fichier,$nom_fichier);
+
 //        return $pdf->stream();
     }
 
@@ -228,5 +237,21 @@ class EspaceMenbreWaricrowdController extends Controller
         $projets_soutenus = $le_menbre->projets_soutenus;
 //        dd($projets_soutenus);
         return view('espace_menbre/waricrowd/projets_soutenus',compact('projets_soutenus'));
+    }
+
+
+
+    //===============================================UTILITAIRE
+    public static function envoyer_email_avec_fichier($destinaires,$sujet,$message,$chemin_fichier,$nom_fichier){
+        $email = new PHPMailer();
+        $email->SetFrom('no-reply@waribana.com', 'WARIBANA'); //Name is optional
+        $email->Subject   = $sujet;
+        $email->Body      = $message;
+        $email->AddAddress( $destinaires );
+
+        // dd($chemin_fichier);
+        $email->AddAttachment($chemin_fichier, "$nom_fichier");
+
+        return $email->Send();
     }
 }

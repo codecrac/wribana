@@ -301,9 +301,9 @@ class EspaceMenbre extends Controller
 
             $la_tontine = $linvitation->tontine;
             if(sizeof($la_tontine->participants) == $la_tontine->nombre_participant){
-                 Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
-                 $la_tontine->etat = 'prete';
-                 $la_tontine->save();
+                Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
+                $la_tontine->etat = 'prete';
+                $la_tontine->save();
             }
         }else{
             Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
@@ -399,13 +399,16 @@ class EspaceMenbre extends Controller
 //            dd($liste_participants);
             $this->notifier_paiement_cotisation($liste_participants,$le_menbre->nom_complet,$montant,$la_tontine->titre,$maintenant);
 
-            $infos_pour_recu = ['nom_complet'=>$le_menbre->nom_complet,
-                'type_section'=>'tontine',
-                'montant'=>$la_tontine->montant,
-                'titre_tontine'=>$la_tontine->titre,
-                'nom_menbre_qui_prend'=>$la_tontine->caisse->menbre_qui_prend->nom_complet];
-            $this->recu_de_paiement_tontine($infos_pour_recu);
+            if($le_menbre->email !=null){
+                $infos_pour_recu = ['nom_complet'=>$le_menbre->nom_complet,
+                    "email_destinataire"=>$le_menbre->email,
+                    'type_section'=>'tontine',
+                    'montant'=>$la_tontine->montant,
+                    'titre_tontine'=>$la_tontine->titre,
+                    'nom_menbre_qui_prend'=>$la_tontine->caisse->menbre_qui_prend->nom_complet];
 
+                $this->recu_de_paiement_tontine($infos_pour_recu);
+            }
 
 //===================Montant atteinds
             if($nouveau_montant == $la_caisse_de_la_tontine->montant_objectif){
@@ -461,12 +464,22 @@ class EspaceMenbre extends Controller
         }
         return redirect()->back()->with('notification',$notification);
     }
-    public function recu_de_paiement_tontine($infos_pour_recu){
-//        $infos_pour_recu = ['nom_complet'=>'sh sdfds','montant'=>'','titre_tontine'=>'tontine ice','nom_menbre_qui_prend'=>'djsdh dskhdsjk'];
+    public function recu_de_paiement_tontine($infos_pour_recu=null){
+        if($infos_pour_recu==null){
+            $infos_pour_recu = ['email_destinataire'=>'yvessantoz@gmail.com','nom_complet'=>'sh sdfds','montant'=>'232343','titre_tontine'=>'tontine ice','nom_menbre_qui_prend'=>'djsdh dskhdsjk'];
+        }
 
         $pdf = PDF::loadView('espace_menbre/recu_paiement_tontine',compact('infos_pour_recu'));
-        $nom = time();
-        Storage::put("public/recu/$nom.pdf", $pdf->output());
+        $nom_fichier = time().'.pdf';
+        Storage::put("public/recu/tontines/$nom_fichier", $pdf->output());
+
+        $email = $infos_pour_recu['email_destinataire'];
+        $message = "Felicitations, votre paiement a bien ete effectue, ci-joint votre recu de paiement.";
+        // $chemin_fichier = route('get_recu',[$nom_fichier]);
+        $chemin_fichier = Storage::disk('public')->path("recu/tontines/".$nom_fichier);
+
+        $rep = EspaceMenbreWaricrowdController::envoyer_email_avec_fichier($email,"RECU DE PAIEMENT WARICROWD",$message,$chemin_fichier,$nom_fichier);
+//        dd($chemin_fichier,$nom_fichier,$rep);
 //        return $pdf->stream();
     }
 //====================== PROFIL=======================
@@ -476,67 +489,67 @@ class EspaceMenbre extends Controller
     }
 
     public function modifier_profil(Request $request,$id_menbre){
-            $couleur = "danger";
+        $couleur = "danger";
 
-            $donnee_formulaire = $request->all();
+        $donnee_formulaire = $request->all();
 //        dd($donnee_formulaire);
-            $mot_de_passe_actuel = $donnee_formulaire['mot_de_passe_actuel'];
-            $bon_mot_de_passe = $this->VerifieLeMotDePasse($mot_de_passe_actuel,$id_menbre);
+        $mot_de_passe_actuel = $donnee_formulaire['mot_de_passe_actuel'];
+        $bon_mot_de_passe = $this->VerifieLeMotDePasse($mot_de_passe_actuel,$id_menbre);
 
-            if($bon_mot_de_passe){
-                $nom_complet = $donnee_formulaire['nom_complet'];
-                $telephone = $donnee_formulaire['telephone'];
-                $email = $donnee_formulaire['email'];
-                $mot_de_passe = $donnee_formulaire['mot_de_passe'];
-                $confirmer_mot_de_passe = $donnee_formulaire['confirmer_mot_de_passe'];
+        if($bon_mot_de_passe){
+            $nom_complet = $donnee_formulaire['nom_complet'];
+            $telephone = $donnee_formulaire['telephone'];
+            $email = $donnee_formulaire['email'];
+            $mot_de_passe = $donnee_formulaire['mot_de_passe'];
+            $confirmer_mot_de_passe = $donnee_formulaire['confirmer_mot_de_passe'];
 
 //        ---------------Verifie existence des identifiant
-                if($email !=null){
-                    $route_connexion = route('connexion_menbre');
-                    $email_existe_deja = $this->checkExistenceEmailPourAutrePersonne($email,$id_menbre);
-                    if($email_existe_deja){
-                        $message = "Cette adresse email est déja utilisée par une autre personne";
-                        $notification = "<div class='alert alert-$couleur'> $message  </div>";
-                        return redirect()->back()->with('notification',$notification);
-                    }
-                }
-
-                $telephone_existe_deja = $this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre);
-                if($telephone_existe_deja){
-                    $message = "Ce numero de telephone a déja utilisé par une autre personne";
+            if($email !=null){
+                $route_connexion = route('connexion_menbre');
+                $email_existe_deja = $this->checkExistenceEmailPourAutrePersonne($email,$id_menbre);
+                if($email_existe_deja){
+                    $message = "Cette adresse email est déja utilisée par une autre personne";
                     $notification = "<div class='alert alert-$couleur'> $message  </div>";
                     return redirect()->back()->with('notification',$notification);
                 }
+            }
+
+            $telephone_existe_deja = $this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre);
+            if($telephone_existe_deja){
+                $message = "Ce numero de telephone a déja utilisé par une autre personne";
+                $notification = "<div class='alert alert-$couleur'> $message  </div>";
+                return redirect()->back()->with('notification',$notification);
+            }
 
 //        ---------------Verifie mot de passe et enregistrement
 
-                $le_menbre = Menbre::find($id_menbre);
-                $le_menbre->nom_complet = $nom_complet;
-                $le_menbre->telephone = $telephone;
-                $le_menbre->email = $email;
+            $le_menbre = Menbre::find($id_menbre);
+            $le_menbre->nom_complet = $nom_complet;
+            $le_menbre->telephone = $telephone;
+            $le_menbre->email = $email;
 
-                if(!empty($mot_de_passe) && !empty($confirmer_mot_de_passe) ){
-                    if($mot_de_passe != $confirmer_mot_de_passe){
-                        $couleur = "danger";
-                        $message = "Les mots de passe ne sont pas identiques.";
-                        $notification = "<div class='alert alert-$couleur'> $message  </div>";
-                        return redirect()->back()->with('notification',$notification);
-                    }
-                    $mot_de_passe_cacher = md5($confirmer_mot_de_passe);
-                    $le_menbre->mot_de_passe = $mot_de_passe_cacher;
-                }
-
-                if($le_menbre->save()){
-                    $couleur = "success";
-                    $message = "Operation bien effectuée";
+            if(!empty($mot_de_passe) && !empty($confirmer_mot_de_passe) ){
+                if($mot_de_passe != $confirmer_mot_de_passe){
+                    $couleur = "danger";
+                    $message = "Les mots de passe ne sont pas identiques.";
                     $notification = "<div class='alert alert-$couleur'> $message  </div>";
                     return redirect()->back()->with('notification',$notification);
                 }
-
-            }else{
-                $message = "Mot de passe actuel incorrect";
-                $notification = "<div class='alert alert-$couleur'> $message  </div>";
+                $mot_de_passe_cacher = md5($confirmer_mot_de_passe);
+                $le_menbre->mot_de_passe = $mot_de_passe_cacher;
             }
+
+            if($le_menbre->save()){
+                $couleur = "success";
+                $message = "Operation bien effectuée";
+                $notification = "<div class='alert alert-$couleur'> $message  </div>";
+                return redirect()->back()->with('notification',$notification);
+            }
+
+        }else{
+            $message = "Mot de passe actuel incorrect";
+            $notification = "<div class='alert alert-$couleur'> $message  </div>";
+        }
 
 
         $notification = "<div class='alert alert-$couleur'> $message  </div>";
