@@ -53,7 +53,16 @@
                                     {{formater_frequence($ma_tontine['frequence_depot_en_jours'])}}
                                 </td>
                                 <td class="tr_bordered text-danger">
-                                    <b class="badge badge-{{$ma_tontine->etat=='ouverte' ? 'success' : 'danger'}}">
+                                    @php
+                                      if($ma_tontine->etat == 'ouverte'){
+                                            $couleur = 'success';
+                                    }elseif ($ma_tontine->etat == 'prete'){
+                                            $couleur = 'warning';
+                                    }else{
+                                        $couleur = 'danger';
+                                    }
+                                    @endphp
+                                    <b class="badge badge-{{$couleur}}">
                                         {{$ma_tontine->etat}}
                                     </b>
                                 </td>
@@ -95,7 +104,7 @@
                                         @endif
                                 </td>
                                 <td class="tr_bordered" style="padding: 8px">
-                                    <a href="{{route('espace_menbre.details_tontine',[$ma_tontine['id']])}}" class="btn btn-primary">Voir</a>
+                                    <a href="{{route('espace_menbre.details_tontine',[$ma_tontine['id']])}}" class="btn btn-primary">Details</a>
                                 </td>
                             </tr>
                         @endforeach

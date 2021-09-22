@@ -51,6 +51,12 @@
                         @if($la_tontine->motif_intervention_admin !=null) <li><b>Motif Intervention d'administrateur</b> : <mark class="badge badge-info">{{$la_tontine->motif_intervention_admin}}</mark> </li> @endif
                         <li>Crée par : {{$la_tontine->createur->nom_complet}}</li>
                         <li>Montant à cotiser : {{number_format($la_tontine->montant,0,',',' ')}} F <small>par personnes</small> </li>
+                        @php
+                            $montant_total = $la_tontine->montant * $la_tontine->nombre_participant;
+                            $frais = round($montant_total * (1/100));
+                        @endphp
+                        <li>Montant Objectif : {{number_format($montant_total,0,',',' ')}} F </li>
+                        <li>Frais de gestion (1%) : {{number_format($frais,0,',',' ')}} F / {{number_format($montant_total,0,',',' ')}} F </li>
                         <li> Nombre de participant : {{sizeof($la_tontine->participants)}} / {{$la_tontine->nombre_participant}} </li>
                         <li> Frequence de depot : {{formater_frequence($la_tontine->frequence_depot_en_jours)}}</li>
                         <li> Tour de :
@@ -66,7 +72,7 @@
                     </ul>
 
 
-                    @if($la_tontine->createur->id == $la_session['id'] && $la_tontine->etat =='constitution')
+                    @if($la_tontine->createur->id == $la_session['id'] && $la_tontine->etat =='constitution' ||  $la_tontine->etat =='prete')
                          <p class="badge badge-info">La tontine pourra être ouverte une fois le nombre de participant specifié atteinds.</p>
                         @if($pret)
                             <form method="post" action="{{route('espace_menbre.ouvrir_tontine',[$la_tontine['id']])}}">
@@ -100,7 +106,10 @@
                     @if(sizeof($la_tontine->participants) < $la_tontine->nombre_participant)
                         <br/>
                         <p class="card-description">
-                            Entrez la liste des emails separés des virgules(,)
+                            Code invitation : <b>{{$la_tontine->identifiant_adhesion}}</b> (a entrer dans la section <b>adherer via code d'ivitation</b> sur le tableau de bord )
+                            au personnes a inviter
+                            <br/><br/>
+                            ou Entrez la liste des emails separés des virgules(,)
                         </p>
                         <form class="forms-sample" method="post" action="{{route('espace_menbre.post_inviter_des_amis',[$la_tontine['id']])}}">
                             <div class="form-group">

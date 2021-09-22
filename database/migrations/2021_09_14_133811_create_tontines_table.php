@@ -15,11 +15,12 @@ class CreateTontinesTable extends Migration
     {
         Schema::create('tontines', function (Blueprint $table) {
             $table->id();
+            $table->integer('identifiant_adhesion');
             $table->string('titre');
             $table->string('montant'); //montant a payer par personne
             $table->string('frequence_depot_en_jours');
             $table->integer('nombre_participant');
-            $table->enum('etat',['constitution','ouverte','fermee','suspendue']);
+            $table->enum('etat',['constitution','prete','ouverte','fermee','suspendue']);
             $table->foreignId('id_menbre'); //menbre createur
             $table->string('motif_intervention_admin')->nullable();
             $table->timestamps();

@@ -52,6 +52,11 @@
                         <li>Crée par : {{$la_tontine->createur->nom_complet}}</li>
                         <li>Montant à cotiser : {{number_format($la_tontine->montant,0,',',' ')}} F <small>par personnes</small> </li>
                         <li> Nombre de participant : {{sizeof($la_tontine->participants)}} / {{$la_tontine->nombre_participant}} </li>
+                        @php
+                            $montant_total = $la_tontine->montant * $la_tontine->nombre_participant;
+                            $frais = round($montant_total * (1/100));
+                        @endphp
+                        <li>Frais de gestion (1%) : {{number_format($frais,0,',',' ')}} F / {{number_format($montant_total,0,',',' ')}} F </li>
                         <li> Frequence de depot : {{formater_frequence($la_tontine->frequence_depot_en_jours)}}</li>
                         <li> Tour de :
                             <mark class="badge badge-primary marquer_presence">

@@ -63,6 +63,7 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
 
     Route::get("/invitations",[EspaceMenbre::class,'invitations'])->name('espace_menbre.invitations');
     Route::post("/invitations/{id_invitation}",[EspaceMenbre::class,'reponse_invitation'])->name('espace_menbre.reponse_invitation');
+    Route::post("/invitations-via-code",[EspaceMenbre::class,'adhesion_via_code_invitation'])->name('espace_menbre.adhesion_via_code_invitation');
 
     Route::post("/payer-ma-cotisation/{id_tontine}",[EspaceMenbre::class,'paiement_cotisation'])->name('espace_menbre.paiement_cotisation');
 

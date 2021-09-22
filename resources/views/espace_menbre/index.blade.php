@@ -87,8 +87,25 @@
     <div class="row">
         <div class="col-md-9 grid-margin stretch-card">
             <div class="card">
+                <div class="card-header">
+                    <hr/>
+                        <h4 class="text-center card-title">Invitations reçues</h4>
+                    {!! Session::get('notification','') !!}
+                    <hr/>
+                </div>
                 <div class="card-body">
-                    <p class="card-title">Invitations reçues</p>
+                    <p class="card-title">Adherer a une tontine via le code d'invitation</p>
+                    <form method="post" action="{{route('espace_menbre.adhesion_via_code_invitation')}}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input class="form-control" type="number" name="code_invitation" required placeholder="Entrer le code d'invitation" />
+                            </div>
+                            <div class="col-md-4">
+                                @csrf
+                                <button type="submit" class="btn btn-success">Adherer</button>
+                            </div>
+                        </div>
+                    </form>
                     <div class="table-responsive">
                         <table id="recent-purchases-listing" class="table">
                             <thead>

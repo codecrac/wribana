@@ -56,6 +56,7 @@ class EspaceMenbre extends Controller
         $donnees_formulaire = $request->all();
 //        dd($donnees_formulaire);
 
+        $identifiant_adhesion = intdiv( (rand(111,999) * rand(11,99)) ,12 );
         $titre = $donnees_formulaire['titre'];
         $montant = $donnees_formulaire['montant'];
         $frequence_de_depot = $donnees_formulaire['frequence_depot_en_jours'];
@@ -66,6 +67,7 @@ class EspaceMenbre extends Controller
 
             $la_session = session(MenbreController::$cle_session);
             $id_menbre_connecter =  $la_session['id'];
+            $la_tontine->identifiant_adhesion = $identifiant_adhesion;
             $la_tontine->titre = $titre;
             $la_tontine->montant = $montant;
             $la_tontine->frequence_depot_en_jours = $frequence_de_depot;
@@ -184,7 +186,13 @@ class EspaceMenbre extends Controller
         $la_caisse_de_la_tontine = CaisseTontine::findOrNew($id_tontine);
         $la_caisse_de_la_tontine->id_tontine= $la_tontine->id;
 
-        $la_caisse_de_la_tontine->montant_objectif= $la_tontine->montant * $la_tontine->nombre_participant;
+        $montant_objectif = $la_tontine->montant * $la_tontine->nombre_participant;
+        $frais_de_gestion = round( $montant_objectif * (1/100) );
+        $montant_moins_frais = $montant_objectif - $frais_de_gestion;
+
+        $la_caisse_de_la_tontine->montant_objectif= $montant_objectif;
+        $la_caisse_de_la_tontine->frais_de_gestion= $frais_de_gestion;
+        $la_caisse_de_la_tontine->montant_a_verser= $montant_moins_frais;
 //        $la_caisse_de_la_tontine->montant= 0;
         $la_caisse_de_la_tontine->id_menbre_qui_prend= $la_tontine->id_menbre;
         $la_caisse_de_la_tontine->prochaine_date_encaissement= $prochaine_date_encaissement;
@@ -289,8 +297,11 @@ class EspaceMenbre extends Controller
                 }
             }
 
+            $la_tontine = $linvitation->tontine;
             if(sizeof($la_tontine->participants) == $la_tontine->nombre_participant){
                  Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
+                 $la_tontine->etat = 'prete';
+                 $la_tontine->save();
             }
         }else{
             Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
@@ -301,6 +312,54 @@ class EspaceMenbre extends Controller
                 $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
             }
         }
+
+        return redirect()->back()->with('notification',$notification);
+    }
+
+    public function adhesion_via_code_invitation(Request $request){
+
+        $donnees_formulaires = $request->all();
+        $code_invitation = $donnees_formulaires['code_invitation'];
+
+        $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
+
+        if($la_tontine ==null){
+            $notification = " <div class='alert alert-danger text-center'> Ce code est invalide</div>";
+        }else{
+
+            $la_session = session(MenbreController::$cle_session);
+            $id_menbre_connecter = $la_session['id'];
+
+            $deja_menbre = MenbreTontine::where('menbre_id','=',$id_menbre_connecter)->where('tontine_id','=',$la_tontine->id)->first();
+            if($deja_menbre==null){
+                if(sizeof($la_tontine->participants) < $la_tontine->nombre_participant){
+
+                    $nouveau_menbre = new MenbreTontine();
+                    $nouveau_menbre->tontine_id = $la_tontine->id;
+                    $nouveau_menbre->menbre_id = $id_menbre_connecter;
+                    $nouveau_menbre->save();
+
+                    $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
+
+
+                    $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
+                    if(sizeof($la_tontine->participants) == $la_tontine->nombre_participant){
+                        Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
+//                        dd('prete');
+                        $la_tontine->etat = 'prete';
+                        $la_tontine->save();
+                    }
+                }else{
+                    $notification = " <div class='alert alert-danger text-center'> Le nombre de participant est dejà atteint</div>";
+                }
+
+            }else{
+                $notification = " <div class='alert alert-danger text-center'> Vous êtes deja un menbre de cette tontine  </div>";
+            }
+
+
+        }
+
 
         return redirect()->back()->with('notification',$notification);
     }
@@ -343,19 +402,22 @@ class EspaceMenbre extends Controller
                 $index_menbre_qui_prend = $la_caisse_de_la_tontine->index_menbre_qui_prend;
                 $nouvel_index = $index_menbre_qui_prend + 1;
 
+
+                $montant_a_verser = $la_caisse_de_la_tontine->montant_a_verser;
+
 //===================Virer l'argent sur son compte et le noter dans le cahier
                 $id_menbre_qui_prend = $la_caisse_de_la_tontine->id_menbre_qui_prend;
                 $le_compte = CompteMenbre::findOrNew($id_menbre_qui_prend);
                 $le_compte->id_menbre = $id_menbre_qui_prend;
-                $le_solde = $le_compte->montant;
-                $nouveau_solde = $le_solde + $nouveau_montant;
+                $le_solde = $le_compte->solde;
+                $nouveau_solde = $le_solde + $montant_a_verser;
                 $le_compte->solde = $nouveau_solde;
                 //noter le virement dans le cahier comptable
                 if($le_compte->save()){
                     $nouvelle_note = new CahierCompteTontine();
                     $nouvelle_note->id_menbre = $id_menbre_qui_prend;
                     $nouvelle_note->id_tontine = $id_tontine;
-                    $nouvelle_note->montant = $nouveau_montant;
+                    $nouvelle_note->montant = $montant_a_verser;
                     $nouvelle_note->save();
                 }
 
@@ -381,7 +443,7 @@ class EspaceMenbre extends Controller
 
                     $la_tontine->etat = 'fermee';
                     $la_tontine->save();
-                    $notification = " <div class='alert alert-warning text-center'> Operation bien effectuée, Fin de la tontine est complete </div>";
+                    $notification = " <div class='alert alert-warning text-center'> Operation bien effectuée, Fin,La tontine est complete </div>";
                 }
 
             }

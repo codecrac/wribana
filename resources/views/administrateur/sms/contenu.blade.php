@@ -19,7 +19,7 @@
                             <textarea class="form-control" name="confirmation_compte">{{$la_ligne_notification->confirmation_compte}}</textarea>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="display: none">
                             <label for="exampleInputUsername1"> Retard de paiement </label>
                             <textarea class="form-control" name="retard_paiement" maxlength="220" rows="5">{{$la_ligne_notification->retard_paiement}}</textarea>
                         </div>
