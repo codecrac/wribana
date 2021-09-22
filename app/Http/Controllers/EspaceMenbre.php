@@ -10,7 +10,9 @@ use App\Models\Menbre;
 use App\Models\MenbreTontine;
 use App\Models\Tontine;
 use App\Models\Transaction;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 
 class EspaceMenbre extends Controller
@@ -397,6 +399,14 @@ class EspaceMenbre extends Controller
 //            dd($liste_participants);
             $this->notifier_paiement_cotisation($liste_participants,$le_menbre->nom_complet,$montant,$la_tontine->titre,$maintenant);
 
+            $infos_pour_recu = ['nom_complet'=>$le_menbre->nom_complet,
+                'type_section'=>'tontine',
+                'montant'=>$la_tontine->montant,
+                'titre_tontine'=>$la_tontine->titre,
+                'nom_menbre_qui_prend'=>$la_tontine->caisse->menbre_qui_prend->nom_complet];
+            $this->recu_de_paiement_tontine($infos_pour_recu);
+
+
 //===================Montant atteinds
             if($nouveau_montant == $la_caisse_de_la_tontine->montant_objectif){
                 $index_menbre_qui_prend = $la_caisse_de_la_tontine->index_menbre_qui_prend;
@@ -451,10 +461,13 @@ class EspaceMenbre extends Controller
         }
         return redirect()->back()->with('notification',$notification);
     }
-    public function recu_de_paiement(){
-        //pour tontine
-        $infos_pour_recu = ['nom_complet'=>'sh sdfds','type_section'=>'tontine','titre_section'=>'tontine ice','nom_menbre_qui_prend'=>'djsdh dskhdsjk'];
-        return view('espace_menbre/recu_paiement',compact('infos_pour_recu'));
+    public function recu_de_paiement_tontine($infos_pour_recu){
+//        $infos_pour_recu = ['nom_complet'=>'sh sdfds','montant'=>'','titre_tontine'=>'tontine ice','nom_menbre_qui_prend'=>'djsdh dskhdsjk'];
+
+        $pdf = PDF::loadView('espace_menbre/recu_paiement_tontine',compact('infos_pour_recu'));
+        $nom = time();
+        Storage::put("public/recu/$nom.pdf", $pdf->output());
+//        return $pdf->stream();
     }
 //====================== PROFIL=======================
     public function profil($id_menbre){

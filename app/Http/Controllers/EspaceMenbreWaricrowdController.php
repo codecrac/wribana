@@ -8,7 +8,9 @@ use App\Models\Menbre;
 use App\Models\TransactionWaricrowd;
 use App\Models\Waricrowd;
 use App\Models\WaricrowdMenbre;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EspaceMenbreWaricrowdController extends Controller
 {
@@ -193,12 +195,30 @@ class EspaceMenbreWaricrowdController extends Controller
             $menbre_souteneur->save();
 
             $notification = "<div class='alert alert-success text-center'> Operation bien effectuee </div>";
+
+            $le_menbre = Menbre::find($id_menbre_connecter);
+            $le_crowd = Waricrowd::find($id_crowd);
+            $infos_pour_recu = ['nom_complet'=>$le_menbre->nom_complet,
+                'type_section'=>'tontine',
+                'montant'=>$montant_soutien,
+                'titre_waricrowd'=>$le_crowd->titre,
+                'nom_createur_waricrowd'=>$le_crowd->createur->nom_complet];
+            $this->recu_de_paiement_waricrowd($infos_pour_recu);
+
         }else{
             $notification = "<div class='alert alert-danger text-center'> Quelque chose s'est mal passé </div>";
         }
 
         return redirect()->back()->with('notification',$notification);
     }
+
+    public function recu_de_paiement_waricrowd($infos_pour_recu){
+        $pdf = PDF::loadView('espace_menbre/recu_paiement_waricrowd',compact('infos_pour_recu'));
+        $nom = time();
+        Storage::put("public/recu/$nom.pdf", $pdf->output());
+//        return $pdf->stream();
+    }
+
 
     public function projets_soutenus(){
         $la_session = session(MenbreController::$cle_session);
