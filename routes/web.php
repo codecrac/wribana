@@ -77,6 +77,7 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
     Route::get("/recu_de_paiement_tontine",[EspaceMenbre::class,'recu_de_paiement_tontine'])->name('espace_menbre.recu_de_paiement');
     Route::get("/chat/{id_tontine}",[EspaceMenbre::class,'chat_tontine'])->name('espace_menbre.chat_tontine');
     Route::post("/chat/{id_tontine}",[EspaceMenbre::class,'chat_tontine_envoyer_message'])->name('espace_menbre.chat_tontine_envoyer_message');
+    Route::get("/qui-est-en-ligne/{id_tontine}",[EspaceMenbre::class,'chat_tontine_qui_est_en_ligne'])->name('espace_menbre.chat_tontine_qui_est_en_ligne');
     //    ===================WARICROWD======================
     include 'waricrowd_route.php';
 });

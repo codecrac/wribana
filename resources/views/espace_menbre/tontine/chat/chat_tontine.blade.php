@@ -82,7 +82,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-5" id="qui_est_en_ligne">
             @php $menbres = $la_tontine->participants; @endphp
             <div class="card">
                 <div class="card-header">
@@ -100,7 +100,7 @@
                             @foreach($menbres as $item_menbre)
                                 <tr>
                                     <td>{{$item_menbre['nom_complet']}}</td>
-                                    <td>(Il y a 938239 minutes)</td>
+                                    <td> ({{ \Carbon\Carbon::parse($item_menbre->date_derniere_visite)->diffForhumans() }}) </td>
                                 </tr>
                             @endforeach
                         </tbody>

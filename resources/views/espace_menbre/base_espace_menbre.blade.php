@@ -193,6 +193,9 @@
 <script src="/template_menbre/js/jquery.cookie.js" type="text/javascript"></script>
 
 
+
+
+{{--<script src="./js/app.js"></script>--}}
 @yield('script_completmentaire')
 
 </body>

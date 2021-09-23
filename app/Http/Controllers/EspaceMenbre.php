@@ -13,6 +13,8 @@ use App\Models\MenbreTontine;
 use App\Models\Tontine;
 use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade as PDF;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -486,10 +488,19 @@ class EspaceMenbre extends Controller
     }
 
     public function chat_tontine($id_tontine){
+
+        $la_session = session(MenbreController::$cle_session);
+        $id_menbre_connecter = $la_session['id'];
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        $maintenant = date('d-m-Y H:i:s');
+        $le_menbre->date_derniere_visite = $maintenant;
+        $le_menbre->save();
+
+        Carbon::setLocale('fr');
+
         $la_tontine = Tontine::find($id_tontine);
         $les_anciens_message = ChatTontineMessage::where('id_tontine','=',$id_tontine)->get();
-//        dd($les_anciens_message);
-        return view('espace_menbre/tontine/chat/chat_tontine',compact('la_tontine','les_anciens_message'));
+        return view('espace_menbre/tontine/chat/chat_tontine',compact('la_tontine','les_anciens_message','le_menbre'));
     }
 
     public function chat_tontine_envoyer_message(Request $request,$id_tontine){
@@ -511,6 +522,21 @@ class EspaceMenbre extends Controller
         $le_message->message = $message;
         $le_message->save();
 
+    }
+
+
+    public function chat_tontine_qui_est_en_ligne($id_tontine){
+        Carbon::setLocale('fr');
+
+        $la_session = session(MenbreController::$cle_session);
+        $id_menbre_connecter = $la_session['id'];
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        $maintenant = date('d-m-Y H:i:s');
+        $le_menbre->date_derniere_visite = $maintenant;
+        $le_menbre->save();
+
+        $la_tontine = Tontine::find($id_tontine);
+        return view('espace_menbre/tontine/chat/liste_menbre_tontine_en_ligne',compact('la_tontine'));
     }
 
 //====================== PROFIL=======================

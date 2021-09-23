@@ -5228,12 +5228,20 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
  // alert('ok');
+
+var id_tontine_input = document.getElementById('id_tontine'); //rafraichhir liste des menbre en ligne
+
+setInterval(function () {
+  // alert('go check');
+  axios.get('/espace-menbre/qui-est-en-ligne/' + id_tontine_input.value).then(function (response) {
+    document.getElementById('qui_est_en_ligne').innerHTML = response.data;
+  }); // do nothing for error - leaving old content.
+}, 1000 * 60); // milliseconds
 // const btn_envoyer_le_message = document.getElementById('btn_envoyer_le_message');
 
 var id_menbre_connecter = document.getElementById('id_menbre_connecter');
 var div_all_message = document.getElementById('div_all_message');
 var message_input = document.getElementById('message');
-var id_tontine_input = document.getElementById('id_tontine');
 var formulaire_envoi_message = document.getElementById('formulaire_envoi_message');
 formulaire_envoi_message.addEventListener('submit', function (e) {
   e.preventDefault();
@@ -5271,6 +5279,7 @@ var fin_auteur_debut_message = '</b> <small>a écrit :</small> </span><h6>';
 var fin_message_debut_timestamp = '</h6><small>';
 var fin_timestamp = '</small></div></div>';
 window.Echo.channel('waribana').listen('.message-tontine', function (e) {
+  // alert('vous avez un nouveau message');
   if (id_tontine_input.value == e.id_tontine) {
     //pour ne pas affiche les messages des autre tontine vu qu'on a une seul channel de brodcast
     var la_div_a_rajouter = debut_un_message;

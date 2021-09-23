@@ -9,6 +9,7 @@ class Menbre extends Model
 {
     use HasFactory;
     protected $guarded = [];
+//    protected $dates = ['created_at', 'updated_at', 'date_derniere_visite'];
 
     public function tontines()
     {
