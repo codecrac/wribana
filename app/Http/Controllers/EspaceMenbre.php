@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\WaribanaChatMessage;
 use App\Models\CahierCompteTontine;
 use App\Models\CaisseTontine;
+use App\Models\ChatTontineMessage;
 use App\Models\CompteMenbre;
 use App\Models\Invitation;
 use App\Models\Menbre;
@@ -486,7 +487,9 @@ class EspaceMenbre extends Controller
 
     public function chat_tontine($id_tontine){
         $la_tontine = Tontine::find($id_tontine);
-        return view('espace_menbre/tontine/chat/chat_tontine',compact('la_tontine'));
+        $les_anciens_message = ChatTontineMessage::where('id_tontine','=',$id_tontine)->get();
+//        dd($les_anciens_message);
+        return view('espace_menbre/tontine/chat/chat_tontine',compact('la_tontine','les_anciens_message'));
     }
 
     public function chat_tontine_envoyer_message(Request $request,$id_tontine){
@@ -498,7 +501,16 @@ class EspaceMenbre extends Controller
 
         $donnee_formulaire = $request->input();
         $message = $donnee_formulaire['message'];
+        //declencher le broadcast
         event(new WaribanaChatMessage($id_tontine,$id_menbre_connecter,$nom_complet,$message));
+
+        //enregistrer
+        $le_message = new ChatTontineMessage();
+        $le_message->id_tontine = $id_tontine;
+        $le_message->id_menbre = $id_menbre_connecter;
+        $le_message->message = $message;
+        $le_message->save();
+
     }
 
 //====================== PROFIL=======================

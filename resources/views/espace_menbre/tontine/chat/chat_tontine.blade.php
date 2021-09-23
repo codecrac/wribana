@@ -8,15 +8,19 @@
 
 @section('style_completmentaire')
     <style>
-
-        .conteneur_de_message{
-            display: block;
-            clear: both;
+        html{
+            scroll-behavior: smooth;
         }
         #div_all_message{
             background-color: white;
             height: 400px;
             padding: 10px;
+            overflow-y: scroll;
+            clear: both;
+        }
+        .conteneur_de_message{
+            display: block;
+            clear: both;
         }
         .un_message{
             float: left;
@@ -34,7 +38,7 @@
             background-color: darkseagreen;
             border-radius: 5px;
         }
-        .un_message > .auteur{
+        .auteur{
             font-size: 12px;
         }
     </style>
@@ -49,22 +53,21 @@
                         <h4 class="card-title text-center text-uppercase"> Espace Chat tontine : {{$la_tontine->titre}}</h4>
                     <hr/>
                     {!! Session::get('notification','') !!}
-                </div>
-                <div class="card-body" style="background-color: orangered">
                     <div id="div_all_message">
-                        <div class="conteneur_de_message">
-                            <div class="un_message">
-                                <span class="auteur"> <b>nom complet</b> <small>a écrit :</small> </span>
-                                <h6>Un message de batard</h6>
-                            </div>
-                        </div>
-                        <div class="conteneur_de_message">
-                            <div class="mon_message">
-                                <span class="auteur"> <b>nom complet</b> <small>a écrit :</small> </span>
-                                <h6>Un message de batard</h6>
-                            </div>
-                        </div>
+{{--                        @for($i=0;$i<15;$i++)--}}
+                            @foreach($les_anciens_message as $item_message)
+                                <div class="conteneur_de_message">
+                                    <div class="{{($item_message->id_menbre == $id_menbre_connecter) ? 'mon_message' :'un_message'}}">
+                                        <span class="auteur"> <b>{{$item_message->menbre_expediteur->nom_complet}}</b> <small>a écrit :</small> </span>
+                                        <h6>{{$item_message->message}}</h6>
+                                        <small>{{date('d-m-Y H:i',strtotime($item_message->created_at))}}</small>
+                                    </div>
+                                </div>
+                            @endforeach
+{{--                        @endfor--}}
                     </div>
+                </div>
+                <div class="card-body">
                     <form class="forms-sample" method="post" id="formulaire_envoi_message">
                             <div class="form-group">
                                 <textarea class="form-control" rows="4" id="message" placeholder="Taper votre message ici"></textarea>
@@ -110,5 +113,9 @@
 @endsection
 
 @section('script_completmentaire')
+    <script>
+        var div_all_message = document.getElementById("div_all_message");
+        div_all_message.scrollTop = div_all_message.scrollHeight;
+    </script>
     <script src="./../../js/app.js"></script>
 @endsection
