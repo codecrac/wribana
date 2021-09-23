@@ -104,7 +104,9 @@
                                         @endif
                                 </td>
                                 <td class="tr_bordered" style="padding: 8px">
-                                    <a href="{{route('espace_menbre.details_tontine',[$ma_tontine['id']])}}" class="btn btn-primary">Details</a>
+                                    <a href="{{route('espace_menbre.details_tontine',[$ma_tontine['id']])}}" class="badge badge-primary">Details</a>
+                                    <br/><br/>
+                                    <a href="{{route('espace_menbre.chat_tontine',[$ma_tontine['id']])}}" class="badge badge-success">Espace Chat</a>
                                 </td>
                             </tr>
                         @endforeach

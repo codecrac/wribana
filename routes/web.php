@@ -38,19 +38,6 @@ Route::get('/linkstorage', function () {
     Artisan::call('storage:link');
 });
 
-Route::get('/storage/recu/{filename}', function ($filename)
-{
-    $path = storage_path('public/' . "recu/$filename");
-
-    $file = File::get($path);
-    $type = File::mimeType($path);
-
-    $response = Response::make($file, 200);
-    $response->header("Content-Type", $type);
-
-    return $response;
-})->name('get_recu');
-
 
 Route::get('/espace-menbre/confirmation',  [MenbreController::class,'confirmer_compte_menbre'])->name('espace_menbre.confirmer_compte_menbre');
 Route::post('/espace-menbre/confirmation',  [MenbreController::class,'post_confirmer_compte_menbre'])->name('espace_menbre.post_confirmer_compte_menbre');
@@ -88,6 +75,8 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
 
 
     Route::get("/recu_de_paiement_tontine",[EspaceMenbre::class,'recu_de_paiement_tontine'])->name('espace_menbre.recu_de_paiement');
+    Route::get("/chat/{id_tontine}",[EspaceMenbre::class,'chat_tontine'])->name('espace_menbre.chat_tontine');
+    Route::post("/chat/{id_tontine}",[EspaceMenbre::class,'chat_tontine_envoyer_message'])->name('espace_menbre.chat_tontine_envoyer_message');
     //    ===================WARICROWD======================
     include 'waricrowd_route.php';
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\WaribanaChatMessage;
 use App\Models\CahierCompteTontine;
 use App\Models\CaisseTontine;
 use App\Models\CompteMenbre;
@@ -482,6 +483,24 @@ class EspaceMenbre extends Controller
 //        dd($chemin_fichier,$nom_fichier,$rep);
 //        return $pdf->stream();
     }
+
+    public function chat_tontine($id_tontine){
+        $la_tontine = Tontine::find($id_tontine);
+        return view('espace_menbre/tontine/chat/chat_tontine',compact('la_tontine'));
+    }
+
+    public function chat_tontine_envoyer_message(Request $request,$id_tontine){
+
+        $la_session = session(MenbreController::$cle_session);
+        $id_menbre_connecter = $la_session['id'];
+        $nom_complet = $la_session['nom_complet'];
+
+
+        $donnee_formulaire = $request->input();
+        $message = $donnee_formulaire['message'];
+        event(new WaribanaChatMessage($id_tontine,$id_menbre_connecter,$nom_complet,$message));
+    }
+
 //====================== PROFIL=======================
     public function profil($id_menbre){
         $le_menbre = Menbre::find($id_menbre);
