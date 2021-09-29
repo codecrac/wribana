@@ -89,12 +89,6 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <ul class="nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{route('decouvrir_projets')}}">
-                        <i class="mdi mdi-circle-outline menu-icon"></i>
-                        <span class="menu-title">Retour à l'accueil</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="{{route('espace_menbre.accueil')}}">
                         <i class="mdi mdi-home menu-icon"></i>
                         <span class="menu-title">Tableau de bord</span>
@@ -130,19 +124,32 @@
                     </div>
                 </li>
 
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('espace_menbre.projets_soutenus')}}">
                         <i class="mdi mdi-circle-outline menu-icon"></i>
                         <span class="menu-title">Projets Soutenus</span>
                     </a>
                 </li>
-
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">
+                    <a class="nav-link" href="{{route('espace_menbre.profil',[$la_session['id']] ) }}">
                         <i class="mdi mdi-circle-outline menu-icon"></i>
-                        <span class="menu-title">Chat</span>
+                        <span class="menu-title">Mon compte</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('espace_menbre.deconnexion') }}">
+                        <i class="mdi mdi-circle-outline menu-icon"></i>
+                        <span class="menu-title">Deconnexion</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('decouvrir_projets')}}">
+                        <i class="mdi mdi-circle-outline menu-icon"></i>
+                        <span class="menu-title">Decouvrir les projets</span>
+                    </a>
+                </li>
+
             </ul>
         </nav>
         <!-- partial -->

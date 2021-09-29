@@ -15,6 +15,8 @@
 @endsection
 
 @section('content')
+    {!! Session::get('notification','') !!}
+
     <div class="row">
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
@@ -29,13 +31,20 @@
                     <hr/>
                         <h4 class="text-center">Retirer de l'argent</h4>
                     <hr/>
-                    <form method="post">
+                    <form method="post" action="{{route('espace_menbre.confirmer_retrait_dargent')}}">
                         <div class="row">
                             <div class="col-12">
-                                <input type="number" class="form-control" type="form-control" style="border: 1px solid black" placeholder="Entrer le montant, Ex:150000" />
+                                <label class="text-danger">Mot de passe actuel *</label>
+                                <input required class="form-control" value  type="password" name="mot_de_passe_actuel" style="border: 1px solid black" />
+                                <br/>
+                            </div>
+                            <div class="col-12">
+                                <label class="text-dark">Entrer le montant *</label>
+                                <input type="number" name="montant" class="form-control" type="form-control" style="border: 1px solid black" placeholder="Entrer le montant" />
                             </div>
                             <div class="col-12 text-center">
                                 <br/>
+                                @csrf
                                 <button class="btn btn-success" > Retirer </button>
                             </div>
                         </div>
@@ -52,7 +61,6 @@
                     <hr/>
                 </div>
                 <div class="card-body">
-                    {!! Session::get('notification','') !!}
                     <form class="forms-sample" method="post" action="{{route('espace_menbre.post_profil',[$le_menbre->id])}}">
                         <div class="form-group">
                             <label class="text-danger">Mot de passe actuel *</label>
@@ -76,12 +84,12 @@
                             <br/>
                         </div>
                         <div class="form-group">
-                            <label>Mot de passe *</label>
+                            <label>Nouveau Mot de passe </label>
                             <input  class="form-control" placeholder="Mot de passe" type="password" name="mot_de_passe" />
                             <br/>
                         </div>
                         <div class="form-group">
-                            <label>Confirmation du mot de passe *</label>
+                            <label>Confirmation du mot de passe </label>
                             <input  class="form-control" placeholder="Confirmer le mot de passe" type="password" name="confirmer_mot_de_passe" />
                             <br/>
                         </div>

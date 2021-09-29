@@ -27,8 +27,8 @@ formulaire_envoi_message.addEventListener('submit', function (e) {
     e.preventDefault();
     let has_errors = false;
 
-    if (message_input.value == '') {
-        alert("Le message ne peut pas etre vide, si tu n'as rien n'a dire nous emmerde pas");
+    if (message_input.value=="") {
+//        alert("Le message ne peut pas etre vide.");
         has_errors = true;
     }
 

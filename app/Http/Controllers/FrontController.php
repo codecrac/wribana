@@ -14,6 +14,7 @@ class FrontController extends Controller
     public function accueil(Request $request){
         $is_home=true;
 
+//dd(route('espace_menbre.notification_paiement_tontine'));
 
         $date = date('m/Y');
         $stat = StatistiqueFrequentation::firstOrNew(['slug'=>$date]);
@@ -30,15 +31,15 @@ class FrontController extends Controller
 
     public function decouvrir_projets(){
         $liste_categorie = CategorieWaricrowd::all();
-        $liste_waricrowd = Waricrowd::where('etat','!=','attente')->where('etat','!=','annuler')->where('etat','!=','recaler')->get();
+        $liste_waricrowd = Waricrowd::where('etat','!=','attente')->where('etat','!=','annuler')->where('etat','!=','recaler')->orderBy('id','desc')->get();
 
         $mot_cle =null;$date_publication =null;$la_categorie = null;
 
 
         if( isset($_GET['id_categorie'])){
             $id_categorie = $_GET['id_categorie'];
-            if($id_categorie='0'){
-                $liste_waricrowd = Waricrowd::where('etat','!=','attente')->where('etat','!=','annuler')->where('etat','!=','recaler')->get();
+            if($id_categorie=='0'){
+                $liste_waricrowd = Waricrowd::where('etat','!=','attente')->where('etat','!=','annuler')->where('etat','!=','recaler')->orderBy('id','desc')->get();
             }
             elseif($id_categorie!=null && !empty($id_categorie)){
                 $la_categorie = CategorieWaricrowd::find($id_categorie);

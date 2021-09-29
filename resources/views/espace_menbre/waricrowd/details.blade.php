@@ -16,13 +16,21 @@
 
 @section('content')
 
-    {!! Session::get('notification','') !!}
 {{-- SECTION A propos de la crowd et invitaion  --}}
     <div class="row">
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
+                <div class='card-header'>
+                    {!! Session::get('notification','') !!}
+                    @isset($_GET['statut'])
+                        @if($_GET['statut'] == 'ACCEPTED')
+                            <div class='alert alert-success text-center'>Votre paiement a bien été</div>
+                        @else
+                            <div class='alert alert-danger text-center'>Echec du paiement</div>
+                        @endif
+                    @endisset
+                </div>
                 <div class="card-body">
-
                     <hr/>
                         <h4 class="card-title text-center">
                             Waricrowd : {{$le_crowd->titre}}
@@ -122,9 +130,11 @@
                     </div>
                     <div class="card-body">
                         <h5 class="text-center">Entrer le montant</h5>
-                        <form method="post" action="{{route('espace_menbre.soutenir_projet',[$le_crowd['id']])}}">
+                        <form method="post" action="{{route('espace_menbre.confirmation_soutien_waricrowd')}}">
                             <div class="form-group">
-                                <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="10000" required/>
+                                
+                                <input class="form-control" type="hidden" name="id_crowd" value='{{$le_crowd->id}}' required/>
+                                <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="100" required/>
                                 <br/>
                                 <h3 class="text-center">
                                     @csrf
@@ -143,7 +153,7 @@
             <div class="card">
                 <div class="card-header">
                     <hr/>
-                    <h5 class="text-center">Votre Soutien</h5>
+                    <h5 class="text-center"> Transactions </h5>
                     <hr/>
                 </div>
                 <div class="card-body">
@@ -151,12 +161,14 @@
                         <thead>
                         <td>Date</td>
                         <td>Montant</td>
+                        <td>Statut</td>
                         </thead>
                         <tbody>
                         @foreach($mes_transactions_pour_ce_crowd as $item_soutien)
                             <tr>
                                 <td>{{date('d/m/Y H:m',strtotime($item_soutien['created_at']))}}</td>
                                 <td>{{number_format($item_soutien->montant,0,',',' ')}} F</td>
+                                <td> {{$item_soutien->statut}} </td>
                             </tr>
                         @endforeach
                         </tbody>

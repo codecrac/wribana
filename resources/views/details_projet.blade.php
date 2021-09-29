@@ -65,9 +65,11 @@
                         </div>
                         <div class="project-form">
                             @if($est_connecter)
-                                <form method="post" action="{{route('espace_menbre.soutenir_projet',[$le_crowd['id']])}}">
+                        <form method="post" action="{{route('espace_menbre.confirmation_soutien_waricrowd')}}">
                                     <div class="form-group">
-                                        <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="10000" required/>
+                                        
+                                    <input class="form-control" type="hidden" name="id_crowd" value='{{$le_crowd->id}}' required/>
+                                        <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="100" required/>
                                         <h3 class="text-center">
                                             @csrf
                                             <button type="submit" class="main-btn"> Soutenir le projet  <i class="far fa-arrow-right"></i></button>

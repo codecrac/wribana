@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     use HasFactory;
-    protected $guarded = [];
+    protected $fillable = ['id_tontine','id_menbre','id_menbre_qui_prend','montant'];
 
     public function tontine(){
         return $this->belongsTo(Tontine::class,'id_tontine');

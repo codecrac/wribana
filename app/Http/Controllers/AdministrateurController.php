@@ -139,9 +139,9 @@ class AdministrateurController extends Controller
 
     public function les_waricrowds($filtre=null){
         if($filtre!=null){
-            $liste_waricrowd = Waricrowd::where('etat','=',$filtre)->get();
+            $liste_waricrowd = Waricrowd::where('etat','=',$filtre)->orderBy('id','desc')->get();
         }else{
-            $liste_waricrowd = Waricrowd::all();
+            $liste_waricrowd = Waricrowd::orderBy('id','desc')->get();
         }
         return view("administrateur/waricrowds/liste",compact('liste_waricrowd'));
     }

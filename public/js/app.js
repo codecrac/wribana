@@ -5248,7 +5248,7 @@ formulaire_envoi_message.addEventListener('submit', function (e) {
   var has_errors = false;
 
   if (message_input.value == '') {
-    alert("Le message ne peut pas etre vide, si tu n'as rien n'a dire nous emmerde pas");
+    alert("Le message ne peut pas etre vide.");
     has_errors = true;
   }
 

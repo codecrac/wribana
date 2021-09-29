@@ -8,7 +8,6 @@
                 <div class="d-flex align-items-end flex-wrap">
                     <div class="mr-md-3 mr-xl-5">
                         <h2>Bienvenue <small>{{Auth::user()->name}}.</small></h2>
-                        {{--                        <p class="mb-md-0">Your analytics dashboard template.</p>--}}
                     </div>
                     <div class="d-flex">
                     </div>
@@ -86,7 +85,7 @@
                     <table class="table table-striped table-bordered text-center">
                         <thead>
                             <th>Periode</th>
-                            <th>Visiteurs</th>
+                            <th>Visite(s)</th>
                         </thead>
                         <tbody>
                             @foreach($statistique_frequentation as $item)

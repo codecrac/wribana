@@ -99,15 +99,22 @@ class MenbreController extends Controller
 
         $mot_de_passe_caher = md5($mot_de_passe);
 //        $le_menbre = Menbre::where('email','=',$identifiant)->orWhere('telephone','=',$identifiant)->first();
-        $le_menbre = Menbre::where('email', '=', $identifiant)->orWhere('telephone', '=', $identifiant)->where('mot_de_passe', '=', $mot_de_passe_caher)->first();
+        $le_menbre = Menbre::where('email', '=', $identifiant)
+            ->orWhere('telephone', '=', $identifiant) ->first();
 
         if ($le_menbre != null) {
-            $this->creer_session_menbre($le_menbre);
-            return redirect()->route('espace_menbre.accueil');
+            if( $mot_de_passe_caher == $le_menbre->mot_de_passe ){
+                $this->creer_session_menbre($le_menbre);
+                return redirect()->route('espace_menbre.accueil');
+            }else{
+                $message = "mot de passe Incorrect";
+                $notification = "<div class='alert alert-danger'> $message  </div>";
+                return redirect()->route('connexion_menbre')->with('notification', $notification);
+                return redirect()->route('connexion_menbre');
+            }
         } else {
-            $couleur = "danger";
             $message = "Identifiant ou Mot de passe Incorrect";
-            $notification = "<div class='alert alert-$couleur'> $message  </div>";
+            $notification = "<div class='alert alert-danger'> $message  </div>";
             return redirect()->route('connexion_menbre')->with('notification', $notification);
             return redirect()->route('connexion_menbre');
         }

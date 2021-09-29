@@ -3,6 +3,7 @@
 use App\Http\Controllers\EspaceMenbre;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\MenbreController;
+use App\Http\Controllers\NotificationPaiementCinetPay;
 use App\Models\StatistiqueFrequentation;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\File;
 Route::get('/', [FrontController::class,'accueil'])->name('accueil');
 
 Route::get('/projets-waricrowd', [FrontController::class,'decouvrir_projets'])->name('decouvrir_projets');
+
 Route::get('/details-projet/{id_crowd}', [FrontController::class,'details_projet'])->name('details_projet');
 
 Route::get('/comment-ca-marche', [FrontController::class,'comment_ca_marche'])->name('comment_ca_marche');
@@ -34,6 +36,9 @@ Route::get('/inscription-menbre', [MenbreController::class,'inscription_menbre']
 Route::post('/inscription-menbre', [MenbreController::class,'enregistrer_un_menbre'])->name('post_inscription_menbre');
 Route::post('/connexion-menbre',  [MenbreController::class,'connexion'])->name('post_connexion_menbre');
 
+
+Route::post('/', [FrontController::class,'accueil'])->name('accueil');//pour le retour apres paiement sur cinetpay
+Route::post('/projets-waricrowd', [FrontController::class,'decouvrir_projets'])->name('decouvrir_projets');//pour le retour apres paiement sur cinetpay
 Route::get('/linkstorage', function () {
     Artisan::call('storage:link');
 });
@@ -51,6 +56,8 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
 
     Route::get("/mon-compte/{id_menbre}",[EspaceMenbre::class,'profil'])->name('espace_menbre.profil');
     Route::post("/mon-compte/{id_menbre}",[EspaceMenbre::class,'modifier_profil'])->name('espace_menbre.post_profil');
+
+    Route::post("/confirmation-retrait-dargent",[EspaceMenbre::class,'confirmer_retrait_dargent'])->name('espace_menbre.confirmer_retrait_dargent');
 
 //    ===================Tontines======================
     Route::get("/mes-tontines",[EspaceMenbre::class,'liste_tontine'])->name('espace_menbre.liste_tontine');
@@ -81,6 +88,10 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
     //    ===================WARICROWD======================
     include 'waricrowd_route.php';
 });
+Route::post("/payer-ma-cotisation/reponse-tontine",[NotificationPaiementCinetPay::class,'notification_paiement_tontine'])->name('espace_menbre.notification_paiement_tontine');
+Route::post("/retour-paiement-soutenir-waricrowd/reponse-cinietpay",
+                [NotificationPaiementCinetPay::class,'reponse_paiement_soutenir_waricrowd'])
+                ->name('espace_menbre.reponse_paiement_soutien_waricrowd');
 Route::get("/notifier-les-retards-de-paiement-sur-tontine",[\App\Http\Controllers\SmsController::class,'notifier_retard_de_paiement_tontine'])->name('tontine.notifier_retard_de_paiement_tontine');
 
 

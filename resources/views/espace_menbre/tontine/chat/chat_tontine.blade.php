@@ -28,18 +28,22 @@
             padding: 10px;
             background-color: orange;
             border-radius: 5px;
+            min-width: 200px;
         }
 
         .mon_message{
             float: right;
+            text-align: right;
             margin: 5px;
             margin-left: 30px;
             padding: 10px;
             background-color: darkseagreen;
             border-radius: 5px;
+            min-width: 200px;
         }
         .auteur{
             font-size: 12px;
+            text-align: left !important;
         }
     </style>
 @endsection
@@ -58,7 +62,7 @@
                             @foreach($les_anciens_message as $item_message)
                                 <div class="conteneur_de_message">
                                     <div class="{{($item_message->id_menbre == $id_menbre_connecter) ? 'mon_message' :'un_message'}}">
-                                        <span class="auteur"> <b>{{$item_message->menbre_expediteur->nom_complet}}</b> <small>a écrit :</small> </span>
+                                        <div class="auteur"> <b>{{$item_message->menbre_expediteur->nom_complet}}</b> <small>a écrit :</small> </div>
                                         <h6>{{$item_message->message}}</h6>
                                         <small>{{date('d-m-Y H:i',strtotime($item_message->created_at))}}</small>
                                     </div>
@@ -68,7 +72,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form class="forms-sample" method="post" id="formulaire_envoi_message">
+                    <form class="forms-sample" method="get" action="#" id="formulaire_envoi_message">
                             <div class="form-group">
                                 <textarea class="form-control" rows="4" id="message" placeholder="Taper votre message ici"></textarea>
                             </div>

@@ -15,21 +15,30 @@
     <div class="container">
         <form>
             <div class="row">
-             <div class="col-md-3 text-center">
-                <h3>Categorie</h3>
-                <select name="id_categorie">
-                    @if($la_categorie !=null)
-                        <option value="{{$la_categorie->id}}">{{$la_categorie->titre}}</option>
-                    @else
-                        <option value>(selectionner)</option>
+             <div class="col-md-8 text-center">
+                
+                <div class='row'>
+                    <h3>Categorie</h3>
+                </div>
+                <div class='row'>
+                    <div  class='col-md-4' >
+                    <select name="id_categorie">
+                        @if($la_categorie !=null)
+                            <option value="{{$la_categorie->id}}">{{$la_categorie->titre}}</option>
+                        @else
+                            <option value>(selectionner)</option>
+                        @endif
                         <option value="0">Tout</option>
-                    @endif
-                    @foreach($liste_categorie as $item)
-                        <option value="{{$item['id']}}">{{$item->titre}}</option>
-                    @endforeach
-                </select>
-                 <br/>
-                 <button type="submit" class="btn btn-dark">Trier</button>
+                        @foreach($liste_categorie as $item)
+                            <option value="{{$item['id']}}">{{$item->titre}}</option>
+                        @endforeach
+                    </select>
+                    </div>
+                    <div  class='col-md-1 text-left' >
+                         <button type="submit" class="btn btn-dark">Trier</button>
+                     </div>
+                </div>
+                 
              </div>
             {{--<div class="col-md-3">
                 <h3>date de publication</h3>

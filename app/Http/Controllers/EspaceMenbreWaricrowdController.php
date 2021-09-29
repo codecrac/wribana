@@ -147,6 +147,33 @@ class EspaceMenbreWaricrowdController extends Controller
         return view('espace_menbre/waricrowd/details',compact('le_crowd','mes_transactions_pour_ce_crowd'));
     }
 
+  
+    public function confirmation_soutien_waricrowd(Request $request){
+        
+      //  dd(route('espace_menbre.reponse_paiement_soutien_waricrowd'));
+        
+        $la_session = session(MenbreController::$cle_session);
+        $id_menbre_connecter = $la_session['id'];
+        
+           $donnees_formulaire = $request->all();
+           $id_crowd = $donnees_formulaire['id_crowd'];
+           $montant_soutien = $donnees_formulaire['montant_soutien'];
+           $le_crowd = Waricrowd::find($id_crowd);
+           
+            $notre_custom_field = "id_menbre=$id_menbre_connecter&montant_soutien=$montant_soutien&id_crowd=$id_crowd"; 
+           return view('espace_menbre/waricrowd/confirmer_soutien_waricrowd',compact('notre_custom_field','montant_soutien','le_crowd'));
+    }
+
+
+    public function projets_soutenus(){
+        $la_session = session(MenbreController::$cle_session);
+        $id_menbre_connecter = $la_session['id'];
+
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        $projets_soutenus = $le_menbre->projets_soutenus;
+//        dd($projets_soutenus);
+        return view('espace_menbre/waricrowd/projets_soutenus',compact('projets_soutenus'));
+    }
 
 //    ================================================Utilitaire
     public  function formaterLienPitch($lien_pitch){
@@ -207,6 +234,9 @@ class EspaceMenbreWaricrowdController extends Controller
                 'titre_waricrowd'=>$le_crowd->titre,
                 'nom_createur_waricrowd'=>$le_crowd->createur->nom_complet];
             $this->recu_de_paiement_waricrowd($infos_pour_recu);
+            
+            $date_paiement = date('d/m/Y H:i');
+            $this->notifier_paiement_sms($le_menbre->telephone,$le_menbre->nom_complet,$montant_soutien,$le_crowd->titre,$date_paiement);
 
         }else{
             $notification = "<div class='alert alert-danger text-center'> Quelque chose s'est mal passé </div>";
@@ -228,20 +258,6 @@ class EspaceMenbreWaricrowdController extends Controller
 //        return $pdf->stream();
     }
 
-
-    public function projets_soutenus(){
-        $la_session = session(MenbreController::$cle_session);
-        $id_menbre_connecter = $la_session['id'];
-
-        $le_menbre = Menbre::find($id_menbre_connecter);
-        $projets_soutenus = $le_menbre->projets_soutenus;
-//        dd($projets_soutenus);
-        return view('espace_menbre/waricrowd/projets_soutenus',compact('projets_soutenus'));
-    }
-
-
-
-    //===============================================UTILITAIRE
     public static function envoyer_email_avec_fichier($destinaires,$sujet,$message,$chemin_fichier,$nom_fichier){
         $email = new PHPMailer();
         $email->SetFrom('no-reply@waribana.com', 'WARIBANA'); //Name is optional
@@ -253,5 +269,11 @@ class EspaceMenbreWaricrowdController extends Controller
         $email->AddAttachment($chemin_fichier, "$nom_fichier");
 
         return $email->Send();
+    }
+    
+     private function notifier_paiement_sms($numeropayeur,$nom_payeur,$montant_soutien,$titre_du_waricrowd,$date_paiement){
+         $numeropayeur = "225$numeropayeur";
+            $message_sms = "Soutien a hauteur de $montant_soutien F par $nom_payeur sur $titre_du_waricrowd le $date_paiement ";
+            SmsController::sms_info_bip("$numeropayeur",$message_sms);
     }
 }

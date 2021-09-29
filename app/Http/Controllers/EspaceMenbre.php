@@ -85,8 +85,8 @@ class EspaceMenbre extends Controller
                 $menbre_tontine->menbre_id = $id_menbre_connecter;
                 $menbre_tontine->tontine_id = $la_tontine->id;
                 if($menbre_tontine->save()){
-                    $route_liste_tontine = route('espace_menbre.liste_tontine');
-                    $notification = "<div class='alert alert-success text-center'> Votre tontine a bien été créé, <a href='$route_liste_tontine'>INVITER VOS AMI(E)S</a>  </div>";
+                    $route_details_tontine = route('espace_menbre.details_tontine',[$la_tontine->id]);
+                    $notification = "<div class='alert alert-success text-center'> Votre tontine a bien été créé, <a href='$route_details_tontine'>INVITER VOS AMI(E)S</a>  </div>";
                 }else{
                     $notification = "<div class='alert alert-danger text-center'> Un probleme est survenu </div>";
                 }
@@ -142,10 +142,17 @@ class EspaceMenbre extends Controller
     }
 
     public function details_tontine($id_tontine){
+
+
         $la_tontine = Tontine::find($id_tontine);
 
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
+
+        $id_menbre_qui_prend =null;
+        if($la_tontine->caisse != null){
+            $id_menbre_qui_prend = $la_tontine->caisse->menbre_qui_prend->id;
+        }
         $invitations_envoyees = Invitation::where("menbre_qui_invite",'=',$id_menbre_connecter)->where('id_tontine','=',$id_tontine)->get();
         if($la_tontine ==null){
             return redirect()->route('espace_menbre.liste_tontine');
@@ -162,11 +169,14 @@ class EspaceMenbre extends Controller
             //Eviter paiement multiple de cotisation par la meme personne pour le meme tour
             $a_deja_cotiser = Transaction::where("id_menbre",'=',$id_menbre_connecter)
                 ->where('id_tontine','=',$id_tontine)
-                ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)->first();
+                ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)
+                ->where('statut','=','ACCEPTED')
+                ->first();
             $a_deja_cotiser = ($a_deja_cotiser!=null) ? true : false;
 
             //Liste des transaction pour le tour courant
             $liste_ayant_cotiser = Transaction::where('id_tontine','=',$id_tontine)
+            ->where('statut','=','ACCEPTED')
                 ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)->get();
         }else{
             $liste_ayant_cotiser = [];
@@ -174,7 +184,14 @@ class EspaceMenbre extends Controller
         }
 
 
-        return view("espace_menbre.tontine.details_tontine",compact('la_tontine','invitations_envoyees','pret','a_deja_cotiser','liste_ayant_cotiser'));
+
+//a decoder a la notication;utiliser pour recuperer la trasaction sans l'id
+        $notre_custom_field = "id_menbre=$id_menbre_connecter&id_tontine=$id_tontine&id_menbre_qui_prend=$id_menbre_qui_prend";
+//        parse_str($a, $output);
+//        dd($output);
+        return view("espace_menbre.tontine.details_tontine",compact('la_tontine','invitations_envoyees',
+                            'pret','a_deja_cotiser','liste_ayant_cotiser',
+                            'notre_custom_field'));
     }
 
     public function ouvrir_tontine($id_tontine){
@@ -225,7 +242,7 @@ class EspaceMenbre extends Controller
         #envoi d'email ici
 
 
-        $adresse =  "https://" . $_SERVER['SERVER_NAME'] . "connexion-menbre";
+        $adresse =  "https://" . $_SERVER['SERVER_NAME'] .'/espace-menbre/invitations';
 
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
@@ -241,7 +258,7 @@ class EspaceMenbre extends Controller
             "REJOINS LA TONTINE $titre",
             "
                         Bonjour, le menbre $nom_complet de waribana vous invite a rejoindre la tontine <<$titre>>,
-                        Connecte ou inscris-toi pour repondre a son invitation;<br/>
+                        Connectez vous inscrivez-vous pour repondre a son invitation;
                         $adresse
             "
         );
@@ -613,6 +630,23 @@ class EspaceMenbre extends Controller
         return redirect()->back()->with('notification',$notification);
     }
 
+    public function confirmer_retrait_dargent(Request $request){
+        $donnees_formulaire = $request->input();
+        $la_session = session(MenbreController::$cle_session) ;
+        $id_menbre_connecter = $la_session['id'];
+        $mdp = $donnees_formulaire['mot_de_passe_actuel'];
+        $montant_retrait = $donnees_formulaire['montant'];
+        $mdp_md5 = md5($mdp);
+
+        $utlisateur_existe = Menbre::where('id','=',$id_menbre_connecter)->where('mot_de_passe','=',$mdp_md5)->first();
+        if($utlisateur_existe){
+//            dd('ok');
+            return view('espace_menbre/confirmer_retrait_dargent',compact('montant_retrait'));
+        }else{
+            $notification = "<div class='alert alert-danger text-center'> Mot de passe Incorrect </div>";
+            return redirect()->back()->with('notification',$notification);
+        };
+    }
 
 //=========================================FONCTION UTILITAIRE
     private function checkExistenceEmailPourAutrePersonne($email,$id_menbre){
@@ -648,7 +682,7 @@ class EspaceMenbre extends Controller
             $numero = "225$item_participant->telephone";
 //            dd($montant_cotisation);
 //            $montant_cotisation = number_format($montant_cotisation,0,',',' ');
-            $message_sms = "Paiement de $montant_cotisation F par $nom_cotiseur sur $titre_de_la_tontine le $date_paiement ";
+            $message_sms = "Paiement de $montant_cotisation F par $nom_cotiseur sur la totine <<$titre_de_la_tontine>> le $date_paiement ";
 //            dd($message_sms);
             SmsController::sms_info_bip("$numero",$message_sms);
         }

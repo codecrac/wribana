@@ -17,5 +17,7 @@ Route::get("/details-waricrowd/{id_crowd}",[EspaceMenbreWaricrowdController::cla
 Route::get("/editer-waricrowd/{id_crowd}",[EspaceMenbreWaricrowdController::class,'editer_crowd'])->name('espace_menbre.editer_crowd');
 
 Route::post("/soutenir-projet/{id_crowd}",[EspaceMenbreWaricrowdController::class,'soutenir_projet'])->name('espace_menbre.soutenir_projet');
+Route::post("/confirmation-de-soutien-wricrowd",[EspaceMenbreWaricrowdController::class,'confirmation_soutien_waricrowd'])->name('espace_menbre.confirmation_soutien_waricrowd');
+
 
 Route::get("/projets-soutenus",[EspaceMenbreWaricrowdController::class,'projets_soutenus'])->name('espace_menbre.projets_soutenus');

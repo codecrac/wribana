@@ -74,7 +74,7 @@
         if($frequence_en_jour >= 7){
             if($frequence_en_jour%7==0){
                 $nb_semaines = $frequence_en_jour/7;
-                $resultat = "$nb_semaines semaines";
+                $resultat = "$nb_semaines semaine(s)";
             }
         }
         return $resultat;

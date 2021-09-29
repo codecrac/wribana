@@ -18,6 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->foreignId('id_tontine');
             $table->foreignId('id_menbre');
             $table->integer('montant');
+            $table->integer('statut')->nullable();
             $table->foreignId('id_menbre_qui_prend');
             $table->timestamps();
         });
