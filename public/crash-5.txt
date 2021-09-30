@@ -1,16 +1,16 @@
-date/time         : 2021-09-22, 12:52:05, 129ms
+date/time         : 2021-09-22, 14:18:38, 446ms
 computer name     : DESKTOP-6HL0812
 user name         : yvess
 registered owner  : yvessantoz@gmail.com
 operating system  : Windows NT New x64 build 9200
 system language   : French
-system up time    : 4 hours 5 minutes
+system up time    : 5 hours 32 minutes
 program up time   : 3 seconds
 processors        : 3x Intel(R) Core(TM) i5-3437U CPU @ 1.90GHz
-physical memory   : 1630/8057 MB (free/total)
-free disk space   : (C:) 105,50 GB
+physical memory   : 1940/8057 MB (free/total)
+free disk space   : (C:) 105,30 GB
 display mode      : 1366x768, 32 bit
-process id        : $15bc
+process id        : $2588
 allocated memory  : 17,01 MB
 command line      : C:\xampp\sendmail\sendmail.exe -t -fno-reply@waribana.com
 executable        : sendmail.exe
@@ -20,9 +20,9 @@ madExcept version : 3.0l
 callstack crc     : $fecf9b34, $3e229a42, $3e229a42
 exception number  : 1
 exception class   : EIdSMTPReplyError
-exception message : Username and Password not accepted. Learn more at https://support.google.com/mail/?p=BadCredentials h18sm2094395wrb.33 - gsmtp.
+exception message : Username and Password not accepted. Learn more at https://support.google.com/mail/?p=BadCredentials a75sm2327082wmd.4 - gsmtp.
 
-main thread ($1e5c):
+main thread ($4d0):
 0045918a +003e sendmail.exe IdReplySMTP     501   +1 TIdReplySMTP.RaiseReplyError
 0043ff28 +0008 sendmail.exe IdTCPConnection 576   +0 TIdTCPConnection.RaiseExceptionForLastCmdResult
 004402f4 +003c sendmail.exe IdTCPConnection 751  +10 TIdTCPConnection.CheckResponse
@@ -33,22 +33,19 @@ main thread ($1e5c):
 004b5f81 +10cd sendmail.exe sendmail        822 +340 initialization
 7743fa27 +0017 KERNEL32.DLL                          BaseThreadInitThunk
 
-thread $8b0:
+thread $16f0:
 7743fa27 +17 KERNEL32.DLL  BaseThreadInitThunk
 
-thread $ac0:
-7743fa27 +17 KERNEL32.DLL  BaseThreadInitThunk
-
-thread $23f8:
+thread $2158:
 7743fa27 +17 KERNEL32.DLL  BaseThreadInitThunk
 
 stack dump:
 0019fcb4  8f 91 45 00 de fa ed 0e - 01 00 00 00 07 00 00 00  ..E.............
-0019fcc4  c8 fc 19 00 8f 91 45 00 - a8 cb 4d 02 98 1d 4f 02  ......E...M...O.
+0019fcc4  c8 fc 19 00 8f 91 45 00 - 90 cb 3e 02 98 1d 40 02  ......E...>...@.
 0019fcd4  00 00 00 00 17 02 00 00 - f8 fc 19 00 e4 fc 19 00  ................
 0019fce4  38 fd 19 00 c8 4b 40 00 - f8 fc 19 00 34 a5 45 00  8....K@.....4.E.
 0019fcf4  00 00 00 00 14 fd 19 00 - 2b ff 43 00 f7 02 44 00  ........+.C...D.
-0019fd04  00 00 00 00 80 fd 19 00 - 80 fd 19 00 b0 e6 47 02  ..............G.
+0019fd04  00 00 00 00 80 fd 19 00 - 80 fd 19 00 b0 d9 38 02  ..............8.
 0019fd14  2c fd 19 00 bd fe 43 00 - 00 00 00 00 94 34 46 00  ,.....C......4F.
 0019fd24  00 00 00 00 34 a5 45 00 - 58 fd 19 00 8a ff 43 00  ....4.E.X.....C.
 0019fd34  00 00 00 00 68 fd 19 00 - c8 4b 40 00 58 fd 19 00  ....h....K@.X...
@@ -60,7 +57,7 @@ stack dump:
 0019fd94  a0 fd 19 00 c8 4b 40 00 - d0 fd 19 00 d8 fd 19 00  .....K@.........
 0019fda4  c8 4b 40 00 d0 fd 19 00 - ff 00 00 00 bf 5a 40 00  .K@..........Z@.
 0019fdb4  00 00 00 00 00 00 00 00 - eb 00 4e 01 00 00 00 00  ..........N.....
-0019fdc4  d0 6a 4c 02 00 00 00 00 - b0 e6 47 02 70 ff 19 00  .jL.......G.p...
+0019fdc4  d0 69 3d 02 00 00 00 00 - b0 d9 38 02 70 ff 19 00  .i=.......8.p...
 0019fdd4  87 5f 4b 00 e4 fd 19 00 - c8 4b 40 00 70 ff 19 00  ._K......K@.p...
 0019fde4  f0 fd 19 00 c8 4b 40 00 - 70 ff 19 00 fc fd 19 00  .....K@.p.......
 

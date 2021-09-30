@@ -15,9 +15,47 @@ class MenbreController extends Controller
 
     public function connexion_menbre()
     {
-//        $this->sms_info_bip();
-//        $this->envoyer_sms();
         return view('connexion_menbre');
+    }
+    public function reinitialiser_mot_de_passe()
+    {
+        return view('reinitialiser_mot_de_passe');
+
+    }
+    public function post_reinitialiser_mot_de_passe(Request $request)
+    {
+        $donnees_formulaire = $request->input();
+        $identifiant = $donnees_formulaire['identifiant'];
+//        dd($telephone);
+
+
+        $notification = "<div class='alert alert-info'> Un message de recuperation de compte vous été envoyer par sms et par email. </div> ";
+        $le_menbre = Menbre::where('telephone','=',$identifiant)->orWhere('email','=',$identifiant)->first();
+//        dd($le_menbre);
+        if($le_menbre != null){
+            $nouveau_mdp = intdiv( time() ,99) * rand(1111,9999) ;
+            $mdp_cacher = md5($nouveau_mdp);
+
+            $telephone = $le_menbre->telephone;
+            $message = "Bonjour,votre mot de passe a bien été reinitialiser, utilisez le nouveau mot de passe pour vous connecter puis changez le.             mot de passe : $nouveau_mdp ";
+            SmsController::sms_info_bip($telephone,$message);
+
+            $email = $le_menbre->email;
+            if($email!=null){
+
+                $headers = 'From: no-reply@waribana.com' . "\r\n";
+                mail($email,'REINITIALISATION DE MOT DE PASSE',$message);
+            }
+
+//            dd($nouveau_mdp,$email);
+
+            $le_menbre->mot_de_passe = $mdp_cacher;
+            $le_menbre->save();
+        }else{
+            $notification = "<div class='alert alert-info'> Ce numero de telephone n'est associé à aucun compte. </div> ";
+        }
+
+        return redirect()->back()->with('notification',$notification);
 
     }
 
@@ -137,7 +175,7 @@ class MenbreController extends Controller
             }
         }
 
-        return view("espace_menbre/confirmation_de_compte", compact('le_menbre'));
+        return view("espace_menbre/profil/confirmation_de_compte", compact('le_menbre'));
     }
 
     public function post_confirmer_compte_menbre(Request $request)
@@ -145,7 +183,8 @@ class MenbreController extends Controller
         $la_session = session(MenbreController::$cle_session);
         if ($la_session == null) {
             return redirect()->route('connexion_menbre');
-        } else {
+        }
+        else {
             $id_menbre_connecter = $la_session['id'];
             $le_menbre = Menbre::find($id_menbre_connecter);
             if ($le_menbre == null) {
@@ -159,10 +198,10 @@ class MenbreController extends Controller
         $donnees_formulaire = $request->all();
         $telephone = $donnees_formulaire['telephone'];
         if (is_numeric($telephone)) {
-            if (strlen($telephone) == 10) {
+            if (strlen($telephone) >= 10) {
                 $le_menbre->telephone = $telephone;
                 $le_menbre->save();
-                $le_numero = "225$telephone";
+                $le_numero = "$telephone";
                 $code = $le_menbre->code_de_confirmation;
 //                dd($code);
                 $contenu_notification = SmsContenuNotification::first();
@@ -177,7 +216,7 @@ class MenbreController extends Controller
         } else {
             return redirect()->back()->with('notification', $notification);
         };
-        return view("espace_menbre/confirmation_de_compte", compact('le_menbre'));
+        return view("espace_menbre/profil/confirmation_de_compte", compact('le_menbre'));
     }
 
     public function entrer_code_confirmation()
@@ -195,7 +234,7 @@ class MenbreController extends Controller
             }
         }
 
-        return view("espace_menbre/entrer_code_confirmation", compact('le_menbre'));
+        return view("espace_menbre/profil/entrer_code_confirmation", compact('le_menbre'));
     }
 
     public function post_entrer_code_confirmation(Request $request)
@@ -253,52 +292,6 @@ class MenbreController extends Controller
         $id_menbre = $le_menbre->id;
         $nom_complet = $le_menbre->nom_complet;
         session()->put(MenbreController::$cle_session, ['id' => $id_menbre, 'nom_complet' => $nom_complet]);
-    }
-
-
-    function envoyer_sms()
-    {
-
-        $login = "personnepersonnepersonneperson@gmail.com";
-        $apikey = "zLCZOElBHe2pUTk80Fm1swdDxrXPWNia";
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.octopush.com/v1/public/sms-campaign/send");
-        curl_setopt($ch, CURLOPT_POST, true);
-
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Content-Type:application/json",
-            "api-key:$apikey",
-            "api-login:$login",
-            "Cache-Control:no-cache",
-            "Accept:application/json",
-            "cache-control:no-cache"
-        ));
-
-        $datas = array(
-            "recipients" => [
-                "phone_number" => "+2250555994041",
-                "first_name" => "Axelle",
-                "last_name" => "Durand",
-                "param3" => "Mme",
-                "text" => "Voici un SMS Premium avec mention STOP. STOP au 30101",
-                "type" => "sms_premium", "purpose" => "wholesale", "sender" => "Entreprise"
-            ]
-        );
-
-        // dd($les_donnees,json_encode($datas));
-        // curl_setopt($ch, CURLOPT_POSTFIELDS, $les_donnees);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($datas));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);//recuperer le contenu de notre requete
-
-        $response = curl_exec($ch); //executer et recuperer la reponse
-
-        if (curl_errno($ch)) {
-            echo curl_error($ch);
-        }
-        curl_close($ch);
-        dd($response);
     }
 
 }

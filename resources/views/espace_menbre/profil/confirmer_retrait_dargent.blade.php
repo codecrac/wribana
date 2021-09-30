@@ -1,6 +1,5 @@
 <?php
 $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
-
 //========================================================utile pour cinetpay
 
 //token indispensable pour les requetes cote api de transfert valable 5minutes
@@ -10,10 +9,10 @@ $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
 //    $solde = \App\Http\Controllers\CinetpayApiTransfertController::recuperer_le_solde_du_compte_cinetpay();
 //    dd($solde);
 
-//    $response = \App\Http\Controllers\CinetpayApiTransfertController::ajouter_un_contact();
-//    dd($response);
+    $response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait($le_menbre);
+    dd($response);
 
-    $response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait();
+    //$response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait();
 //    dd($response);
 ?>
 

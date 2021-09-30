@@ -35,6 +35,8 @@ Route::get('/inscription-menbre', [MenbreController::class,'inscription_menbre']
 
 Route::post('/inscription-menbre', [MenbreController::class,'enregistrer_un_menbre'])->name('post_inscription_menbre');
 Route::post('/connexion-menbre',  [MenbreController::class,'connexion'])->name('post_connexion_menbre');
+Route::get('/reinitialiser-mot-de-passe',  [MenbreController::class,'reinitialiser_mot_de_passe'])->name('reinitialiser_mot_de_passe');
+Route::post('/reinitialiser-mot-de-passe',  [MenbreController::class,'post_reinitialiser_mot_de_passe'])->name('post_reinitialiser_mot_de_passe');
 
 
 Route::post('/', [FrontController::class,'accueil'])->name('accueil');//pour le retour apres paiement sur cinetpay
@@ -49,45 +51,26 @@ Route::post('/espace-menbre/confirmation',  [MenbreController::class,'post_confi
 
 Route::get('/espace-menbre/entrer-code-de-confirmation',  [MenbreController::class,'entrer_code_confirmation'])->name('espace_menbre.entrer_code_confirmation');
 Route::post('/espace-menbre/entrer-code-de-confirmation',  [MenbreController::class,'post_entrer_code_confirmation'])->name('post_espace_menbre.entrer_code_confirmation');
+
+#===================================================================
+                        #espace-menbre
 #===================================================================
 Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function (){
-    Route::get("/",[EspaceMenbre::class,'accueil'])->name('espace_menbre.accueil');
-    Route::get("/deconnexion",[EspaceMenbre::class,'deconnexion'])->name('espace_menbre.deconnexion');
 
-    Route::get("/mon-compte/{id_menbre}",[EspaceMenbre::class,'profil'])->name('espace_menbre.profil');
-    Route::post("/mon-compte/{id_menbre}",[EspaceMenbre::class,'modifier_profil'])->name('espace_menbre.post_profil');
-
-    Route::post("/confirmation-retrait-dargent",[EspaceMenbre::class,'confirmer_retrait_dargent'])->name('espace_menbre.confirmer_retrait_dargent');
+//    ===================PROFIL MENBRES======================
+    include 'profil_espace_menbre_route.php';
 
 //    ===================Tontines======================
-    Route::get("/mes-tontines",[EspaceMenbre::class,'liste_tontine'])->name('espace_menbre.liste_tontine');
-    Route::get("/details-tontines/{id_tontine}",[EspaceMenbre::class,'details_tontine'])->name('espace_menbre.details_tontine');
-    Route::post("/details-tontines/{id_tontine}",[EspaceMenbre::class,'ouvrir_tontine'])->name('espace_menbre.ouvrir_tontine');
+    include 'tontine_espace_menbre_route.php';
 
-    Route::get("/inviter-des-amis-dans-la-tontine/{id_tontine}",[EspaceMenbre::class,'inviter_des_amis'])->name('espace_menbre.inviter_des_amis');
-    Route::post("/inviter-des-amis-dans-la-tontine/{id_tontine}",[EspaceMenbre::class,'envoyer_invitation'])->name('espace_menbre.post_inviter_des_amis');
-
-    Route::get("/editer-une-tontine/{id_tontine}",[EspaceMenbre::class,'editer_tontine'])->name('espace_menbre.editer_tontine');
-    Route::put("/editer-une-tontine/{id_tontine}",[EspaceMenbre::class,'modifier_tontine'])->name('espace_menbre.post_editer_tontine');
-
-    Route::get("/creer-une-tontine",[EspaceMenbre::class,'ajouter_tontine'])->name('espace_menbre.ajouter_tontine');
-    Route::post("/creer-une-tontine",[EspaceMenbre::class,'enregistrer_tontine'])->name('espace_menbre.post_ajouter_tontine');
-
-
-    Route::get("/invitations",[EspaceMenbre::class,'invitations'])->name('espace_menbre.invitations');
-    Route::post("/invitations/{id_invitation}",[EspaceMenbre::class,'reponse_invitation'])->name('espace_menbre.reponse_invitation');
-    Route::post("/invitations-via-code",[EspaceMenbre::class,'adhesion_via_code_invitation'])->name('espace_menbre.adhesion_via_code_invitation');
-
-    Route::post("/payer-ma-cotisation/{id_tontine}",[EspaceMenbre::class,'paiement_cotisation'])->name('espace_menbre.paiement_cotisation');
-
-
-    Route::get("/recu_de_paiement_tontine",[EspaceMenbre::class,'recu_de_paiement_tontine'])->name('espace_menbre.recu_de_paiement');
-    Route::get("/chat/{id_tontine}",[EspaceMenbre::class,'chat_tontine'])->name('espace_menbre.chat_tontine');
-    Route::post("/chat/{id_tontine}",[EspaceMenbre::class,'chat_tontine_envoyer_message'])->name('espace_menbre.chat_tontine_envoyer_message');
-    Route::get("/qui-est-en-ligne/{id_tontine}",[EspaceMenbre::class,'chat_tontine_qui_est_en_ligne'])->name('espace_menbre.chat_tontine_qui_est_en_ligne');
-    //    ===================WARICROWD======================
+ //    ===================WARICROWD======================
     include 'waricrowd_route.php';
 });
+
+Route::get("/deconnexion",[EspaceMenbre::class,'deconnexion'])->name('espace_menbre.deconnexion');
+
+
+
 Route::post("/payer-ma-cotisation/reponse-tontine",[NotificationPaiementCinetPay::class,'notification_paiement_tontine'])->name('espace_menbre.notification_paiement_tontine');
 Route::post("/retour-paiement-soutenir-waricrowd/reponse-cinietpay",
                 [NotificationPaiementCinetPay::class,'reponse_paiement_soutenir_waricrowd'])

@@ -10,6 +10,7 @@ use App\Models\CompteMenbre;
 use App\Models\Invitation;
 use App\Models\Menbre;
 use App\Models\MenbreTontine;
+use App\Models\SmsContenuNotification;
 use App\Models\Tontine;
 use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -475,9 +476,9 @@ class EspaceMenbre extends Controller
                     $la_caisse_de_la_tontine->montant = 0;
                     $la_caisse_de_la_tontine->save();
 
-                    $la_tontine->etat = 'fermee';
+                    $la_tontine->etat = 'terminer';
                     $la_tontine->save();
-                    $notification = " <div class='alert alert-warning text-center'> Operation bien effectuée, Fin,La tontine est complete </div>";
+                    $notification = " <div class='alert alert-warning text-center'> Operation bien effectuée, La tontine est complete (Terminer) </div>";
                 }
 
             }
@@ -503,6 +504,8 @@ class EspaceMenbre extends Controller
 //        dd($chemin_fichier,$nom_fichier,$rep);
 //        return $pdf->stream();
     }
+
+//    ===================CHAT======================
 
     public function chat_tontine($id_tontine){
 
@@ -559,7 +562,7 @@ class EspaceMenbre extends Controller
 //====================== PROFIL=======================
     public function profil($id_menbre){
         $le_menbre = Menbre::find($id_menbre);
-        return view('espace_menbre/profil',compact('le_menbre'));
+        return view('espace_menbre/profil/profil',compact('le_menbre'));
     }
 
     public function modifier_profil(Request $request,$id_menbre){
@@ -572,7 +575,7 @@ class EspaceMenbre extends Controller
 
         if($bon_mot_de_passe){
             $nom_complet = $donnee_formulaire['nom_complet'];
-            $telephone = $donnee_formulaire['telephone'];
+//            $telephone = $donnee_formulaire['telephone'];
             $email = $donnee_formulaire['email'];
             $mot_de_passe = $donnee_formulaire['mot_de_passe'];
             $confirmer_mot_de_passe = $donnee_formulaire['confirmer_mot_de_passe'];
@@ -588,18 +591,18 @@ class EspaceMenbre extends Controller
                 }
             }
 
-            $telephone_existe_deja = $this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre);
+          /*  $telephone_existe_deja = $this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre);
             if($telephone_existe_deja){
                 $message = "Ce numero de telephone a déja utilisé par une autre personne";
                 $notification = "<div class='alert alert-$couleur'> $message  </div>";
                 return redirect()->back()->with('notification',$notification);
-            }
+            }*/
 
 //        ---------------Verifie mot de passe et enregistrement
 
             $le_menbre = Menbre::find($id_menbre);
             $le_menbre->nom_complet = $nom_complet;
-            $le_menbre->telephone = $telephone;
+//            $le_menbre->telephone = $telephone;
             $le_menbre->email = $email;
 
             if(!empty($mot_de_passe) && !empty($confirmer_mot_de_passe) ){
@@ -630,9 +633,99 @@ class EspaceMenbre extends Controller
         return redirect()->back()->with('notification',$notification);
     }
 
+
+    public function modifier_telephone_compte(Request $request){
+        $la_session = session(MenbreController::$cle_session);
+        if ($la_session == null) {
+            return redirect()->route('connexion_menbre');
+        } else {
+            $id_menbre_connecter = $la_session['id'];
+            $le_menbre = Menbre::find($id_menbre_connecter);
+            if ($le_menbre == null) {
+                return redirect()->route('connexion_menbre');
+            } elseif ($le_menbre->etat != 'actif') {
+                return redirect()->route('espace_menbre.deconnexion');
+            }
+        }
+
+        //nouveau code
+        $code_de_confirmation = rand(1111, 9999) * 12;
+        $le_menbre->code_de_confirmation = $code_de_confirmation;
+        $le_menbre->save();
+
+        $notification = "<div class='alert alert-danger text-center'>Numero Invalide</div>";
+        $donnees_formulaire = $request->all();
+        $telephone = $donnees_formulaire['nouveau_telephone'];
+        if (is_numeric($telephone)) {
+            if (strlen($telephone) >= 10) {
+                $le_numero = $telephone;
+                $code = $le_menbre->code_de_confirmation;
+//                dd($code);
+                $contenu_notification = SmsContenuNotification::first();
+                $message_confirmation = $contenu_notification['confirmation_compte'];
+                $le_message = str_replace('$code$',$code,$message_confirmation);
+//                dd($le_numero);
+                SmsController::sms_info_bip($le_numero, $le_message);
+//                return redirect()->route('espace_menbre.entrer_code_confirmation_pour_modification',compact('le_numero'));
+                return view('espace_menbre/profil/entrer_code_confirmation_pour_modification',compact('le_numero'));
+            } else {
+                return redirect()->back()->with('notification', $notification);
+            }
+        } else {
+            return redirect()->back()->with('notification', $notification);
+        };
+    }
+
+    public function entrer_code_confirmation_pour_modification(){
+
+        $la_session = session(MenbreController::$cle_session);
+        if ($la_session == null) {
+            return redirect()->route('connexion_menbre');
+        } else {
+            $id_menbre_connecter = $la_session['id'];
+            $le_menbre = Menbre::find($id_menbre_connecter);
+            if ($le_menbre == null) {
+                return redirect()->route('connexion_menbre');
+            } elseif ($le_menbre->etat != 'actif') {
+                return redirect()->route('espace_menbre.deconnexion');
+            }
+        }
+
+        return view("espace_menbre/profil/entrer_code_confirmation_pour_modification", compact('le_menbre'));
+    }
+
+    public function post_entrer_code_confirmation_pour_modification(Request $request)
+    {
+        $la_session = session(MenbreController::$cle_session);
+        if ($la_session == null) {
+            return redirect()->route('connexion_menbre');
+        } else {
+            $id_menbre_connecter = $la_session['id'];
+            $le_menbre = Menbre::find($id_menbre_connecter);
+            if ($le_menbre == null) {
+                return redirect()->route('connexion_menbre');
+            } elseif ($le_menbre->etat != 'actif') {
+                return redirect()->route('connexion_menbre');
+            }
+        }
+
+        $donnees_formulaire = $request->all();
+        $le_code = $donnees_formulaire['code'];
+        $nouveau_telephone = $donnees_formulaire['nouveau_telephone'];
+        if ($le_code == $le_menbre->code_de_confirmation) {
+            $le_menbre->telephone = $nouveau_telephone;
+            $le_menbre->save();
+            $notification = "<div class='alert alert-success text-center'>Operation bien effectuée.</div>";
+            return redirect()->route('espace_menbre.profil',[$id_menbre_connecter])->with('notification',$notification);
+        }else {
+            $notification = "<div class='alert alert-danger text-center'>code invalide, rééssayez.</div>";
+            return redirect()->route('espace_menbre.profil',[$id_menbre_connecter])->with('notification', $notification);
+        }
+    }
+
     public function confirmer_retrait_dargent(Request $request){
         $donnees_formulaire = $request->input();
-        $la_session = session(MenbreController::$cle_session) ;
+        $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
         $mdp = $donnees_formulaire['mot_de_passe_actuel'];
         $montant_retrait = $donnees_formulaire['montant'];
@@ -641,14 +734,16 @@ class EspaceMenbre extends Controller
         $utlisateur_existe = Menbre::where('id','=',$id_menbre_connecter)->where('mot_de_passe','=',$mdp_md5)->first();
         if($utlisateur_existe){
 //            dd('ok');
-            return view('espace_menbre/confirmer_retrait_dargent',compact('montant_retrait'));
+            $le_menbre = Menbre::find($id_menbre_connecter);
+//            dd($le_menbre);
+            return view('espace_menbre/profil/confirmer_retrait_dargent',compact('montant_retrait','le_menbre'));
         }else{
             $notification = "<div class='alert alert-danger text-center'> Mot de passe Incorrect </div>";
             return redirect()->back()->with('notification',$notification);
         };
     }
 
-//=========================================FONCTION UTILITAIRE
+//=========================================FONCTION UTILITAIRE=======================================
     private function checkExistenceEmailPourAutrePersonne($email,$id_menbre){
         $menbre_existant = Menbre::where('email','=',$email)->where('id','!=',$id_menbre)->first();
         if($menbre_existant != null){
@@ -679,7 +774,7 @@ class EspaceMenbre extends Controller
 
     private function notifier_paiement_cotisation($liste_participants,$nom_cotiseur,$montant_cotisation,$titre_de_la_tontine,$date_paiement){
         foreach($liste_participants as $item_participant){
-            $numero = "225$item_participant->telephone";
+            $numero = "$item_participant->telephone";
 //            dd($montant_cotisation);
 //            $montant_cotisation = number_format($montant_cotisation,0,',',' ');
             $message_sms = "Paiement de $montant_cotisation F par $nom_cotiseur sur la totine <<$titre_de_la_tontine>> le $date_paiement ";

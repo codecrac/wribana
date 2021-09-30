@@ -39,8 +39,8 @@
                 <div class="col-auto">
                     <div class="common-heading mb-30">
 							<span class="tagline">
-								<i class="fas fa-plus"></i> Avantages
-								<span class="heading-shadow-text">Avantages</span>
+{{--								<i class="fas fa-plus"></i>--}}
+								<span class="heading-shadow-text"></span>
 							</span>
                         <h2 class="title">Pourquoi Nous</h2>
                     </div>
@@ -58,7 +58,7 @@
                     </div>
                     <div class="content">
                         <h4 class="title"><a href="project-details.html">Confiance</a></h4>
-                        <p>Nous sommes une organisation Certifiées </p>
+                        <p>Une organisation certifiée</p>
                     </div>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                     </div>
                     <div class="content">
                         <h4 class="title"><a href="project-details.html">Flexible</a></h4>
-                        <p>Faire de la tontine avec des personnes de confiance sans être à proximité.</p>
+                        <p>Faire la tontine avec des personnes de confiance sans être à proximité</p>
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="content">
                         <h4 class="title"><a href="project-details.html">Securisée</a></h4>
-                        <p>Toutes vos transactions sont securisées, nous n'avons accès a vos comptes que lorsque vous effectué des operations</p>
+                        <p>Toutes les transactions sont sécurisées </p>
                     </div>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                     </div>
                     <div class="content">
                         <h4 class="title"><a href="project-details.html">Service Client</a></h4>
-                        <p>Nous sommes là pour vous,vous disposez d'un service client très réactif disponible pour vous aidez 7jours/7 </p>
+                        <p>Un service client très réactif et disponible 7jours/7</p>
                     </div>
                 </div>
             </div>
@@ -102,7 +102,7 @@
                     </div>
                     <div class="content">
                         <h4 class="title"><a href="project-details.html">Pratique</a></h4>
-                        <p> Retirez votre argent quelque soit l'endroit et avec le moyen de paiement qui vous convient </p>
+                        <p>Retirez votre argent quelque soit l’endroit et avec le moyen de paiement qui vous convient</p>
                     </div>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                     </div>
                     <div class="content">
                         <h4 class="title"><a href="project-details.html">Commençons</a></h4>
-                        <p>Faites un pas vers une epargne plus sûr </p>
+                        <p>Faites un pas vers une épargne plus sûre</p>
                     </div>
                 </div>
             </div>
@@ -135,13 +135,13 @@
                 <div class="about-text mt-md-70 mb-md-50">
                     <div class="common-heading mb-30">
 							<span class="tagline">
-								<i class="fas fa-plus"></i> Qui Sommes Nous
-								<span class="heading-shadow-text">Nous</span>
+{{--								<i class="fas fa-plus"></i> Qui Sommes Nous--}}
+								<span class="heading-shadow-text">{{--Nous--}}</span>
 							</span>
                         <h2 class="title">Waribana</h2>
                     </div>
                     <p>
-                        Une solution d’entraide, d’ou, une plateforme destinée à toutes personnes souhaitant épargner ou collecter des fonds.
+                        Une solution d’entraide, d’où, une plateforme destinée à toutes personnes souhaitant épargner ou collecter des fonds.
                     </p>
 
                     <a href="#avantages" class="main-btn wow fadeInUp" data-wow-delay="0.5s">

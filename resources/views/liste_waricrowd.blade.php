@@ -15,44 +15,43 @@
     <div class="container">
         <form>
             <div class="row">
-             <div class="col-md-8 text-center">
-                
-                <div class='row'>
-                    <h3>Categorie</h3>
-                </div>
-                <div class='row'>
-                    <div  class='col-md-4' >
-                    <select name="id_categorie">
-                        @if($la_categorie !=null)
-                            <option value="{{$la_categorie->id}}">{{$la_categorie->titre}}</option>
-                        @else
-                            <option value>(selectionner)</option>
-                        @endif
-                        <option value="0">Tout</option>
-                        @foreach($liste_categorie as $item)
-                            <option value="{{$item['id']}}">{{$item->titre}}</option>
-                        @endforeach
-                    </select>
+                <div class="col-md-8">
+                    <div class='row'>
+                        <div class="col-md-2 pt-2">
+                            <h4>Categorie</h4>
+                        </div>
+                        <div class='col-md-4'>
+                            <select name="id_categorie">
+                                @if($la_categorie !=null)
+                                    <option value="{{$la_categorie->id}}">{{$la_categorie->titre}}</option>
+                                @else
+                                    <option value>(selectionner)</option>
+                                @endif
+                                <option value="0">Toutes les categories</option>
+                                @foreach($liste_categorie as $item)
+                                    <option value="{{$item['id']}}">{{$item->titre}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class='col-md-1 text-left pt-2' >
+                            <button type="submit" class="btn btn-dark">Trier</button>
+                        </div>
                     </div>
-                    <div  class='col-md-1 text-left' >
-                         <button type="submit" class="btn btn-dark">Trier</button>
-                     </div>
+
                 </div>
-                 
-             </div>
-            {{--<div class="col-md-3">
-                <h3>date de publication</h3>
-                <input type="date" name="date_publication" value="{{$date_publication}}" />
+                {{--<div class="col-md-3">
+                    <h3>date de publication</h3>
+                    <input type="date" name="date_publication" value="{{$date_publication}}" />
+                </div>
+                <div class="col-md-3">
+                    <h3>Nom du projet</h3>
+                    <input type="text" name="mot_cle" value="{{$mot_cle}}" />
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-dark">Trier</button>
+                </div>
+                    --}}
             </div>
-            <div class="col-md-3">
-                <h3>Nom du projet</h3>
-                <input type="text" name="mot_cle" value="{{$mot_cle}}" />
-            </div>
-            <div class="col-md-1">
-                <button type="submit" class="btn btn-dark">Trier</button>
-            </div>
-                --}}
-         </div>
         </form>
     </div>
     <!--====== Project Area Start ======-->
@@ -62,41 +61,46 @@
 
                 @foreach($liste_waricrowd as $item_crowd)
                     <div class="col-lg-4 col-md-6 col-sm-10">
-                    <div class="project-item mb-30">
-                        <div class="thumb" style="background-image: url({{$item_crowd['image_illustration']}});"></div>
-                        <div class="content">
-                            <div class="cats">
-                                <a href="{{route('details_projet',[$item_crowd->id])}}">{{$item_crowd->categorie->titre}}</a>
-                            </div>
-                       {{--     <div class="author">
-                                <img src="assets/img/author-thumbs/01.jpg" alt="Thumb">
-                                <a href="#">James W. Barrows</a>
-                            </div>--}}
-                            <h5>
-                                <a href="{{route('details_projet',[$item_crowd->id])}}">{{Str::limit($item_crowd['titre'], $limit = 120, $end = '...')}}</a>
-                            </h5>
-                            <div class="project-stats">
-                                @php
-                                    $pourcentage = round($item_crowd->caisse->montant *100 / $item_crowd->caisse->montant_objectif,2);
-                                @endphp
-                                @if($pourcentage > 0)
-                                    <div class="stats-value">
-                                        <span class="value-title">Montant atteind : <span class="value"> {{number_format($item_crowd->caisse->montant,0,',',' ')}}F </span></span>
-                                        <span class="stats-percentage">{{$pourcentage}}%</span>
-                                    </div>
-                                    <div class="stats-bar" data-value="{{$pourcentage}}">
-                                        <div class="bar-line"></div>
-                                    </div>
-                                @endif
-                            </div>
-                            <span class="date"><i class="far fa-calendar-alt"></i> {{date('d-m-Y',strtotime($item_crowd['created_at']))}}</span>
+                        <div class="project-item mb-30">
+                            <div class="thumb"
+                                 style="background-image: url({{$item_crowd['image_illustration']}});"></div>
+                            <div class="content">
+                                <div class="cats">
+                                    <a href="?id_categorie={{$item_crowd->categorie->id}}">{{$item_crowd->categorie->titre}}</a>
+                                </div>
+                                {{--     <div class="author">
+                                         <img src="assets/img/author-thumbs/01.jpg" alt="Thumb">
+                                         <a href="#">James W. Barrows</a>
+                                     </div>--}}
+                                <h5>
+                                    <a href="{{route('details_projet',[$item_crowd->id])}}">{{Str::limit($item_crowd['titre'], $limit = 120, $end = '...')}}</a>
+                                </h5>
+                                <div class="project-stats">
+                                    @php
+                                        $pourcentage = round($item_crowd->caisse->montant *100 / $item_crowd->caisse->montant_objectif,2);
+                                    @endphp
+                                    @if($pourcentage > 0)
+                                        <div class="stats-value">
+                                            <span class="value-title">Montant atteind : <span class="value"> {{number_format($item_crowd->caisse->montant,0,',',' ')}}F </span></span>
+                                            <span class="stats-percentage">{{$pourcentage}}%</span>
+                                        </div>
+                                        <div class="stats-bar" data-value="{{$pourcentage}}">
+                                            <div class="bar-line"></div>
+                                        </div>
+                                    @else
+                                        <!-- div pour maintenir l'alignement -->
+                                        <div style="height: 40px"></div>
+                                    @endif
+                                </div>
+                                <span class="date"><i class="far fa-calendar-alt"></i> {{date('d-m-Y',strtotime($item_crowd['created_at']))}}</span>
 
-                            <h3 class="text-center">
-                                <a class="btn btn-dark" href="{{route('details_projet',[$item_crowd->id])}}">Decouvrir le projet</a>
-                            </h3>
+                                <h3 class="text-center">
+                                    <a class="btn btn-dark" href="{{route('details_projet',[$item_crowd->id])}}">Decouvrir
+                                        le projet</a>
+                                </h3>
+                            </div>
                         </div>
                     </div>
-                </div>
                 @endforeach
 
                 {{--<div class="col-12">

@@ -47,10 +47,10 @@
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="navbar-brand-wrapper d-flex justify-content-center">
             <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">
-                <a class="navbar-brand brand-logo" href="{{route('decouvrir_projets')}}">
+                <a class="navbar-brand brand-logo" href="{{route('accueil')}}">
                     Waribana
                 </a>
-                <a class="navbar-brand brand-logo-mini" href="{{route('decouvrir_projets')}}">
+                <a class="navbar-brand brand-logo-mini" href="{{route('accueil')}}">
                     <img src="/assets/images/logo-waribana.png" alt="logo"/>
 {{--                    Waribana--}}
                 </a>
@@ -97,7 +97,7 @@
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
                        aria-controls="ui-basic">
-                        <i class="mdi mdi-circle-outline menu-icon"></i>
+                        <i class="mdi mdi-stack-exchange menu-icon"></i>
                         <span class="menu-title">Tontines</span>
                         <i class="menu-arrow"></i>
                     </a>
@@ -127,26 +127,28 @@
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('espace_menbre.projets_soutenus')}}">
-                        <i class="mdi mdi-circle-outline menu-icon"></i>
+                        <i class="mdi mdi-heart menu-icon"></i>
                         <span class="menu-title">Projets Soutenus</span>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('decouvrir_projets')}}">
+                        <i class="mdi mdi-eye-plus menu-icon"></i>
+                        <span class="menu-title">Decouvrir les projets</span>
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('espace_menbre.profil',[$la_session['id']] ) }}">
-                        <i class="mdi mdi-circle-outline menu-icon"></i>
+                        <i class="mdi mdi-account menu-icon"></i>
                         <span class="menu-title">Mon compte</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('espace_menbre.deconnexion') }}">
-                        <i class="mdi mdi-circle-outline menu-icon"></i>
+                        <i class="mdi mdi-logout menu-icon"></i>
                         <span class="menu-title">Deconnexion</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('decouvrir_projets')}}">
-                        <i class="mdi mdi-circle-outline menu-icon"></i>
-                        <span class="menu-title">Decouvrir les projets</span>
                     </a>
                 </li>
 

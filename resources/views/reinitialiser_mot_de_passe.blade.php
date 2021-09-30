@@ -12,31 +12,27 @@
                     <div class="about-text mb-lg-50">
 						<div class="common-heading mb-30">
 							<span class="tagline">
-								<i class="fas fa-plus"></i> Se Connecter
+								<i class="fas fa-plus"></i> Reinitialiser mon mot de passe
 								<span class="heading-shadow-text"></span>
 							</span>
-							<h2 class="title">Se connecter</h2>
+{{--							<h2 class="title">Se connecter</h2>--}}
 						</div>
 						<div class="container">
-                            <form class="form-group" method="post" action="{{route('post_connexion_menbre')}}">
+                            <form class="form-group" method="post">
                                 <div class="form-group">
-                                    <label>Email ou Telephone</label>
-                                        <input required class="form-control" placeholder="Email ou Telephone" type="text" name="identifiant" autocomplete="off" />
+                                    <label>Entrer votre numero de telephone ou votre adresse email</label>
+
+                                        <input required class="form-control" placeholder="2250578765467 ou monadresse@gmail.com" type="text" name="identifiant"
+                                               autocomplete="off" />
                                     <br/>
-                                    <label>Mot de passe</label>
-                                        <input required class="form-control" placeholder="Mot de passe" type="password" name="mot_de_passe" autocomplete="off" />
-                                    <br/>
-                                    <h6>
-                                        <a href="{{route('reinitialiser_mot_de_passe')}}">Mot de passe oublié ?</a>
-                                    </h6>
                                     @csrf
                                     <button class="main-btn wow fadeInUp" type="submit">
-                                            Se connecter <i class="far fa-arrow-right"></i>
+                                            Reinitialiser <i class="far fa-arrow-right"></i>
                                     </button>
 
                                     <br/><br/>
                                     <h6>
-                                        <a href="{{route('inscription_menbre')}}">Pas encore menbre ? je m'inscris</a>
+                                        <a href="{{route('connexion_menbre')}}">Se connecter</a>
                                     </h6>
                                 </div>
                             </form>

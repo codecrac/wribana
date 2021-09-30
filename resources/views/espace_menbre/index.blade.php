@@ -1,3 +1,29 @@
+<?php
+function convertCurrency($amount,$from_currency,$to_currency){
+    $apikey = '6441d9b217f8a6674225';
+
+    $from_Currency = urlencode($from_currency);
+    $to_Currency = urlencode($to_currency);
+    $query =  "{$from_Currency}_{$to_Currency}";
+
+    // change to the free URL if you're using the free version
+    $query = urlencode($query);
+    $apikey = urlencode($apikey);
+    $url = "https://free.currconv.com/api/v7/convert?q=$query&compact=ultra&apiKey=$apikey";
+    $json = file_get_contents($url);
+    $obj = json_decode($json, true);
+
+    $val = floatval($obj["$query"]);
+
+
+    $total = $val * $amount;
+    return number_format($total, 0, ',', ' ');
+}
+
+//uncomment to test
+//echo convertCurrency(10, 'USD', 'PHP');
+?>
+
 @extends('espace_menbre.base_espace_menbre')
 
 @section('content')
@@ -8,6 +34,7 @@
                 <div class="d-flex align-items-end flex-wrap">
                     <div class="mr-md-3 mr-xl-5">
                         <h2>Bienvenue <small>{{$le_menbre['nom_complet']}}.</small></h2>
+                        <h4>5 eur = <?php  echo convertCurrency(5, 'USD', 'XOF'); ?></h4>
 {{--                        <p class="mb-md-0">Your analytics dashboard template.</p>--}}
                     </div>
                     <div class="d-flex">
@@ -16,12 +43,12 @@
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
                     <a href="{{route('espace_menbre.ajouter_tontine')}}" type="button" class="btn btn-primary mr-3 mt-2 mt-xl-0">
                         <i class="mdi mdi-plus text-muted"></i>
-                        Creer une tontine
+                        Créer une tontine
                     </a>
 
                     <a href="{{route('espace_menbre.creer_un_waricrowd')}}" class="btn btn-success mt-2 mt-xl-0">
                         <i class="mdi mdi-plus text-muted"></i>
-                        Lancer une collecte pour mon projet
+                        Créer un Waricrowd
                     </a>
                 </div>
             </div>

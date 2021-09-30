@@ -6,7 +6,7 @@
         $prochaine_date_encaissement = $la_tontine->caisse->prochaine_date_encaissement;
         $en_retard = time() >= strtotime($prochaine_date_encaissement) ;
     }
-    
+
     //========================================================utile pour cinetpay
 //Credentials apiKey & siteId
 $apikey = \App\Http\Controllers\NotificationPaiementCinetPay::$apikey;
@@ -112,7 +112,7 @@ $signature = json_decode($result);
                                 <a href="{{route('espace_menbre.editer_tontine',[$la_tontine['id']])}}" class="btn btn-warning">Editer la tontine</a>
                             @endif
                             <br/>
-                            @if($la_tontine->etat !='fermee')
+                            @if($la_tontine->etat =='ouverte')
                                 @if($en_retard)
                                     <span class="clignote badge badge-danger">
                                             Cotisation en retard
@@ -149,7 +149,7 @@ $signature = json_decode($result);
 
                     @if($la_tontine->createur->id == $la_session['id'] && $la_tontine->etat =='constitution' ||  $la_tontine->etat =='prete')
                          <p class="badge badge-info">La tontine pourra être ouverte une fois le nombre de participant specifié atteinds.</p>
-                        @if($pret)
+                         @if($pret)
                             <form method="post" action="{{route('espace_menbre.ouvrir_tontine',[$la_tontine['id']])}}">
                                 @if($la_tontine->createur->id == $la_session['id'])
                                     @csrf
@@ -164,6 +164,17 @@ $signature = json_decode($result);
                                 <input type="button" class="btn btn-dark" style="cursor: not-allowed" value="Ouvrir la tontine" />
                             </h3>
                         @endif
+                    @elseif($la_tontine->etat =='terminer')
+                        <p class="badge badge-success text-center">Votre tontine s'est effectuée avec succes vous pouvez la relancée!</p>
+                        <form method="post" action="{{route('espace_menbre.ouvrir_tontine',[$la_tontine['id']])}}">
+                            @if($la_tontine->createur->id == $la_session['id'])
+                                @csrf
+                                <h3 class="text-center">
+                                    <p class="badge badge-warning">Ouvrez la tontine uniquement si vous êtes pret a commencer les cotisations.</p>
+                                    <button type="submit" class="btn btn-success">Recommencer les cotisations</button>
+                                </h3>
+                            @endif
+                        </form>
                     @endif
 
                     <br/>
@@ -172,7 +183,7 @@ $signature = json_decode($result);
         </div>
 
         <div class="col-md-6">
-            @if($la_tontine->etat !='fermee')
+            @if($la_tontine->etat !='fermee' && $la_tontine->etat !='terminer')
                 <div class="card">
                 <div class="card-body">
                     <hr>
@@ -248,8 +259,8 @@ $signature = json_decode($result);
                                 <!--<form action="{{route('espace_menbre.paiement_cotisation',[$la_tontine->id])}}" method="post">-->
                                                                              <!--@csrf-->
     <form action="<?php echo $cpSecure; ?>" method="post">
-                                   
-                                    
+
+
         <input type="hidden" value="<?php echo $apikey; ?>" name="apikey">
         <p><input type="hidden" value="<?php echo $cpm_amount; ?>" name="cpm_amount"></p>
         <input type="hidden" value="<?php echo $cpm_custom; ?>" name="cpm_custom">
@@ -266,21 +277,21 @@ $signature = json_decode($result);
         <input type="hidden" value="<?php echo $return_url; ?>" name="return_url">
         <input type="hidden" value="<?php echo $cancel_url; ?>" name="cancel_url">
         <!--<input type="hidden" value="<?php echo $notify_url; ?>" name="notify_url">-->
-        
+
                                     <button type="submit" class="btn btn-primary" style="">Payer ma cotisation</button>
                                 </form>
                             </h3>
                         @endif
                                                                   <!--@csrf-->
     <form action="https://api.cinetpay.com/v1/?method=checkPayStatus" method="post">
-                                   
-                                    
+
+
         <input type="hidden" value="<?php echo $apikey; ?>" name="apikey">
         <input type="hidden" value="<?php echo $cpm_custom; ?>" name="cpm_custom">
         <input type="hidden" value="<?php echo $cpm_site_id; ?>" name="cpm_site_id">
         <input type="hidden" value="<?php echo '163275877720210927160617'; ?>" name="cpm_trans_id">
         <!--<input type="hidden" value="<?php echo $notify_url; ?>" name="notify_url">-->
-        
+
                                     <button type="submit" class="btn btn-primary" style="">get status</button>
                                 </form>
                 </div>

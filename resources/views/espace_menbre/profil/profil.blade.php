@@ -49,6 +49,30 @@
                             </div>
                         </div>
                     </form>
+
+                    <div class="card-header">
+                        <hr/>
+                            <h4 class="text-center">Changer de numero de telephone</h4>
+                        <hr/>
+                    </div>
+                    <p class="card-description">
+                        Nous allons vous envoyer un code de confirmation par sms, utiliser un numero valide,
+                        ajouter le prefix avant le numero. Exemple : 2250505050505
+                    </p>
+                    <form method="post" action="{{route('espace_menbre.modifier_telephone_compte')}}">
+                        <div class="form-group">
+                            <label>Telephone *</label>
+                            <input required class="form-control" value="{{$le_menbre->telephone}}"
+                                   placeholder="0708080809" type="number" name="nouveau_telephone" />
+                            <br/>
+                        </div>
+
+                        <div class="col-12 text-center">
+                            <br/>
+                            @csrf
+                            <button class="btn btn-success" > Confirmer via sms </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -73,14 +97,10 @@
                             <input required class="form-control" value="{{$le_menbre->nom_complet}}" placeholder="LADDE Yves" type="text" name="nom_complet" />
                             <br/>
                         </div>
-                        <div class="form-group">
-                            <label>Telephone *</label>
-                            <input required class="form-control" value="{{$le_menbre->telephone}}" placeholder="monadresse@gmail.com" type="number" name="telephone" />
-                            <br/>
-                        </div>
+
                         <div class="form-group">
                             <label>Email</label>
-                            <input class="form-control" value="{{$le_menbre->email}}" placeholder="0708080809" type="text" name="email" />
+                            <input class="form-control" value="{{$le_menbre->email}}" placeholder="monadresse@gmail.com" type="text" name="email" />
                             <br/>
                         </div>
                         <div class="form-group">

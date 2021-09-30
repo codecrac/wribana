@@ -9,12 +9,9 @@ class CinetpayApiTransfertController extends Controller
 //================================API TRANSFERT=============================
     public static function recuperer_token_api_tranfert()
     {
-        //Credentials apiKey & mdp
         $apikey = \App\Http\Controllers\NotificationPaiementCinetPay::$apikey;
         $mdp_api_transfert = \App\Http\Controllers\NotificationPaiementCinetPay::$mdp_api_transfert;
-
         $curl = curl_init();
-
         curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://client.cinetpay.com/v1/auth/login',
                 CURLOPT_RETURNTRANSFER => true,
@@ -30,10 +27,8 @@ class CinetpayApiTransfertController extends Controller
                 ),
             )
         );
-
         $response = curl_exec($curl);
         curl_close($curl);
-
         $reponse_in_json = json_decode($response);
         $token = $reponse_in_json->data->token;
         return $token;
@@ -44,9 +39,7 @@ class CinetpayApiTransfertController extends Controller
         //Credentials apiKey & mdp
         $token = CinetpayApiTransfertController::recuperer_token_api_tranfert();
 //        dd($token);
-
         $curl = curl_init();
-
         curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://client.cinetpay.com/v1/transfer/check/balance?token=' . $token,
                 CURLOPT_RETURNTRANSFER => true,
@@ -61,67 +54,56 @@ class CinetpayApiTransfertController extends Controller
                 ),
             )
         );
-
         $response = curl_exec($curl);
         curl_close($curl);
 //        dd($response);
-
         $reponse_in_json = json_decode($response);
         $solde = $reponse_in_json->data->amount;
-        return $solde;
+        return $reponse_in_json;
     }
 
-    public static function ajouter_un_contact()
+    public static function ajouter_un_contact($token)
     {
-        $apikey = \App\Http\Controllers\NotificationPaiementCinetPay::$apikey;
-        $mdp_api_transfert = \App\Http\Controllers\NotificationPaiementCinetPay::$mdp_api_transfert;
-        //Credentials apiKey & mdp
-        $token = CinetpayApiTransfertController::recuperer_token_api_tranfert();
-        //  dd($token);
 
-        $prefix ='225';
-        $phone ='55994041';
-        $name ='name';
-        $surname ='surname';
-        $email ='yvessantoz@gmail.com';
-
-        $data_json = 'prefix='.$prefix .'&phone='. $phone.'&name='.$name.'&surname='.$surname.'&email='.$email;
+       $data_json = 'data=[{ "prefix":"225", "phone":"0778735784","name":"yves","surname":"ladde","email":"yvessantoz@exemple.com" }]';
+//     dd($data_json);
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://client.cinetpay.com/v1/transfer/contact?token='.$token.'&lang=fr',
+                CURLOPT_URL => 'https://client.cinetpay.com/v1/transfer/contact?token='.$token,
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/x-www-form-urlencoded'
+                ),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
                 CURLOPT_TIMEOUT => 0,
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_POSTFIELDS => 'prefix='.$prefix .'&phone='. $phone.'&name='.$name.'&surname='.$surname.'&email='.$email,
+                CURLOPT_POSTFIELDS => $data_json,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/x-www-form-urlencoded'
-                ),
+
             )
         );
-
         $response = curl_exec($curl);
         curl_close($curl);
-        dd($response);
-
-        $reponse_in_json = json_decode($response);
-        $solde = $reponse_in_json->data->amount;
-        return $solde;
+        echo $response;
+//        dd($response);
     }
 
 
-    public static function effectuer_un_retrait()
+    public static function effectuer_un_retrait($le_menbre)
     {
-        $token = CinetpayApiTransfertController::recuperer_token_api_tranfert();
-        $prefix ='225';$phone ='55994041';$amount ='100';$notify_url ='100';$client_transaction_id ='100';
+        $nom = $le_menbre->nom_complet;
+        $telephone = $le_menbre->telephone;
+        $email = $le_menbre->telephone;
+        $data_json = 'data=[{ "prefix":"225", "phone":"'.$telephone.'","name":"'.$nom.'","surname":"","email":"'.$email.'" }]';
 
-        $data_json = json_encode( array( 'prefix' => $prefix,'phone' => $phone,
-                                    'amount' => $amount,'notify_url' => $notify_url,'client_transaction_id' => $client_transaction_id,
-                                ));
+        $token = CinetpayApiTransfertController::recuperer_token_api_tranfert();
+        CinetpayApiTransfertController::ajouter_un_contact($data_json,$token);
+
+        $notify_url = "http://waribana.jeberge.xyz/api/retour-retrait";
+        $data_json = 'data=[{ "prefix":"225", "phone":"'.$telephone.'","amount":"100","notify_url":"'.$notify_url.'","client_transaction_id":"'.time().'" }]';
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -138,11 +120,13 @@ class CinetpayApiTransfertController extends Controller
             )
         );
 
-        $response = curl_exec($curl); curl_close($curl);
-        dd($response);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return $response;
 
+       /* die();
         $reponse_in_json = json_decode($response);
         $solde = $reponse_in_json->data->amount;
-        return $solde;
+        return $solde;*/
     }
 }

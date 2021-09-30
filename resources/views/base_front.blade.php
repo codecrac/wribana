@@ -150,7 +150,11 @@
                 <a href="{{route('contact')}}">Contact</a>
             </li>
             <li>
-                <a href="#">Se Connecter</a>
+                @if($est_connecter)
+                    <a  href="{{route('espace_menbre.accueil')}}" > Mon Compte </a>
+                @else
+                    <a  href="{{route('connexion_menbre')}}" >Se Connecter </a>
+                @endif
             </li>
         </ul>
         <div class="panel-extra">
