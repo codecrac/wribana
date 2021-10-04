@@ -17,7 +17,7 @@ class AdministrateurController extends Controller
 {
 //    ===============================TONTINES
     public function les_tontines(){
-        $les_tontines = Tontine::all();
+        $les_tontines = Tontine::orderBy('id','DESC')->get();
         return view("administrateur/tontines/liste",compact('les_tontines'));
     }
 
@@ -93,6 +93,22 @@ class AdministrateurController extends Controller
             $notification ="<div class='alert alert-danger text-center'> Quelque chose s'est mal passé </div>";
         }
 
+
+        $telephone = $la_tontine->createur->telephone;
+        $contenu_notification = SmsContenuNotification::first();
+        $message_notif = $contenu_notification['etat_waricowd'];
+
+        $le_message = str_replace('$etat$',$nouvel_etat,$message_notif);
+        $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
+
+        if(!empty($motif_intervention)){
+            $le_message = str_replace('$motif$',",motif : $motif_intervention",$le_message);
+        }else{
+            $le_message = str_replace('$motif$',"",$le_message);
+        }
+
+        SmsController::sms_info_bip($telephone,$le_message);
+
         return redirect()->back()->with('notification',$notification);
     }
 
@@ -163,11 +179,30 @@ class AdministrateurController extends Controller
         $le_crowd = Waricrowd::find($id_crowd);
         $le_crowd->etat = $nouvel_etat;
         $le_crowd->motif_intervention_admin = $motif_intervention;
+
+
+        $telephone = $le_crowd->createur->telephone;
+        $contenu_notification = SmsContenuNotification::first();
+        $message_notif = $contenu_notification['etat_waricowd'];
+
+        $le_message = str_replace('$etat$',$nouvel_etat,$message_notif);
+        $le_message = str_replace('$titre$',$le_crowd->titre,$le_message);
+
+        if(!empty($motif_intervention)){
+            $le_message = str_replace('$motif$',",motif : $motif_intervention",$le_message);
+        }else{
+            $le_message = str_replace('$motif$',"",$le_message);
+        }
+
+        SmsController::sms_info_bip($telephone,$le_message);
+//        dd($le_message,$telephone);
+
         if($le_crowd->save()){
             $notification ="<div class='alert alert-success text-center'> Operation bien éffectuée </div>";
         }else{
             $notification ="<div class='alert alert-danger text-center'> Quelque chose s'est mal passé </div>";
         }
+
 
         return redirect()->back()->with('notification',$notification);
     }

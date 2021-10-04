@@ -323,11 +323,25 @@ class EspaceMenbre extends Controller
                 }
             }
 
-            $la_tontine = $linvitation->tontine;
+            $id_tontine = $la_tontine['id'];
+            $la_tontine = Tontine::find($id_tontine);
+            //NOMBRE DE PARTICPANT ATTEINDS, LA TONTINE EST PRETE
+//            dd(sizeof($la_tontine->participants) , $la_tontine->nombre_participant);
             if(sizeof($la_tontine->participants) == $la_tontine->nombre_participant){
                 Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
                 $la_tontine->etat = 'prete';
                 $la_tontine->save();
+
+
+                $telephone = $la_tontine->createur->telephone;
+                $contenu_notification = SmsContenuNotification::first();
+                $message_notif = $contenu_notification['etat_tontine'];
+
+                $le_message = str_replace('$etat$',"prete",$message_notif);
+                $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
+                $le_message = str_replace('$motif$',"",$le_message);
+
+                SmsController::sms_info_bip($telephone,$le_message);
             }
         }else{
             Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
@@ -374,7 +388,18 @@ class EspaceMenbre extends Controller
 //                        dd('prete');
                         $la_tontine->etat = 'prete';
                         $la_tontine->save();
+
+                        $telephone = $la_tontine->createur->telephone;
+                        $contenu_notification = SmsContenuNotification::first();
+                        $message_notif = $contenu_notification['etat_tontine'];
+
+                        $le_message = str_replace('$etat$',"prete",$message_notif);
+                        $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
+                        $le_message = str_replace('$motif$',"",$le_message);
+
+                        SmsController::sms_info_bip($telephone,$le_message);
                     }
+
                 }else{
                     $notification = " <div class='alert alert-danger text-center'> Le nombre de participant est dejà atteint</div>";
                 }

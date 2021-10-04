@@ -35,24 +35,27 @@
                     <div class="table-responsive">
                         <table width="100%" class="table" border="1" id="datatable">
                             <thead class="text-center">
+                            <th class="tr_bordered">#</th>
                             <th class="tr_bordered">Titre</th>
                             <th class="tr_bordered">Nombres de participants</th>
-                            <th class="tr_bordered">Montant à cotiser</th>
+{{--                            <th class="tr_bordered">Montant à cotiser</th>--}}
                             <th class="tr_bordered">Statut</th>
                             <th class="tr_bordered">Prochaine cotisation</th>
                             <th class="tr_bordered">#</th>
                             </thead>
                             <tbody>
+                            @php $i=0; @endphp
                             @foreach($les_tontines as $ma_tontine)
                                 <tr class="tr_bordered text-center">
+                                    <td class="tr_bordered">{{$i++}}</td>
                                     <td class="tr_bordered">{{$ma_tontine['titre']}}</td>
                                     <td class="tr_bordered">
                                         {{sizeof($ma_tontine->participants)}}/{{$ma_tontine['nombre_participant']}}
-                                        <br/>
-                                        createur : {{$ma_tontine->createur->nom_complet}}
-                                    </td>
-                                    <td class="tr_bordered">
+{{--                                        <br/>--}}
+{{--                                        createur : {{$ma_tontine->createur->nom_complet}}--}}
+                                    <br/>
                                         {{number_format($ma_tontine['montant'],0,',',' ')}} F
+                                        <br/>
                                         {{formater_frequence($ma_tontine['frequence_depot_en_jours'])}}
                                     </td>
                                     <td class="tr_bordered text-danger">
