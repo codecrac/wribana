@@ -1,4 +1,38 @@
+@php
+    $client  = @$_SERVER['HTTP_CLIENT_IP'];
+        $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+        $remote  = @$_SERVER['REMOTE_ADDR'];
+        $result  = array('country'=>'', 'city'=>'');
+        if(filter_var($client, FILTER_VALIDATE_IP)){
+            $ip = $client;
+        }elseif(filter_var($forward, FILTER_VALIDATE_IP)){
+            $ip = $forward;
+        }else{
+            $ip = $remote;
+        }
+        $ip_data = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=".$ip));
+
+        $country_code = "CI";
+        if($ip_data && $ip_data->geoplugin_countryName != null){
+            $country_code = $ip_data->geoplugin_countryCode;
+            $result['city'] = $ip_data->geoplugin_city;
+        }
+
+        $code = \App\Http\Controllers\CountryPrefixController::getPrefix($country_code);
+        //dd($code);
+@endphp
+
+
 @extends('base_front')
+
+@section('style_complementaire')
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+@endsection
 
 @section('content')
 	<!--====== About Section Start ======-->
@@ -23,8 +57,19 @@
                                     <label>Nom complet *</label>
                                         <input required class="form-control" placeholder="LADDE Yves" type="text" name="nom_complet" />
                                     <br/>
-                                    <label>Telephone *</label>
-                                        <input required class="form-control" placeholder="0708080809" type="number" name="telephone" />
+                                    <label>Contact *</label>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label><small>prefixe</small></label>
+                                            <input required class="form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code}}" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label><small>Telephone</small></label>
+                                            <input required class="form-control" placeholder="Entrez votre telephone" type="number" name="telephone" />
+                                        </div>
+                                    </div>
+
                                     <br/>
                                     <label>Email</label>
                                         <input class="form-control" placeholder="monadresse@gmail.com" type="text" name="email" />
@@ -68,4 +113,38 @@
 	</section>
 	<!--====== About Section End ======-->
 
+@endsection
+
+@section('script_complementaire')
+    <script>
+        const phoneInputField = document.querySelector("#telephone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+        const info = document.querySelector(".alert-info");
+
+        function process(event) {
+            // event.preventDefault();
+
+            const phoneNumber = phoneInput.getNumber();
+            // alert('--'+phoneNumber);
+
+            info.style.display = "";
+            info.innerHTML = `Phone number in E.164 format: <strong>${phoneNumber}</strong>`;
+        }
+
+        function getIp(callback) {
+            fetch('https://ipinfo.io/json?token=<your token>', { headers: { 'Accept': 'application/json' }})
+                .then((resp) => resp.json())
+                .catch(() => {
+                    return {
+                        country: 'ci',
+                    };
+                })
+                .then((resp) => callback(resp.country));
+        }
+
+        getIp();
+    </script>
 @endsection

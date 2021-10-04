@@ -11,7 +11,8 @@
                     <h4 class="card-title text-center">Confirmer votre numero de telephone</h4>
                     <p class="card-description">
                         Nous allons vous envoyer un code de confirmation par sms, utiliser un numero valide,
-                        ajouter le prefix avant le numero. Exemple : 2250505050505
+                        <span class="text-warning">ajouter le prefixe(225,33...) avant le numero</span>.
+                        <br/>Exemple : 225 05 05 05 05 05 ou 33 1 23 45 67 89
                     </p>
                     <form class="forms-sample" method="post">
                         <div class="form-group">

@@ -619,7 +619,7 @@ class EspaceMenbre extends Controller
             if($le_menbre->save()){
                 $couleur = "success";
                 $message = "Operation bien effectuée";
-                $notification = "<div class='alert alert-$couleur'> $message  </div>";
+                $notification = "<div class='alert alert-$couleur  text-center'> $message  </div>";
                 return redirect()->back()->with('notification',$notification);
             }
 
@@ -736,7 +736,18 @@ class EspaceMenbre extends Controller
 //            dd('ok');
             $le_menbre = Menbre::find($id_menbre_connecter);
 //            dd($le_menbre);
-            return view('espace_menbre/profil/confirmer_retrait_dargent',compact('montant_retrait','le_menbre'));
+
+            $response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait($le_menbre);
+            $reponse_decoder = json_decode($response);
+//            dd($reponse_decoder->code,$reponse_decoder->message);
+            $code = $reponse_decoder->code;
+            $message = $reponse_decoder->message;
+            if($code == 0){
+                die('retrait effecuter! enregistre');
+            }else{
+                $notification = "<div class='alert alert-danger'> Echec de retrait, motif : $message </div>";
+                return redirect()->back()->with('notification',$notification);
+            }
         }else{
             $notification = "<div class='alert alert-danger text-center'> Mot de passe Incorrect </div>";
             return redirect()->back()->with('notification',$notification);

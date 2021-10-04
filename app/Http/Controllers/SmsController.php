@@ -18,7 +18,7 @@ class SmsController extends Controller
 
 // api sms les # et les espaces sont la pour eviter la detection de la mise sur github
 //ecdb334b93b64c09a97916de69921a50 ###  -70e3d6ed-24c8-   ###    467f-8be9-7822e011f4fc // api uberson #retirer les #
-//f95b15fcc557a0f76210f8ae48a6bbbe-6555fefc-3956-4cbd-b367-88f34232381b //api qui marche
+//aaecfdbcb5d9a0676af5ce03ad02bd6a   ####   -2c9a3ef7-deea-441c-87a1-   ###   ae0d986310cf //api qui marche
 //27aa395694e182a0d679cc9d5feda40f-8b933270-cf0f-443b-ac7a-bc7436c00115 //$api_bloque
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://jd988v.api.infobip.com/sms/2/text/advanced' ,
@@ -31,7 +31,7 @@ class SmsController extends Controller
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => '{"messages":[{"from":"WARIBANA","destinations":[{"to":"'.$telephone.'"}],"text":"'.$message.'"}]}',
             CURLOPT_HTTPHEADER => array(
-                'Authorization:App 27aa395694e182a0d679cc9d5feda40f-8b933270-cf0f-443b-ac7a-bc7436c00115',
+                'Authorization:App api-key-here',
                 'Content-Type: application/json',
                 'Accept: application/json'
             ),

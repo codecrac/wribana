@@ -68,8 +68,8 @@ class CinetpayApiTransfertController extends Controller
        $data_json = 'data=[{ "prefix":"225", "phone":"0778735784","name":"yves","surname":"ladde","email":"yvessantoz@exemple.com" }]';
 //     dd($data_json);
 
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
+         $curl = curl_init();
+           curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://client.cinetpay.com/v1/transfer/contact?token='.$token,
                 CURLOPT_HTTPHEADER => array(
                     'Content-Type: application/x-www-form-urlencoded'
@@ -87,7 +87,7 @@ class CinetpayApiTransfertController extends Controller
         );
         $response = curl_exec($curl);
         curl_close($curl);
-        echo $response;
+//        echo $response;
 //        dd($response);
     }
 

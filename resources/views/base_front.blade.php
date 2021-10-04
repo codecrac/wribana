@@ -41,6 +41,8 @@
     <link rel="stylesheet" href="/template/assets/css/main.css" />
     <!--====== Responsive css ======-->
     <link rel="stylesheet" href="/template/assets/css/responsive.css" />
+
+    @yield('style_complementaire')
 </head>
 
 <body>
@@ -87,39 +89,39 @@
         <div class="container">
             <div class="navbar-inner">
                 <div class="site-logo">
-                    <a href="{{route('accueil')}}"><img src="/assets/images/logo-waribana.png" style="max-height: 40px;" alt="Waribana"></a>
+                    <a href="{{route("accueil")}}"><img src="/assets/images/logo-waribana.png" style="max-height: 40px;" alt="Waribana"></a>
                 </div>
                 <div class="nav-menu">
                     <ul>
-                        <li class="{{isset($is_home) ? 'current' : '' }}">
+                        <li class="{{isset($is_home) ? "current" : "" }}">
                             <a href="{{route('accueil')}}">Accueil</a>
                         </li>
-                        <li class="{{isset($is_decouvrir_projets) ? 'current' : '' }}">
-                            <a href="{{route('decouvrir_projets')}}">Decouvrir les projets</a>
+                        <li class="{{isset($is_decouvrir_projets) ? "current" : "" }}">
+                            <a href="{{route("decouvrir_projets")}}">Decouvrir les projets</a>
                         </li>
-                        <li class="{{isset($is_comment_ca_marche) ? 'current' : '' }}">
-                            <a href="{{route('comment_ca_marche')}}">Comment ça marche</a>
+                        <li class="{{isset($is_comment_ca_marche) ? "current" : "" }}">
+                            <a href="{{route("comment_ca_marche")}}">Comment ça marche</a>
                         </li>
-                        <li class="{{isset($is_apropos) ? 'current' : '' }}">
-                            <a href="{{route('apropos')}}">Qui Sommes Nous</a>
+                        <li class="{{isset($is_apropos) ? "current" : "" }}">
+                            <a href="{{route("apropos")}}">Qui Sommes Nous</a>
                         </li>
-                        <li class="{{isset($is_faq) ? 'current' : '' }}">
-                            <a href="{{route('faq')}}">FAQ</a>
+                        <li class="{{isset($is_faq) ? "current" : "" }}">
+                            <a href="{{route("faq")}}">FAQ</a>
                         </li>
-                        <li class="{{isset($is_contact) ? 'current' : '' }}">
-                            <a href="{{route('contact')}}">Contact</a>
+                        <li class="{{isset($is_contact) ? "current" : "" }}">
+                            <a href="{{route("contact")}}">Contact</a>
                         </li>
                     </ul>
                 </div>
                 <div class="navbar-extra d-flex align-items-center">
                     @if($est_connecter)
-                        <a  href="{{route('espace_menbre.accueil')}}" class="main-btn nav-btn d-none d-sm-inline-block"> Mon Compte <i class="far fa-arrow-right"></i>
+                        <a  href="{{route("espace_menbre.accueil")}}" class="main-btn nav-btn d-none d-sm-inline-block"> Mon Compte <i class="far fa-arrow-right"></i>
                         </a>
                         <a href="#" class="nav-toggler">
                             <span></span>
                         </a>
                     @else
-                    <a  href="{{route('connexion_menbre')}}" class="main-btn nav-btn d-none d-sm-inline-block">Se Connecter <i class="far fa-arrow-right"></i>
+                    <a  href="{{route("connexion_menbre")}}" class="main-btn nav-btn d-none d-sm-inline-block">Se Connecter <i class="far fa-arrow-right"></i>
                     </a>
                     <a href="#" class="nav-toggler">
                         <span></span>
@@ -131,34 +133,34 @@
     </div>
     <div class="mobile-menu-panel">
         <div class="panel-logo">
-            <a href="{{route('accueil')}}"><img src="/assets/images/logo-waribana.png" style="max-height: 40px;" alt="Waribana"></a>
+            <a href="{{route("accueil")}}"><img src="/assets/images/logo-waribana.png" style="max-height: 40px;" alt="Waribana"></a>
         </div>
         <ul class="panel-menu">
-            <li class="{{isset($is_home) ? 'current' : '' }}">
-                <a href="{{route('accueil')}}">Accueil</a>
+            <li class="{{isset($is_home) ? "current" : "" }}">
+                <a href="{{route("accueil")}}">Accueil</a>
             </li>
-            <li class="{{isset($is_comment_ca_marche) ? 'current' : '' }}">
-                <a href="{{route('comment_ca_marche')}}">Comment ça marche</a>
+            <li class="{{isset($is_comment_ca_marche) ? "current" : "" }}">
+                <a href="{{route("comment_ca_marche")}}">Comment ça marche</a>
             </li>
-            <li class="{{isset($is_apropos) ? 'current' : '' }}">
-                <a href="{{route('apropos')}}">Qui Sommes Nous</a>
+            <li class="{{isset($is_apropos) ? "current" : "" }}">
+                <a href="{{route("apropos")}}">Qui Sommes Nous</a>
             </li>
-            <li class="{{isset($is_faq) ? 'current' : '' }}">
-                <a href="{{route('faq')}}">FAQ</a>
+            <li class="{{isset($is_faq) ? "current" : "" }}">
+                <a href="{{route("faq")}}">FAQ</a>
             </li>
-            <li class="{{isset($is_contact) ? 'current' : '' }}">
-                <a href="{{route('contact')}}">Contact</a>
+            <li class="{{isset($is_contact) ? "current" : "" }}">
+                <a href="{{route("contact")}}">Contact</a>
             </li>
             <li>
                 @if($est_connecter)
-                    <a  href="{{route('espace_menbre.accueil')}}" > Mon Compte </a>
+                    <a  href="{{route("espace_menbre.accueil")}}" > Mon Compte </a>
                 @else
-                    <a  href="{{route('connexion_menbre')}}" >Se Connecter </a>
+                    <a  href="{{route("connexion_menbre")}}" >Se Connecter </a>
                 @endif
             </li>
         </ul>
         <div class="panel-extra">
-            <a href="{{route('connexion_menbre')}}" class="main-btn nav-btn d-none d-sm-inline-block">
+            <a href="{{route("connexion_menbre")}}" class="main-btn nav-btn d-none d-sm-inline-block">
                 Se Connecter <i class="far fa-arrow-right"></i>
             </a>
         </div>
@@ -169,7 +171,7 @@
 </header>
 <!--====== Header End ======-->
 
-@yield('content')
+@yield("content")
 
 <!--====== Footer Start ======-->
 <footer class="site-footer">
@@ -206,7 +208,7 @@
 <script src="/template/assets/js/wow.min.js"></script>
 <!--====== Main js ======-->
 <script src="/template/assets/js/main.js"></script>
-
+    @yield("script_complementaire")
 </body>
 
 

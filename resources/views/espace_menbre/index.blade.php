@@ -10,14 +10,17 @@ function convertCurrency($amount,$from_currency,$to_currency){
     $query = urlencode($query);
     $apikey = urlencode($apikey);
     $url = "https://free.currconv.com/api/v7/convert?q=$query&compact=ultra&apiKey=$apikey";
-    $json = file_get_contents($url);
-    $obj = json_decode($json, true);
 
-    $val = floatval($obj["$query"]);
+    try{
+        $json = file_get_contents($url);
+        $obj = json_decode($json, true);
+        $val = floatval($obj["$query"]);
+        $total = $val * $amount;
+        return number_format($total, 0, ',', ' ');
+    }catch(Exception $e){
+        return 'erreur';
+    }
 
-
-    $total = $val * $amount;
-    return number_format($total, 0, ',', ' ');
 }
 
 //uncomment to test

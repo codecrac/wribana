@@ -66,6 +66,7 @@ class MenbreController extends Controller
 
     public function enregistrer_un_menbre(Request $request)
     {
+
         $couleur = "danger";
 
         $code_de_confirmation = rand(1111, 9999);
@@ -73,11 +74,14 @@ class MenbreController extends Controller
         $donnee_formulaire = $request->all();
 //        dd($donnee_formulaire);
         $nom_complet = $donnee_formulaire['nom_complet'];
+        $prefix = $donnee_formulaire['prefixe'];
         $telephone = $donnee_formulaire['telephone'];
+        $numero = $prefix.''.$telephone;
         $email = $donnee_formulaire['email'];
         $mot_de_passe = $donnee_formulaire['mot_de_passe'];
         $confirmer_mot_de_passe = $donnee_formulaire['confirmer_mot_de_passe'];
 
+//        dd($numero);
 //        ---------------Verifie existence des identifiant
         if ($email != null) {
             $route_connexion = route('connexion_menbre');
@@ -88,9 +92,9 @@ class MenbreController extends Controller
                 return redirect()->route('inscription_menbre')->with('notification', $notification);
             }
         }
-        $telephone_existe_deja = $this->checkExistenceNumero($telephone);
+        $telephone_existe_deja = $this->checkExistenceNumero($numero);
         if ($telephone_existe_deja) {
-            $message = "Ce numero de telephone a déja utilisé. <a href='$route_connexion' >connectez-vous</a>";
+            $message = "Ce numero ($numero) de telephone a déja utilisé. <a href='$route_connexion' >connectez-vous</a>";
             $notification = "<div class='alert alert-$couleur'> $message  </div>";
             return redirect()->route('inscription_menbre')->with('notification', $notification);
         }
@@ -104,11 +108,13 @@ class MenbreController extends Controller
 
             $le_menbre = new Menbre();
             $le_menbre->nom_complet = $nom_complet;
-            $le_menbre->telephone = $telephone;
+            $le_menbre->telephone = $numero;
             $le_menbre->email = $email;
             $le_menbre->mot_de_passe = $mot_de_passe_cacher;
             $le_menbre->code_de_confirmation = $code_de_confirmation;
+            $le_menbre->date_derniere_visite = null;
 
+//            dd($le_menbre);
             if ($le_menbre->save()) {
 
                 $le_compte = CompteMenbre::findOrNew($le_menbre->id);
