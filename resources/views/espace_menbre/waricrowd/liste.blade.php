@@ -29,8 +29,8 @@
                         <a class="btn btn-success" href="{{route('espace_menbre.creer_un_waricrowd')}}">Creer un waricrowd</a>
                     </h3>
                     <hr/>
-
                 </div>
+                {!! Session::get('notification','') !!}
                 <br/><br/>
                 <div class="row">
                     <div class="table-responsive">

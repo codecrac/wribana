@@ -109,7 +109,18 @@ $signature = json_decode($result);
                         <h4 class="card-title text-center">
                             Tontine : {{$la_tontine->titre}}
                             @if($la_tontine->createur->id == $la_session['id'])
-                                <a href="{{route('espace_menbre.editer_tontine',[$la_tontine['id']])}}" class="btn btn-warning">Editer la tontine</a>
+                                <br/><br/>
+                            <div class="row">
+                                <div class="col-md-6 text-center">
+                                    <a href="{{route('espace_menbre.editer_tontine',[$la_tontine['id']])}}" class="btn btn-warning">Editer la tontine</a>
+                                </div>
+                                @if(sizeof($la_tontine->transactions)==0)
+                                    <div class="col-md-6 text-center">
+                                        <a href="{{route('espace_menbre.supprimer_tontine',[$la_tontine['id']])}}"
+                                           class="btn btn-danger">Supprimer la tontine</a>
+                                    </div>
+                                @endif
+                            </div>
                             @endif
                             <br/>
                             @if($la_tontine->etat =='ouverte')

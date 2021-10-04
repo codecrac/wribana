@@ -147,20 +147,37 @@ class EspaceMenbreWaricrowdController extends Controller
         return view('espace_menbre/waricrowd/details',compact('le_crowd','mes_transactions_pour_ce_crowd'));
     }
 
-  
+
+    public function supprimer_waricrowd(Request $request,$id_tontine){
+        $le_crowd = Waricrowd::find($id_tontine);
+        return view('espace_menbre/waricrowd/supprimer_waricrowd',compact('le_crowd'));
+    }
+
+    public function post_supprimer_waricrowd(Request $request,$id_tontine){
+        $le_crowd = Waricrowd::find($id_tontine);
+//        dd($le_crowd->transactions);
+        if(sizeof($le_crowd->transactions) == 0){
+            $le_crowd->delete();
+            $notification = "<div class='alert alert-success text-center'>Operation bien effectuée</div>";
+        }else{
+            $notification = "<div class='alert alert-danger text-center'>Vous ne pouvez pas supprimer un waricrowd apres que des transactions ai été effectuées</div>";
+        }
+        return redirect()->route('espace_menbre.liste_waricrowd')->with('notification',$notification);
+    }
+
     public function confirmation_soutien_waricrowd(Request $request){
-        
+
       //  dd(route('espace_menbre.reponse_paiement_soutien_waricrowd'));
-        
+
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
-        
+
            $donnees_formulaire = $request->all();
            $id_crowd = $donnees_formulaire['id_crowd'];
            $montant_soutien = $donnees_formulaire['montant_soutien'];
            $le_crowd = Waricrowd::find($id_crowd);
-           
-            $notre_custom_field = "id_menbre=$id_menbre_connecter&montant_soutien=$montant_soutien&id_crowd=$id_crowd"; 
+
+            $notre_custom_field = "id_menbre=$id_menbre_connecter&montant_soutien=$montant_soutien&id_crowd=$id_crowd";
            return view('espace_menbre/waricrowd/confirmer_soutien_waricrowd',compact('notre_custom_field','montant_soutien','le_crowd'));
     }
 
@@ -234,7 +251,7 @@ class EspaceMenbreWaricrowdController extends Controller
                 'titre_waricrowd'=>$le_crowd->titre,
                 'nom_createur_waricrowd'=>$le_crowd->createur->nom_complet];
             $this->recu_de_paiement_waricrowd($infos_pour_recu);
-            
+
             $date_paiement = date('d/m/Y H:i');
             $this->notifier_paiement_sms($le_menbre->telephone,$le_menbre->nom_complet,$montant_soutien,$le_crowd->titre,$date_paiement);
 
@@ -270,7 +287,7 @@ class EspaceMenbreWaricrowdController extends Controller
 
         return $email->Send();
     }
-    
+
      private function notifier_paiement_sms($numeropayeur,$nom_payeur,$montant_soutien,$titre_du_waricrowd,$date_paiement){
          $numeropayeur = "225$numeropayeur";
             $message_sms = "Soutien a hauteur de $montant_soutien F par $nom_payeur sur $titre_du_waricrowd le $date_paiement ";

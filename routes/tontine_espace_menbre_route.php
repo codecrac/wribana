@@ -11,6 +11,8 @@ Route::post("/inviter-des-amis-dans-la-tontine/{id_tontine}", [EspaceMenbre::cla
 
 Route::get("/editer-une-tontine/{id_tontine}", [EspaceMenbre::class, 'editer_tontine'])->name('espace_menbre.editer_tontine');
 Route::put("/editer-une-tontine/{id_tontine}", [EspaceMenbre::class, 'modifier_tontine'])->name('espace_menbre.post_editer_tontine');
+Route::get("/supprimer-une-tontine/{id_tontine}", [EspaceMenbre::class, 'supprimer_tontine'])->name('espace_menbre.supprimer_tontine');
+Route::delete("/supprimer-une-tontine/{id_tontine}", [EspaceMenbre::class, 'post_supprimer_tontine'])->name('espace_menbre.post_supprimer_tontine');
 
 Route::get("/creer-une-tontine", [EspaceMenbre::class, 'ajouter_tontine'])->name('espace_menbre.ajouter_tontine');
 Route::post("/creer-une-tontine", [EspaceMenbre::class, 'enregistrer_tontine'])->name('espace_menbre.post_ajouter_tontine');

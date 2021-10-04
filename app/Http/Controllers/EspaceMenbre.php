@@ -136,6 +136,23 @@ class EspaceMenbre extends Controller
         }
     }
 
+    public function supprimer_tontine(Request $request,$id_tontine){
+        $la_tontine = Tontine::find($id_tontine);
+        return view('espace_menbre/tontine/supprimer_tontine',compact('la_tontine'));
+    }
+
+    public function post_supprimer_tontine(Request $request,$id_tontine){
+        $la_tontine = Tontine::find($id_tontine);
+//        dd($la_tontine->transactions);
+        if(sizeof($la_tontine->transactions) == 0){
+            $la_tontine->delete();
+            $notification = "<div class='alert alert-success text-center'>Operation bien effectuée</div>";
+        }else{
+            $notification = "<div class='alert alert-danger text-center'>Vous ne pouvez pas supprimer une tontine apres que des transactions ai été effectuées</div>";
+        }
+        return redirect()->route('espace_menbre.liste_tontine')->with('notification',$notification);
+    }
+
     public function liste_tontine(){
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];

@@ -35,10 +35,22 @@
                         <h4 class="card-title text-center">
                             Waricrowd : {{$le_crowd->titre}}
                             <br/><br/>
-                            @if($le_crowd->createur->id == $la_session['id'])
-                                <a href="{{route('espace_menbre.editer_crowd',[$le_crowd['id']])}}" class="btn btn-warning">Editer le crowd</a>
-                            @endif
                             <br/>
+                            <div class="row">
+                                <div class="col-md-6 text-center">
+                                    @if($le_crowd->createur->id == $la_session['id'])
+                                        <a href="{{route('espace_menbre.editer_crowd',[$le_crowd['id']])}}" class="btn btn-warning">Editer le waricrowd</a>
+                                    @endif
+                                </div>
+                                @if($le_crowd->createur->id == $la_session['id'])
+                                    @if(sizeof($le_crowd->transactions)==0)
+                                            <div class="col-md-6 text-center">
+                                                <a href="{{route('espace_menbre.supprimer_waricrowd',[$le_crowd['id']])}}"
+                                                   class="btn btn-danger">Supprimer le waricrowd</a>
+                                            </div>
+                                        @endif
+                                @endif
+                            </div>
                         </h4>
                     <hr/>
                     <ul>

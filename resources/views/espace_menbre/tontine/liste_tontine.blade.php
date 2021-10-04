@@ -29,8 +29,8 @@
                     <a class="btn btn-success" href="{{route('espace_menbre.ajouter_tontine')}}">Creer une tontine</a>
                 </h3>
                 <hr/>
-
             </div>
+            {!! Session::get('notification','') !!}
             <br/><br/>
             <div class="row">
                 <div class="table-responsive">
