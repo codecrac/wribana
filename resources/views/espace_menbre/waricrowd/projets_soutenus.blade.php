@@ -5,16 +5,6 @@
         .tr_bordered{
             border: 1px solid gray !important;
         }
-
-        .clignote {
-            animation: blinker 1s linear infinite;
-        }
-
-        @keyframes blinker {
-            50% {
-                opacity: 0;
-            }
-        }
     </style>
 @endsection
 @section('content')
@@ -46,7 +36,7 @@
                             @foreach($projets_soutenus as $item)
                                 <tr class="tr_bordered text-center">
                                     <td class="tr_bordered">{{$item['titre']}}</td>
-                                    <td class="tr_bordered"> {{number_format($item['montant_objectif'],0,',',' ')}} F </td>
+                                    <td class="tr_bordered"> {{number_format($item['montant_objectif'],0,',',' ')}}  <b>{{$item->createur->devise_choisie->monaie}}</b> </td>
                                     <td class="tr_bordered">
                                         @php
                                             $pourcentage = round($item->caisse->montant *100 / $item->caisse->montant_objectif,2);

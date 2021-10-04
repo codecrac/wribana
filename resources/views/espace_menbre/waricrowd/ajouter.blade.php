@@ -1,5 +1,8 @@
-@extends('espace_menbre.base_espace_menbre')
+@php
+    $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+@endphp
 
+@extends('espace_menbre.base_espace_menbre')
 
 @section('content')
 
@@ -30,7 +33,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="exampleInputUsername1">Objectif de financement (Montant) *</label>
+                            <label for="exampleInputUsername1">Objectif de financement (Montant)  en <b>{{$la_session['devise']}}</b> *</label>
                             <input required type="number" class="form-control" name="montant_objectif" placeholder="1500000">
                         </div>
 

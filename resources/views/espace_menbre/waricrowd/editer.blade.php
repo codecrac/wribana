@@ -1,5 +1,13 @@
-@extends('espace_menbre.base_espace_menbre')
+@php
+    $have_transactions = $le_crowd->transactions;
+    if($have_transactions!=null){
+      $have_transactions =true;
+    }else{
+        $have_transactions = false;
+    }
+@endphp
 
+@extends('espace_menbre.base_espace_menbre')
 
 @section('content')
 
@@ -7,13 +15,12 @@
     <div class="row">
         <div class=" col-md-8 grid-margin stretch-card">
             <div class="card">
+                <div class="card-header">
+                    <a class="btn btn-primary" href="{{route('espace_menbre.details_waricrowd',[$le_crowd->id])}}">RETOUR</a>
+                </div>
                 <div class="card-body">
                     {!! Session::get('notification','') !!}
-
-                    <h4 class="card-title text-center">Lancer un waricrowd</h4>
-                    <p class="card-description">
-                        Lancer une collecte de fond pour realiser mon projet
-                    </p>
+                    <h4 class="card-title text-center">Editer un waricrowd</h4>
                     <form class="forms-sample" method="post" action="{{route('espace_menbre.post_editer_crowd',[$le_crowd->id])}}" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="exampleInputUsername1">Categories</label>
@@ -25,14 +32,18 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="display: {{$have_transactions ? 'none' : ''}}">>
                             <label for="exampleInputUsername1">Titre *</label>
                             <input required type="text" class="form-control" name="titre" value="{{$le_crowd->titre}}" placeholder="Tontine Elegante">
                         </div>
 
-                        <div class="form-group">
+
+                        <div class="form-group" style="display: {{$have_transactions ? 'none' : ''}}">
                             <label for="exampleInputUsername1">Objectif de financement (Montant) *</label>
-                            <input required type="number" class="form-control" name="montant_objectif" value="{{$le_crowd->montant_objectif}}" placeholder="Tontine Elegante">
+                            <input required type="number" class="form-control" name="montant_objectif"
+                                   value="{{$le_crowd->montant_objectif}}" placeholder="Tontine Elegante"
+                                    {{$have_transactions ? 'readonly' : ''}}
+                            >
                         </div>
 
                         <div class="form-group">

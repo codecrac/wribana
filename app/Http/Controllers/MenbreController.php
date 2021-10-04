@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CompteMenbre;
+use App\Models\Devise;
 use App\Models\Menbre;
 use App\Models\SmsContenuNotification;
 use Illuminate\Http\Request;
@@ -176,12 +177,13 @@ class MenbreController extends Controller
             $le_menbre = Menbre::find($id_menbre_connecter);
             if ($le_menbre == null) {
                 return redirect()->route('connexion_menbre');
-            } elseif ($le_menbre->etat != 'attente') {
+            } elseif ($le_menbre->etat != 'attente' && $le_menbre->devise !=null) {
                 return redirect()->route('connexion_menbre');
             }
         }
 
-        return view("espace_menbre/profil/confirmation_de_compte", compact('le_menbre'));
+        $les_devises = Devise::all();
+        return view("espace_menbre/profil/confirmation_de_compte", compact('le_menbre','les_devises'));
     }
 
     public function post_confirmer_compte_menbre(Request $request)
@@ -219,6 +221,36 @@ class MenbreController extends Controller
             } else {
                 return redirect()->back()->with('notification', $notification);
             }
+        } else {
+            return redirect()->back()->with('notification', $notification);
+        };
+        return view("espace_menbre/profil/confirmation_de_compte", compact('le_menbre'));
+    }
+
+    public function post_choisir_devise(Request $request)
+    {
+        $la_session = session(MenbreController::$cle_session);
+        if ($la_session == null) {
+            return redirect()->route('connexion_menbre');
+        }
+        else {
+            $id_menbre_connecter = $la_session['id'];
+            $le_menbre = Menbre::find($id_menbre_connecter);
+            if ($le_menbre == null) {
+                return redirect()->route('connexion_menbre');
+            } elseif ($le_menbre->devise != null) {
+                return redirect()->route('connexion_menbre');
+            }
+        }
+
+        $notification = "<div class='alert alert-danger'>Devise invalide</div>";
+        $donnees_formulaire = $request->all();
+        $id_devise = $donnees_formulaire['id_devise'];
+        $la_devise_existe = Devise::find($id_devise);
+        if ($la_devise_existe!=null) {
+            $le_menbre->devise = $id_devise;
+            $le_menbre->save();
+            return redirect()->route('espace_menbre.accueil');
         } else {
             return redirect()->back()->with('notification', $notification);
         };
@@ -297,7 +329,8 @@ class MenbreController extends Controller
     {
         $id_menbre = $le_menbre->id;
         $nom_complet = $le_menbre->nom_complet;
-        session()->put(MenbreController::$cle_session, ['id' => $id_menbre, 'nom_complet' => $nom_complet]);
+        $devise = $le_menbre->devise_choisie->monaie;
+        session()->put(MenbreController::$cle_session, ['id' => $id_menbre, 'nom_complet' => $nom_complet, 'devise' => $devise]);
     }
 
 }

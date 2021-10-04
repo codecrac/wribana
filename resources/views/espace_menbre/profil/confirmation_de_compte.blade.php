@@ -2,6 +2,8 @@
 
 @section('content')
 
+@if($le_menbre->etat == 'attente')
+{{--    //confirmation de numro par par sms--}}
     <div class="row">
         <div class="offset-md-3 col-md-6 grid-margin stretch-card">
             <div class="card">
@@ -33,5 +35,46 @@
             </div>
         </div>
     </div>
+@elseif($le_menbre->devise == null)
+{{--    //Choisir sa monaie--}}
+    <div class="row">
+    <div class="offset-md-3 col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                {!! Session::get('notification','') !!}
+
+                <h4 class="card-title text-center">Choisissez votre monaie</h4>
+                <p class="card-description">
+                    Cette monaie sera associee a vos tontines,waricrowds et toutes vos transactions,
+                    <span class="text-warning">Vous ne pourrez pas la modifiée plus tard</span>.
+                </p>
+                <form class="forms-sample" method="post" action="{{route('espace_menbre.post_choisir_devise')}}">
+                    <div class="form-group">
+                        <label for="exampleInputUsername1">Utiliser cette monaie</label>
+                        <div class="row">
+                            <div class="col-9">
+                                <select class="form-control" name="id_devise" required>
+                                    <option>(Choisissez)</option>
+                                    @foreach($les_devises as $item_devise)
+                                        <option value="{{$item_devise->id}}">{{$item_devise->code}} ({{$item_devise->monaie}})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-center">
+                        @csrf
+                        <button type="submit" class="btn btn-primary mr-2">ENREGISTRER MON CHOIX</button>
+                    </h3>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@else
+    @php
+        header('Location:/');
+    @endphp
+@endif
 
 @endsection

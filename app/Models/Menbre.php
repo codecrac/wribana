@@ -11,6 +11,10 @@ class Menbre extends Model
     protected $guarded = [];
 //    protected $dates = ['created_at', 'updated_at', 'date_derniere_visite'];
 
+    public function devise_choisie()
+    {
+        return $this->belongsTo(Devise::class,'devise');
+    }
     public function tontines()
     {
         return $this->belongsToMany(Tontine::class)->orderBy('id','desc');

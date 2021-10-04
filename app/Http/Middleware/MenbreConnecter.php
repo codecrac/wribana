@@ -24,13 +24,15 @@ class MenbreConnecter
             $id_menbre_connecter = $la_session['id'];
             $le_menbre = Menbre::find($id_menbre_connecter);
 
-            if($le_menbre->etat=='actif'){
+            if($le_menbre->etat=='actif' && $le_menbre->devise!=null){
                 return $next($request);
-            }elseif($le_menbre->etat=='attente'){
-                return  redirect()->route('espace_menbre.confirmer_compte_menbre');
             }elseif($le_menbre->etat=='suspendu'){
                 $notification =  "<div class='alert alert-danger'> Votre compte a été suspendu, Motif : $le_menbre->motif_intervention_admin </div>";
                 return  redirect()->route('connexion_menbre')->with('notification',$notification);
+            }elseif($le_menbre->etat=='attente'){
+                return  redirect()->route('espace_menbre.confirmer_compte_menbre');
+            }elseif($le_menbre->devise==null){
+                return  redirect()->route('espace_menbre.confirmer_compte_menbre');
             }
             return $next($request);
         }else{

@@ -43,7 +43,7 @@
                         </div>
                         <div class="project-funding-info">
                             <div class="info-box" style="width: 185px">
-                                <span>{{number_format($le_crowd->montant_objectif,0,',',' ')}}F</span>
+                                <span>{{number_format($le_crowd->montant_objectif,0,',',' ')}}  {{$le_crowd->createur->devise_choisie->symbole}}</span>
                                 <span class="info-title">Objectif</span>
                             </div>
                             <div class="info-box" style="width: 185px">
@@ -53,7 +53,7 @@
                         </div>
                         <div class="project-raised clearfix">
                             <div class="d-flex align-items-center justify-content-between">
-                                <div class="raised-label">Montant atteinds : {{number_format($le_crowd->caisse->montant,0,',',' ')}}F</div>
+                                <div class="raised-label">Montant atteinds : {{number_format($le_crowd->caisse->montant,0,',',' ')}}  {{$le_crowd->createur->devise_choisie->monaie}}</div>
                                 @php
                                     $pourcentage = round($le_crowd->caisse->montant *100 / $le_crowd->caisse->montant_objectif,2);
                                 @endphp
@@ -67,8 +67,9 @@
                             @if($est_connecter)
                         <form method="post" action="{{route('espace_menbre.confirmation_soutien_waricrowd')}}">
                                     <div class="form-group">
-                                        
-                                    <input class="form-control" type="hidden" name="id_crowd" value='{{$le_crowd->id}}' required/>
+
+                                        <input class="form-control" type="hidden" name="id_crowd" value='{{$le_crowd->id}}' required/>
+                                        <b>(montant en {{$le_crowd->createur->devise_choisie->monaie}})</b>
                                         <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="100" required/>
                                         <h3 class="text-center">
                                             @csrf

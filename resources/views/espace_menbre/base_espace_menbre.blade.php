@@ -63,7 +63,7 @@
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item nav-profile dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                        <span class="nav-profile-name"> {{$la_session['nom_complet']}} </span>
+                        <span class="nav-profile-name"> {{$la_session['nom_complet']}} ({{$la_session['devise']}}) </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                         <a class="dropdown-item" href="{{route('espace_menbre.profil',[$la_session['id']] ) }}">

@@ -26,6 +26,9 @@ function convertCurrency($amount,$from_currency,$to_currency){
 //uncomment to test
 //echo convertCurrency(10, 'USD', 'PHP');
 ?>
+@php
+    $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+@endphp
 
 @extends('espace_menbre.base_espace_menbre')
 
@@ -104,7 +107,7 @@ function convertCurrency($amount,$from_currency,$to_currency){
                                     <i class="mdi mdi-currency-usd mr-3 icon-lg text-danger"></i>
                                     <div class="d-flex flex-column justify-content-around">
                                         <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.profil',[$le_menbre->id])}}"> Solde </a> </small>
-                                        <h5 class="mr-2 mb-0">{{number_format($le_menbre->compte->solde,0,',',' ')}} F</h5>
+                                        <h5 class="mr-2 mb-0">{{number_format($le_menbre->compte->solde,0,',',' ')}} {{$la_session['devise']}}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -132,7 +135,7 @@ function convertCurrency($amount,$from_currency,$to_currency){
                             </div>
                             <div class="col-md-4">
                                 @csrf
-                                <button type="submit" class="btn btn-success">Adherer</button>
+                                <button type="submit" class="btn btn-success">Adherer à la tontine</button>
                             </div>
                         </div>
                     </form>
@@ -184,7 +187,7 @@ function convertCurrency($amount,$from_currency,$to_currency){
             <div class="card">
                 <div class="card-body">
                     <p class="card-title"><a href="{{route('espace_menbre.profil',[$le_menbre->id])}}"> Solde </a></p>
-                    <h1>{{number_format($le_menbre->compte->solde,0,',',' ')}} F</h1>
+                    <h1>{{number_format($le_menbre->compte->solde,0,',',' ')}} {{$la_session['devise']}}</h1>
                 </div>
                 <canvas id="total-sales-chart"></canvas>
             </div>

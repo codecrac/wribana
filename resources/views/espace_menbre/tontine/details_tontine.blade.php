@@ -125,13 +125,14 @@ $signature = json_decode($result);
                         <li>Statut : <mark class="badge badge-{{$la_tontine->etat=='ouverte' ? 'success' :'danger'}}">{{$la_tontine->etat}}</mark> </li>
                         @if($la_tontine->motif_intervention_admin !=null) <li><b>Motif Intervention d'administrateur</b> : <mark class="badge badge-info">{{$la_tontine->motif_intervention_admin}}</mark> </li> @endif
                         <li>Crée par : {{$la_tontine->createur->nom_complet}}</li>
-                        <li>Montant à cotiser : {{number_format($la_tontine->montant,0,',',' ')}} F <small>par personnes</small> </li>
+                        <li>Montant à cotiser : {{number_format($la_tontine->montant,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->symbole}}</b>
+                            <small>par personnes</small> </li>
                         @php
                             $montant_total = $la_tontine->montant * $la_tontine->nombre_participant;
                             $frais = round($montant_total * (1/100));
                         @endphp
-                        <li>Montant Objectif : {{number_format($montant_total,0,',',' ')}} F </li>
-                        <li>Frais de gestion (1%) : {{number_format($frais,0,',',' ')}} F / {{number_format($montant_total,0,',',' ')}} F </li>
+                        <li>Montant Objectif : {{number_format($montant_total,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->symbole}}</b> </li>
+                        <li>Frais de gestion (1%) : {{number_format($frais,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->symbole}}</b> / {{number_format($montant_total,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->symbole}}</b> </li>
                         <li> Nombre de participant : {{sizeof($la_tontine->participants)}} / {{$la_tontine->nombre_participant}} </li>
                         <li> Frequence de depot : {{formater_frequence($la_tontine->frequence_depot_en_jours)}}</li>
                         <li> Tour de :
@@ -244,10 +245,10 @@ $signature = json_decode($result);
                         </p>
                         <p>Date limite : <b class="badge badge-warning"> {{$la_tontine->caisse->prochaine_date_encaissement}} </b> </p>
 {{--                        <p>Montant Total Objectif : <span class="marquer_presence text-dark">{{number_format( ($la_tontine->montant * $la_tontine->nombre_participant),0,',',' ')}} F</span> </p>--}}
-                        <p>Montant à cotiser : <b> {{number_format($la_tontine->montant,0,',',' ')}} F</b> </p>
+                        <p>Montant à cotiser : <b> {{number_format($la_tontine->montant,0,',',' ')}} {{$la_tontine->createur->devise_choisie->monaie}}</b> </p>
                         <p>
                             Montant en caisse : <span class="marquer_presence text-info">
-                                {{number_format($la_tontine->caisse->montant,0,',',' ')}} / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} F
+                                {{number_format($la_tontine->caisse->montant,0,',',' ')}} / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->monaie}}</b>
                             </span>
                         </p>
                         <p> de : <small> de {{sizeof($liste_ayant_cotiser)}} personne(s)/{{sizeof($la_tontine->participants)}} <a href="#liste_cotiseur">Voir</a> </small> </p>
@@ -282,18 +283,6 @@ $signature = json_decode($result);
                                 </form>
                             </h3>
                         @endif
-                                                                  <!--@csrf-->
-    <form action="https://api.cinetpay.com/v1/?method=checkPayStatus" method="post">
-
-
-        <input type="hidden" value="<?php echo $apikey; ?>" name="apikey">
-        <input type="hidden" value="<?php echo $cpm_custom; ?>" name="cpm_custom">
-        <input type="hidden" value="<?php echo $cpm_site_id; ?>" name="cpm_site_id">
-        <input type="hidden" value="<?php echo '163275877720210927160617'; ?>" name="cpm_trans_id">
-        <!--<input type="hidden" value="<?php echo $notify_url; ?>" name="notify_url">-->
-
-                                    <button type="submit" class="btn btn-primary" style="">get status</button>
-                                </form>
                 </div>
             </div>
         </div>

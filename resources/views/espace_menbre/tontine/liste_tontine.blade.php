@@ -49,7 +49,7 @@
                                 <td class="tr_bordered">{{$ma_tontine['titre']}}</td>
                                 <td class="tr_bordered">{{sizeof($ma_tontine->participants)}}/{{$ma_tontine['nombre_participant']}}</td>
                                 <td class="tr_bordered">
-                                    {{number_format($ma_tontine['montant'],0,',',' ')}} F
+                                    {{number_format($ma_tontine['montant'],0,',',' ')}} <b>{{$ma_tontine->createur->devise_choisie->monaie}}</b>
                                     {{formater_frequence($ma_tontine['frequence_depot_en_jours'])}}
                                 </td>
                                 <td class="tr_bordered text-danger">

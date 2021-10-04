@@ -81,7 +81,7 @@
                                     @endphp
                                     @if($pourcentage > 0)
                                         <div class="stats-value">
-                                            <span class="value-title">Montant atteind : <span class="value"> {{number_format($item_crowd->caisse->montant,0,',',' ')}}F </span></span>
+                                            <span class="value-title">Montant Objectif : <span class="value"> {{number_format($item_crowd->caisse->montant_objectif,0,',',' ')}} {{$item_crowd->createur->devise_choisie->monaie}} </span></span>
                                             <span class="stats-percentage">{{$pourcentage}}%</span>
                                         </div>
                                         <div class="stats-bar" data-value="{{$pourcentage}}">

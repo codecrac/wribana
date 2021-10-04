@@ -1,6 +1,6 @@
 @php
     $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
-    
+
 @endphp
 
 
@@ -36,11 +36,11 @@
               </thead>
               <tbody class="text-center">
                   @foreach($invitation_recues as $item_iv_recue)
-                
+
                       <tr>
                           <td class="tr_bordered">{{$item_iv_recue->menbre_inviteur->nom_complet}}</td>
                           <td class="tr_bordered">{{$item_iv_recue->tontine->titre}}</td>
-                          <td class="tr_bordered">{{$item_iv_recue->tontine->montant}}</td>
+                          <td class="tr_bordered">{{number_format($item_iv_recue->tontine->montant,0,',',' ')}} <b>{{$item_iv_recue->menbre_inviteur->devise_choisie->monaie}}</b> </td>
                           <td class="tr_bordered">{{formater_frequence($item_iv_recue->tontine->frequence_depot_en_jours)}}</td>
                           <td class="tr_bordered"><label class="badge badge-danger">{{$item_iv_recue['etat']}}</label></td>
                           <td class="tr_bordered">

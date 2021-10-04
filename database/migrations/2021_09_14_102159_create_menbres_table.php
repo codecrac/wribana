@@ -22,6 +22,7 @@ class CreateMenbresTable extends Migration
             $table->enum("etat",['attente','actif','suspendu']);
             $table->string('motif_intervention_admin')->nullable();
             $table->string('date_derniere_visite')->nullable();
+            $table->string('devise')->nullable();
             $table->integer('code_de_confirmation');
             $table->timestamps();
         });

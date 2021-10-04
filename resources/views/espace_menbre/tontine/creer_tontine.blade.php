@@ -1,3 +1,7 @@
+@php
+    $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+@endphp
+
 @extends('espace_menbre.base_espace_menbre')
 
 @section('content')
@@ -22,7 +26,7 @@
                                 <input required type="number" min="2" class="form-control" name="nombre_participant" placeholder="14">
                             </div>
                             <div class="form-group">
-                                <label for="exampleInputPassword1">Montant ( montant par personne ) </label>
+                                <label for="exampleInputPassword1">Montant en <b>{{$la_session['devise']}}</b> ( montant a cotiser par personne )  </label>
                                 <input required type="number" min="500" class="form-control" name="montant" placeholder="17500">
                             </div>
                             <div class="form-group">

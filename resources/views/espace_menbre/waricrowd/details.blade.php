@@ -54,7 +54,7 @@
                         <li>Categorie : {{$le_crowd->categorie->titre}} </li>
                         <li>Statut : <mark class="badge badge-{{$couleur}}">{{$le_crowd->etat}}</mark> </li>
                         <li>Crée par : {{$le_crowd->createur->nom_complet}}</li>
-                        <li>Montant objectif : {{number_format($le_crowd->montant_objectif,0,',',' ')}} F </li>
+                        <li>Montant objectif : {{number_format($le_crowd->montant_objectif,0,',',' ')}} <b>{{$le_crowd->createur->devise_choisie->monaie}}</b> </li>
 
                         @php
                             $pourcentage = round($le_crowd->caisse->montant *100 / $le_crowd->caisse->montant_objectif,2);
@@ -120,7 +120,7 @@
             </div>
         </div>
 
-        @if($le_crowd->etat='valider')
+        @if($le_crowd->etat=='valider')
             <div class="col-md-4 grid-margin">
                 <div class="card">
                     <div class="card-header">
@@ -132,7 +132,7 @@
                         <h5 class="text-center">Entrer le montant</h5>
                         <form method="post" action="{{route('espace_menbre.confirmation_soutien_waricrowd')}}">
                             <div class="form-group">
-                                
+
                                 <input class="form-control" type="hidden" name="id_crowd" value='{{$le_crowd->id}}' required/>
                                 <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="100" required/>
                                 <br/>

@@ -26,7 +26,7 @@
                     <hr/>
                 </div>
                 <div class="card-body text-center">
-                    <h3>Solde : {{number_format($le_menbre->compte->solde,0,',',' ')}} F <small style="font-size: 14px;text-decoration: underline"> <a href="#details">Details</a> </small> </h3>
+                    <h3>Solde : {{number_format($le_menbre->compte->solde,0,',',' ')}} {{$la_session['devise']}} <small style="font-size: 14px;text-decoration: underline"> <a href="#details">Details</a> </small> </h3>
                     <br/>
                     <hr/>
                         <h4 class="text-center">Retirer de l'argent</h4>

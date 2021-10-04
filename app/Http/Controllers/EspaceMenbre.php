@@ -18,10 +18,12 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 
 
 class EspaceMenbre extends Controller
 {
+
     public function accueil(){
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
@@ -291,7 +293,7 @@ class EspaceMenbre extends Controller
         if($email_inviter!=null){
             $invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->where('etat','=','attente')->get();
         }
-        return view("espace_menbre/invitations",compact('invitation_recues'));
+        return view("espace_menbre/tontine/invitations",compact('invitation_recues'));
     }
 
     public function reponse_invitation(Request $request,$id_invitation){
@@ -677,7 +679,7 @@ class EspaceMenbre extends Controller
     }
 
     public function entrer_code_confirmation_pour_modification(){
-
+//modification de telephone
         $la_session = session(MenbreController::$cle_session);
         if ($la_session == null) {
             return redirect()->route('connexion_menbre');
