@@ -1,7 +1,7 @@
 <?php
-    $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+$la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
 
-    //========================================================utile pour cinetpay
+//========================================================utile pour cinetpay
 //Credentials apiKey & siteId
 $apikey = \App\Http\Controllers\NotificationPaiementCinetPay::$apikey;
 $cpm_site_id = \App\Http\Controllers\NotificationPaiementCinetPay::$cpm_site_id;
@@ -53,7 +53,7 @@ $options = array(
         'method' => "POST",
         'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
         'content' => http_build_query($getSignatureData)
-        )
+    )
 );
 
 $context = stream_context_create($options);
@@ -80,50 +80,63 @@ $signature = json_decode($result);
     <div class="row">
         <div class=" col-md-8 grid-margin stretch-card">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">
+                    <hr/>
+                        <h4 class="card-title text-center">Confirmer votre soutien</h4>
+                    <hr/>
+                </div>
+                <div class="card-body text-left text-uppercase">
                     {!! Session::get('notification','') !!}
+                    <hr/>
+                        <h5>WARICROWD : {{ $le_crowd->titre }}</h5>
+                    <hr/>
+                        <h5>Objectif : {{ number_format($le_crowd->caisse->montant_objectif,0,',',' ')  }} {{$le_crowd->createur->devise_choisie->monaie}}</h5>
+                    <hr/>
+                        <h5>Montant atteinds : {{ number_format( $le_crowd->caisse->montant,0,',',' ') }} {{$le_crowd->createur->devise_choisie->monaie}}</h5>
+                    <hr/>
+                        <h5>Votre soutien : {{ number_format($montant_soutien,0,',',' ') }} {{$le_crowd->createur->devise_choisie->monaie}}</h5>
+                    <hr/>
 
-                    <h4 class="card-title text-center">Confirmer votre soutien</h4>
-                    <p class="card-description">
-                        <!--Lancer une collecte de fond pour realiser mon projet-->
-                    </p>
-                    <h5>WARICROWD : {{ $le_crowd->titre }}</h5>
-                    <h5>Objectif : {{ number_format($le_crowd->caisse->montant_objectif,0,',',' ')  }} F</h5>
-                    <h5>Montant atteinds : {{ number_format( $le_crowd->caisse->montant,0,',',' ') }} F</h5>
-                    <h5>Votre soutien : {{ number_format($montant_soutien,0,',',' ') }} F</h5>
+                    <form action="{{route('espace_menbre.soutenir_projet',[$le_crowd->id])}}" method="post">
+{{--                    <form action="<?php echo $cpSecure; ?>" method="post">--}}
+                        @csrf
 
-                    <form action="<?php echo $cpSecure; ?>" method="post">
-                                    @csrf
+                 {{--       <input type="hidden" value="<?php echo $apikey; ?>" name="apikey">
+                        <p><input type="hidden" value="<?php echo $cpm_amount; ?>" name="cpm_amount"></p>
+                        <input type="hidden" value="<?php echo $cpm_custom; ?>" name="cpm_custom">
+                        <input type="hidden" value="<?php echo $cpm_site_id; ?>" name="cpm_site_id">
+                        <input type="hidden" value="<?php echo $cpm_version; ?>" name="cpm_version">
+                        <p><input type="hidden" value="<?php echo $cpm_currency; ?>" name="cpm_currency"></p>
+                        <input type="hidden" value="<?php echo $cpm_trans_id; ?>" name="cpm_trans_id">
+                        <input type="hidden" value="<?php echo $cpm_language; ?>" name="cpm_language">
+                        <input type="hidden" value="<?php echo $getSignatureData['cpm_trans_date']; ?>"
+                               name="cpm_trans_date">
+                        <input type="hidden" value="<?php echo $cpm_page_action; ?>" name="cpm_page_action">
+                        <p><input type="hidden" value="<?php echo $cpm_designation; ?>" name="cpm_designation"></p>
+                        <input type="hidden" value="<?php echo $cpm_payment_config; ?>" name="cpm_payment_config">
+                        <input type="hidden" value="<?php echo $signature; ?>" name="signature">
+                        <input type="hidden" value="<?php echo $return_url; ?>" name="return_url">
+                        <input type="hidden" value="<?php echo $cancel_url; ?>" name="cancel_url">
+                        <input type="hidden" value="<?php echo $notify_url; ?>" name="notify_url">--}}
 
-        <input type="hidden" value="<?php echo $apikey; ?>" name="apikey">
-        <p><input type="hidden" value="<?php echo $cpm_amount; ?>" name="cpm_amount"></p>
-        <input type="hidden" value="<?php echo $cpm_custom; ?>" name="cpm_custom">
-        <input type="hidden" value="<?php echo $cpm_site_id; ?>" name="cpm_site_id">
-        <input type="hidden" value="<?php echo $cpm_version; ?>" name="cpm_version">
-        <p><input type="hidden" value="<?php echo $cpm_currency; ?>" name="cpm_currency"></p>
-        <input type="hidden" value="<?php echo $cpm_trans_id; ?>" name="cpm_trans_id">
-        <input type="hidden" value="<?php echo $cpm_language; ?>" name="cpm_language">
-        <input type="hidden" value="<?php echo $getSignatureData['cpm_trans_date']; ?>" name="cpm_trans_date">
-        <input type="hidden" value="<?php echo $cpm_page_action; ?>" name="cpm_page_action">
-        <p><input type="hidden" value="<?php echo $cpm_designation; ?>" name="cpm_designation"> </p>
-        <input type="hidden" value="<?php echo $cpm_payment_config; ?>" name="cpm_payment_config">
-        <input type="hidden" value="<?php echo $signature; ?>" name="signature">
-        <input type="hidden" value="<?php echo $return_url; ?>" name="return_url">
-        <input type="hidden" value="<?php echo $cancel_url; ?>" name="cancel_url">
-        <input type="hidden" value="<?php echo $notify_url; ?>" name="notify_url">
+                        <input type="hidden" value="{{$montant_soutien}}" name="montant_soutien">
 
-
-                                    <button type="submit" class="btn btn-primary" style="">Confirmer</button>
-                                </form>
+                        <h3 class="text-center">
+                            <button type="submit" class="btn btn-primary" style="">Confirmer</button>
+                        </h3>
+                    </form>
                 </div>
             </div>
         </div>
 
         <div class="col-md-4 text-center">
             <hr/>
-                <h4>Comment ça marche</h4>
+            <h4>Comment ça marche</h4>
             <hr/>
-            <iframe width="100%" src="https://www.youtube.com/embed/DzH5aRoMYLw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe width="100%" src="https://www.youtube.com/embed/DzH5aRoMYLw" title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
         </div>
     </div>
 

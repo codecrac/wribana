@@ -41,7 +41,7 @@
                         <li>Statut : <mark class="badge badge-{{$couleur}}">{{$le_crowd->etat}}</mark> </li>
                         @if($le_crowd->motif_intervention_admin !=null) <li><b>Motif Intervention d'administrateur</b> : <mark class="badge badge-info">{{$le_crowd->motif_intervention_admin}}</mark> </li> @endif
                         <li>Crée par : {{$le_crowd->createur->nom_complet}}</li>
-                        <li>Montant objectif : {{number_format($le_crowd->montant_objectif,0,',',' ')}} F </li>
+                        <li>Montant objectif : {{number_format($le_crowd->montant_objectif,0,',',' ')}}  <b>{{$le_crowd->createur->devise_choisie->monaie}}</b> </li>
 
                         @php
                             $pourcentage = round($le_crowd->caisse->montant *100 / $le_crowd->caisse->montant_objectif,2);
@@ -56,7 +56,10 @@
                             }
                         @endphp
 
-                        <li> Montant atteind : <span class="badge badge-{{$couleur}}">{{$pourcentage}} %</span> [ {{number_format($le_crowd->caisse->montant,0,',',' ')}} F ]</li>
+                        <li>
+                            Montant atteind :
+                            <span class="badge badge-{{$couleur}}">{{$pourcentage}} %</span> [ {{number_format($le_crowd->caisse->montant,0,',',' ')}}  <b>{{$le_crowd->createur->devise_choisie->monaie}}</b>  ]
+                        </li>
                         <li> Nombre de soutien : {{sizeof($le_crowd->transactions)}}</li>
                         <li> Creer le  : {{ date('d/m/Y',strtotime($le_crowd->created_at)) }}</li>
 
@@ -101,7 +104,34 @@
     </div>
 
     <div class="row">
-        <div class="col-md-8 grid-margin stretch-card">
+        <div class="col-md-12 grid-margin">
+            <div class="card">
+                <div class="card-header">
+                    <hr/>
+                    <h4 class="text-center">Pitch Video</h4>
+                    <hr/>
+                </div>
+                <div class="card-body">
+                    @if($le_crowd->lien_pitch_video !=null)
+                        <iframe width="100%" src="{{$le_crowd->lien_pitch_video}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    @else
+                        <h3 class="text-center">
+                            <img src="{{url($le_crowd->image_illustration)}}" style="max-width: 200px" />
+                        </h3>
+                    @endif
+                </div>
+                <div class="card-footer">
+                    <hr/>
+                    <h5>Description courte</h5>
+                    <hr/>
+                    <p class="text-center">
+                        {{$le_crowd->description_courte}}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-header">
                     <hr/>
@@ -114,34 +144,6 @@
             </div>
         </div>
 
-        @if($le_crowd->etat='valider')
-            <div class="col-md-4 grid-margin">
-                <div class="card">
-                    <div class="card-header">
-                        <hr/>
-                        <h4 class="text-center">Pitch Video</h4>
-                        <hr/>
-                    </div>
-                    <div class="card-body">
-                        @if($le_crowd->lien_pitch_video !=null)
-                            <iframe width="100%" src="{{$le_crowd->lien_pitch_video}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        @else
-                            <h3 class="text-center">
-                                <img src="{{url($le_crowd->image_illustration)}}" style="max-width: 200px" />
-                            </h3>
-                        @endif
-                    </div>
-                    <div class="card-footer">
-                        <hr/>
-                        <h5>Description courte</h5>
-                        <hr/>
-                        <p class="text-center">
-                            {{$le_crowd->description_courte}}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        @endif
     </div>
 
     <div class="row">
@@ -163,8 +165,8 @@
                         @foreach($transactions_du_waricrowd as $item_soutien)
                             <tr>
                                 <td>{{$item_soutien->souteneur->nom_complet}}</td>
-                                <td>{{number_format($item_soutien->montant,0,',',' ')}} F</td>
-                                <td>{{date('d/m/Y H:m',strtotime($item_soutien['created_at']))}}</td>
+                                <td>{{number_format($item_soutien->montant,0,',',' ')}} {{$item_soutien->waricrowd->createur->devise_choisie->monaie}}</td>
+                                <td>{{date('d/m/Y H:i',strtotime($item_soutien['created_at']))}}</td>
                             </tr>
                         @endforeach
                         </tbody>

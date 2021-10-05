@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CaisseTontine;
 use App\Models\Menbre;
+use App\Models\SmsContenuNotification;
 use App\Models\Tontine;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class SmsController extends Controller
 // api sms les # et les espaces sont la pour eviter la detection de la mise sur github
 //ecdb334b93b64c09a97916de69921a50 ###  -70e3d6ed-24c8-   ###    467f-8be9-7822e011f4fc // api uberson #retirer les #
 //aaecfdbcb5d9a0676af5ce03ad02bd6a   ####   -2c9a3ef7-deea-441c-87a1-   ###   ae0d986310cf //api qui marche
-//27aa395694e182a0d679cc9d5feda40f-8b933270-cf0f-443b-ac7a-bc7436c00115 //$api_bloque
+
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://jd988v.api.infobip.com/sms/2/text/advanced' ,
             CURLOPT_RETURNTRANSFER => true,
@@ -79,10 +80,16 @@ class SmsController extends Controller
             foreach ($les_participants as $item_participant){
                 $titre_tontine = $item_caisse_en_retard->tontine->titre;
                 $montant = $item_caisse_en_retard->tontine->montant;
-                $message = " Tontine : $titre_tontine , Retard de paiement de : $liste_retardataires";
 
-                $numero = "225$item_participant->telephone";
+
+                $base_message = SmsContenuNotification::first();
+                $message = $base_message['retard_paiement'];
+                $message = str_replace('$titre$',$titre_tontine,$message);
+                $message = str_replace('$liste_retardataires$',$liste_retardataires,$message);
+
+                $numero = "$item_participant->telephone";
                 $this->sms_info_bip($numero,$message);
+                mail($item_participants->email,"RETARD DE PAIEMENT SUR TONTINE << $titre_tontine >>",$message);
             }
         }
 

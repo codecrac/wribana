@@ -16,6 +16,10 @@ class CreateSmsContenuNotificationsTable extends Migration
         Schema::create('sms_contenu_notifications', function (Blueprint $table) {
             $table->id();
             $table->text('confirmation_compte');
+            $table->text('etat_waricowd');
+            $table->text('etat_tontine');
+            $table->text('invitation_recue');
+            $table->text('virement_compte_menbre_qui_prend');
             $table->text('retard_paiement');
             $table->timestamps();
         });

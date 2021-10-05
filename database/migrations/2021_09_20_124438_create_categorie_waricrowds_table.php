@@ -15,7 +15,6 @@ class CreateCategorieWaricrowdsTable extends Migration
     {
         Schema::create('categorie_waricrowds', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique();
             $table->string('titre')->unique();
             $table->timestamps();
         });

@@ -26,9 +26,25 @@
                 <hr/>
                 <h3 class="text-center">
                     Mes Tontines ( {{sizeof($mes_tontines)}} )
-                    <a class="btn btn-success" href="{{route('espace_menbre.ajouter_tontine')}}">Creer une tontine</a>
+                    <a class="btn btn-primary" href="{{route('espace_menbre.ajouter_tontine')}}">Creer une tontine</a>
                 </h3>
                 <hr/>
+            </div>
+            <div class="row">
+                <p class="card-title col-12">Adherer a une tontine via le code d'invitation</p>
+                <div class="col-12">
+                    <form method="post" action="{{route('espace_menbre.adhesion_via_code_invitation')}}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input class="form-control" type="number" name="code_invitation" required placeholder="Entrer le code d'invitation" />
+                            </div>
+                            <div class="col-md-4">
+                                @csrf
+                                <button type="submit" class="btn btn-success">Adherer à la tontine</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
             {!! Session::get('notification','') !!}
             <br/><br/>

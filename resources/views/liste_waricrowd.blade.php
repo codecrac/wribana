@@ -59,7 +59,8 @@
         <div class="container">
             <div class="row project-items justify-content-center project-style-one">
 
-                @foreach($liste_waricrowd as $item_crowd)
+                @if(sizeof($liste_waricrowd)>0)
+                    @foreach($liste_waricrowd as $item_crowd)
                     <div class="col-lg-4 col-md-6 col-sm-10">
                         <div class="project-item mb-30">
                             <div class="thumb"
@@ -89,7 +90,9 @@
                                         </div>
                                     @else
                                         <!-- div pour maintenir l'alignement -->
-                                        <div style="height: 40px"></div>
+                                        <div style="height: 40px">
+                                            {{Str::limit($item_crowd->description_courte,80)}}
+                                        </div>
                                     @endif
                                 </div>
                                 <span class="date"><i class="far fa-calendar-alt"></i> {{date('d-m-Y',strtotime($item_crowd['created_at']))}}</span>
@@ -102,6 +105,15 @@
                         </div>
                     </div>
                 @endforeach
+                @else
+                    <hr/>
+                        <a  href="{{route("espace_menbre.creer_un_waricrowd")}}"
+                            class="main-btn nav-btn d-none d-sm-inline-block">
+                            Soyez le premier a lancé un waricrowd.
+                            <i class="far fa-arrow-right"></i>
+                        </a>
+                    <hr/>
+                @endif
 
                 {{--<div class="col-12">
                     <div class="view-more-btn text-center mt-40">

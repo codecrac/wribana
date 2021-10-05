@@ -50,13 +50,13 @@
                         <li>Statut : <mark class="badge badge-{{$la_tontine->etat=='ouverte' ? 'success' :'danger'}}">{{$la_tontine->etat}}</mark> </li>
                         @if($la_tontine->motif_intervention_admin !=null) <li><b>Motif Intervention d'administrateur</b> : <mark class="badge badge-info">{{$la_tontine->motif_intervention_admin}}</mark> </li> @endif
                         <li>Crée par : {{$la_tontine->createur->nom_complet}}</li>
-                        <li>Montant à cotiser : {{number_format($la_tontine->montant,0,',',' ')}} F <small>par personnes</small> </li>
+                        <li>Montant à cotiser : {{number_format($la_tontine->montant,0,',',' ')}} {{$la_tontine->createur->devise_choisie->monaie}} <small>par personnes</small> </li>
                         <li> Nombre de participant : {{sizeof($la_tontine->participants)}} / {{$la_tontine->nombre_participant}} </li>
                         @php
                             $montant_total = $la_tontine->montant * $la_tontine->nombre_participant;
                             $frais = round($montant_total * (1/100));
                         @endphp
-                        <li>Frais de gestion (1%) : {{number_format($frais,0,',',' ')}} F / {{number_format($montant_total,0,',',' ')}} F </li>
+                        <li>Frais de gestion (1%) : {{number_format($frais,0,',',' ')}} {{$la_tontine->createur->devise_choisie->monaie}} / {{number_format($montant_total,0,',',' ')}} {{$la_tontine->createur->devise_choisie->monaie}} </li>
                         <li> Frequence de depot : {{formater_frequence($la_tontine->frequence_depot_en_jours)}}</li>
                         <li> Tour de :
                             <mark class="badge badge-primary marquer_presence">
@@ -137,13 +137,13 @@
                             </b>
                         </p>
 {{--                        <p>Montant Total Objectif : <span class="marquer_presence text-dark">{{number_format( ($la_tontine->montant * $la_tontine->nombre_participant),0,',',' ')}} F</span> </p>--}}
-                        <p>Montant à cotiser : <b> {{number_format($la_tontine->montant,0,',',' ')}} F</b> </p>
+                        <p>Montant à cotiser : <b> {{number_format($la_tontine->montant,0,',',' ')}} {{$la_tontine->createur->devise_choisie->monaie}}</b> </p>
                         @if($la_tontine->etat =='ouverte')
                         <p>Date limite : <b class="badge badge-warning"> {{$la_tontine->caisse->prochaine_date_encaissement}} </b> </p>
 
                         <p>
                                     Montant en caisse : <span class="marquer_presence text-info">
-                                        {{number_format($la_tontine->caisse->montant,0,',',' ')}} / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} F
+                                        {{number_format($la_tontine->caisse->montant,0,',',' ')}} / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} {{$la_tontine->createur->devise_choisie->monaie}}
                                     </span>
                                 </p>
                                 <p> de : <small> de {{sizeof($liste_ayant_cotiser)}} personne(s)/{{sizeof($la_tontine->participants)}} <a href="#liste_cotiseur">Voir</a> </small> </p>
@@ -235,7 +235,7 @@
                                 @foreach($liste_ayant_cotiser as $item_ayant_cotiser)
                                     <tr>
                                         <td>{{$item_ayant_cotiser->cotiseur->nom_complet}}</td>
-                                        <td>{{date("d/m/Y H:m",strtotime($item_ayant_cotiser->updated_at))}}</td>
+                                        <td>{{date("d/m/Y H:i",strtotime($item_ayant_cotiser->updated_at))}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -307,7 +307,7 @@
                         @foreach($transactions_de_la_tontine as $item_transaction)
                             <tr>
                                 <td>{{$item_transaction->cotiseur->nom_complet}}</td>
-                                <td>{{date("d/m/Y H:m",strtotime($item_transaction->updated_at))}}</td>
+                                <td>{{date("d/m/Y H:i",strtotime($item_transaction->updated_at))}}</td>
                                 <td>{{$item_transaction->menbre_qui_prend->nom_complet}}</td>
                             </tr>
                         @endforeach

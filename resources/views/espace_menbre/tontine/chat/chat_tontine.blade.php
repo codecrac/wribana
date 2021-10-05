@@ -53,6 +53,7 @@
         <div class="col-md-7 grid-margin stretch-card">
             <div class="card">
                 <div class="card-header">
+                    <a class="btn btn-primary" href="{{route('espace_menbre.details_tontine',[$la_tontine->id])}}">RETOUR A LA TONTINE</a>
                     <hr/>
                         <h4 class="card-title text-center text-uppercase"> Espace Chat tontine : {{$la_tontine->titre}}</h4>
                     <hr/>

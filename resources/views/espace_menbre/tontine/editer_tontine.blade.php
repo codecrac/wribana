@@ -34,7 +34,7 @@
                         <div class="form-group">
                             <label for="exampleInputPassword1">Montant ( montant par personne ) </label>
                             <input required type="number"
-                                   class="form-control" min="500" name="montant" value="{{$la_tontine['montant']}}" placeholder="17500"
+                                   class="form-control" name="montant" value="{{$la_tontine['montant']}}" placeholder="17500"
                                    {{sizeof($la_tontine->transactions) >0 ? "readonly" :""}}
                             >
 

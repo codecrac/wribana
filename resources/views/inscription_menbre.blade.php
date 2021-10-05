@@ -72,7 +72,7 @@
 
                                     <br/>
                                     <label>Email</label>
-                                        <input class="form-control" placeholder="monadresse@gmail.com" type="text" name="email" />
+                                        <input class="form-control" placeholder="monadresse@gmail.com" type="email" name="email" />
                                     <br/>
                                     <label>Mot de passe *</label>
                                         <input required class="form-control" placeholder="Mot de passe" type="password" name="mot_de_passe" />

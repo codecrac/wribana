@@ -259,9 +259,6 @@ class EspaceMenbre extends Controller
     public function envoyer_invitation(Request $request,$id_tontine){
         $donnees_formulaire = $request->all();
 
-        #envoi d'email ici
-
-
         $adresse =  "https://" . $_SERVER['SERVER_NAME'] .'/espace-menbre/invitations';
 
         $la_session = session(MenbreController::$cle_session);
@@ -282,6 +279,15 @@ class EspaceMenbre extends Controller
                         $adresse
             "
         );
+
+
+      /*  $telephone = $la_tontine->createur->telephone;
+
+        $contenu_notification = SmsContenuNotification::first();
+        $message_notif = $contenu_notification['invitation_recue'];
+        $le_message = str_replace('$nom_complet$',$nom_complet,$message_notif);
+        $le_message = str_replace('$titre_tontine$',$la_tontine->titre,$message_notif);
+        SmsController::sms_info_bip($telephone,$le_message);*/
 
         foreach ($liste_emails as $mail_item){
             $invitation_existante = Invitation::where('email_inviter','=',$mail_item)->where('id_tontine','=',$id_tontine)->first();
@@ -342,8 +348,8 @@ class EspaceMenbre extends Controller
 
             $id_tontine = $la_tontine['id'];
             $la_tontine = Tontine::find($id_tontine);
+
             //NOMBRE DE PARTICPANT ATTEINDS, LA TONTINE EST PRETE
-//            dd(sizeof($la_tontine->participants) , $la_tontine->nombre_participant);
             if(sizeof($la_tontine->participants) == $la_tontine->nombre_participant){
                 Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
                 $la_tontine->etat = 'prete';
@@ -445,6 +451,7 @@ class EspaceMenbre extends Controller
         $la_transaction->id_tontine = $id_tontine;
         $la_transaction->id_menbre = $id_menbre_connecter;
         $la_transaction->montant = $montant;
+        $la_transaction->statut = "ACCEPTED";
         $la_transaction->id_menbre_qui_prend = $la_tontine->caisse->menbre_qui_prend->id;
 
         $notification = " <div class='alert alert-danger text-center'> Quelque chose s'est mal passé, veuillez reessayez </div>";
@@ -463,7 +470,7 @@ class EspaceMenbre extends Controller
 //            dd($maintenant);
             $liste_participants = $la_tontine->participants;
 //            dd($liste_participants);
-            $this->notifier_paiement_cotisation($liste_participants,$le_menbre->nom_complet,$montant,$la_tontine->titre,$maintenant);
+            $this->notifier_paiement_cotisation($liste_participants,$le_menbre->nom_complet,$montant,$la_tontine->createur->devise_choisie->monaie,$la_tontine->titre,$maintenant);
 
             if($le_menbre->email !=null){
                 $infos_pour_recu = ['nom_complet'=>$le_menbre->nom_complet,
@@ -500,6 +507,20 @@ class EspaceMenbre extends Controller
                     $nouvelle_note->save();
                 }
 
+                $les_participants = $la_tontine->participants;
+                foreach ($les_participants as $item_participant){
+
+                    $titre_tontine = $la_tontine->titre;
+                    $base_message = SmsContenuNotification::first();
+                    $message = $base_message['virement_compte_menbre_qui_prend'];
+                    $message = str_replace('$nom_menbre_qui_prend$',$la_tontine->caisse->menbre_qui_prend->nom_complet,$message);
+                    $message = str_replace('$titre_tontine$',$titre_tontine,$message);
+
+                    $numero = $item_participant->telephone;
+                    SmsController::sms_info_bip($numero,$message);
+                    mail($item_participant->email,"$titre_tontine : MONTANT OBJECTIF DE COTISATION ATTEINDS",$message);
+
+                }
 //====================Rotation
                 //SI ON EST PAS AU DERNIER PARTICIPANTS
                 if($nouvel_index < sizeof($la_tontine->participants)){
@@ -827,12 +848,12 @@ class EspaceMenbre extends Controller
         }
     }
 
-    private function notifier_paiement_cotisation($liste_participants,$nom_cotiseur,$montant_cotisation,$titre_de_la_tontine,$date_paiement){
+    private function notifier_paiement_cotisation($liste_participants,$nom_cotiseur,$montant_cotisation,$devise,$titre_de_la_tontine,$date_paiement){
         foreach($liste_participants as $item_participant){
             $numero = "$item_participant->telephone";
 //            dd($montant_cotisation);
 //            $montant_cotisation = number_format($montant_cotisation,0,',',' ');
-            $message_sms = "Paiement de $montant_cotisation F par $nom_cotiseur sur la totine <<$titre_de_la_tontine>> le $date_paiement ";
+            $message_sms = "Paiement de $montant_cotisation $devise par $nom_cotiseur sur la totine <<$titre_de_la_tontine>> le $date_paiement ";
 //            dd($message_sms);
             SmsController::sms_info_bip("$numero",$message_sms);
         }

@@ -70,7 +70,7 @@
 
                                         <input class="form-control" type="hidden" name="id_crowd" value='{{$le_crowd->id}}' required/>
                                         <b>(montant en {{$le_crowd->createur->devise_choisie->monaie}})</b>
-                                        <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="100" required/>
+                                        <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="1" required/>
                                         <h3 class="text-center">
                                             @csrf
                                             <button type="submit" class="main-btn"> Soutenir le projet  <i class="far fa-arrow-right"></i></button>
@@ -92,6 +92,11 @@
                                     <div class="col-lg-8">
                                         <div class="description-content">
                                             <h4 class="description-title">{{$le_crowd->titre}}</h4>
+
+                                            <hr/>
+                                                {{$le_crowd->description_courte}}
+                                            <hr/>
+
                                             {{$le_crowd->description_complete}}
                                         </div>
                                     </div>

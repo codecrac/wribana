@@ -19,7 +19,7 @@
                     <form class="forms-sample" method="post" action="{{route('espace_menbre.post_ajouter_tontine')}}">
                             <div class="form-group">
                                 <label for="exampleInputUsername1">Titre</label>
-                                <input required type="text" class="form-control" name="titre" placeholder="Tontine Elegante">
+                                <input required type="text" class="form-control" name="titre" placeholder="Tontine Elegante" autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Nombre de particpant</label>
@@ -27,7 +27,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Montant en <b>{{$la_session['devise']}}</b> ( montant a cotiser par personne )  </label>
-                                <input required type="number" min="500" class="form-control" name="montant" placeholder="17500">
+                                <input required type="number" class="form-control" name="montant" placeholder="17500">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputConfirmPassword1">Frequence de depot (en jours)</label>

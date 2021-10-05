@@ -1,6 +1,8 @@
 @php
+    $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+
     $have_transactions = $le_crowd->transactions;
-    if($have_transactions!=null){
+    if(sizeof($have_transactions)>0){
       $have_transactions =true;
     }else{
         $have_transactions = false;
@@ -32,14 +34,14 @@
                             </select>
                         </div>
 
-                        <div class="form-group" style="display: {{$have_transactions ? 'none' : ''}}">>
+                        <div class="form-group" style="display: {{$have_transactions ? 'none' : ''}}">
                             <label for="exampleInputUsername1">Titre *</label>
                             <input required type="text" class="form-control" name="titre" value="{{$le_crowd->titre}}" placeholder="Tontine Elegante">
                         </div>
 
 
                         <div class="form-group" style="display: {{$have_transactions ? 'none' : ''}}">
-                            <label for="exampleInputUsername1">Objectif de financement (Montant) *</label>
+                            <label for="exampleInputUsername1">Objectif de financement (Montant)  en <b>{{$la_session['devise']}}</b> *</label>
                             <input required type="number" class="form-control" name="montant_objectif"
                                    value="{{$le_crowd->montant_objectif}}" placeholder="Tontine Elegante"
                                     {{$have_transactions ? 'readonly' : ''}}

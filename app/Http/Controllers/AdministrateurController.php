@@ -96,7 +96,7 @@ class AdministrateurController extends Controller
 
         $telephone = $la_tontine->createur->telephone;
         $contenu_notification = SmsContenuNotification::first();
-        $message_notif = $contenu_notification['etat_waricowd'];
+        $message_notif = $contenu_notification['etat_tontine'];
 
         $le_message = str_replace('$etat$',$nouvel_etat,$message_notif);
         $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
@@ -125,7 +125,6 @@ class AdministrateurController extends Controller
         $la_categorie_existe = CategorieWaricrowd::where('titre','=',$titre)->first();
         if($la_categorie_existe==null){
             $la_categorie = new CategorieWaricrowd();
-            $la_categorie->slug = $titre;
             $la_categorie->titre = $titre;
             $la_categorie->save();
             $notification = "<div class='alert alert-success text-center'> Operation bien effectuee </div>";
@@ -135,11 +134,10 @@ class AdministrateurController extends Controller
         return redirect()->back()->with('notification',$notification);
     }
 
-    public function modifier_categorie_waricrowd(Request $request,$slug_categorie){
+    public function modifier_categorie_waricrowd(Request $request,$id_categorie){
         $donnees_formulaire = $request->all();
         $titre = $donnees_formulaire['titre'];
-        $la_categorie = CategorieWaricrowd::firstOrNew(['slug'=>$slug_categorie]);
-//        $la_categorie->slug = $titre;
+        $la_categorie = CategorieWaricrowd::find($id_categorie);
         $la_categorie->titre = $titre;
         $la_categorie->save();
         $notification = "<div class='alert alert-success text-center'> Operation bien effectuee </div>";
@@ -262,7 +260,11 @@ class AdministrateurController extends Controller
         if($la_ligne_notification == null){
             $la_ligne_notification = new SmsContenuNotification();
             $la_ligne_notification->confirmation_compte = 'Bienvenu(e) sur waribana, votre code de confirmation est le suivant $code$';
-            $la_ligne_notification->retard_paiement = 'Bonjour $nom_complet$, Vous avez un paiement de $montant_paiement$ en retard sur la tontine $nom_tontine$ ';
+            $la_ligne_notification->retard_paiement = 'Bonjour, des cotisations en retard sur la tontine << $titre$ >>; retardataires : $liste_retardataires$ ';
+            $la_ligne_notification->etat_waricowd = 'Bonjour votre waricrowd intitule <<$titre$>> a été : $etat$ $motif$';
+            $la_ligne_notification->etat_tontine = 'Bonjour votre tontine intitule <<$titre$>> est : $etat$ $motif$ ';
+            $la_ligne_notification->invitation_recue = 'Bonjour, le menbre $nom_complet$ de waribana vous invite a rejoindre la tontine << $titre_tontine$ >>, Connectez vous inscrivez-vous pour repondre a son invitation';
+            $la_ligne_notification->virement_compte_menbre_qui_prend = 'Bonjour, montant de cotisation atteinds sur tontine << $titre_tontine$ >>, virement effectue au menbre : $nom_menbre_qui_prend$ ';
             $la_ligne_notification->save();
             $la_ligne_notification = SmsContenuNotification::first();
         }
@@ -273,9 +275,12 @@ class AdministrateurController extends Controller
     public function post_definir_contenu_notifications(Request $request){
         $la_ligne_notification = SmsContenuNotification::firstOrNew();
         $la_ligne_notification->confirmation_compte = $request['confirmation_compte'];
+        $la_ligne_notification->etat_tontine = $request['etat_tontine'];
+        $la_ligne_notification->etat_waricowd = $request['etat_waricrowd'];
         $la_ligne_notification->retard_paiement = $request['retard_paiement'];
+        $la_ligne_notification->invitation_recue = $request['invitation_recue'];
+        $la_ligne_notification->virement_compte_menbre_qui_prend = $request['virement_compte_menbre_qui_prend'];
         $la_ligne_notification->save();
-        $la_ligne_notification = SmsContenuNotification::first();
         $notification = "<div class='alert alert-success text-center'> Operation bien effectuée </div>";
         return redirect()->back()->with('notification',$notification);
     }

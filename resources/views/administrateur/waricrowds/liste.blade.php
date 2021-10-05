@@ -42,13 +42,13 @@
                             <th class="tr_bordered">#</th>
                             </thead>
                             <tbody>
-                            @foreach($liste_waricrowd as $item)
+                            @foreach($liste_waricrowd as $item_crowd)
                                 <tr class="tr_bordered text-center">
-                                    <td class="tr_bordered">{{$item['titre']}}</td>
-                                    <td class="tr_bordered"> {{number_format($item['montant_objectif'],0,',',' ')}} F </td>
+                                    <td class="tr_bordered">{{$item_crowd['titre']}}</td>
+                                    <td class="tr_bordered"> {{number_format($item_crowd['montant_objectif'],0,',',' ')}} <b>{{$item_crowd->createur->devise_choisie->monaie}}</b> </td>
                                     <td class="tr_bordered">
                                         @php
-                                            $pourcentage = round($item->caisse->montant *100 / $item->caisse->montant_objectif,2);
+                                            $pourcentage = round($item_crowd->caisse->montant *100 / $item_crowd->caisse->montant_objectif,2);
                                             if($pourcentage <40){
                                                 $couleur= "danger";
                                             }elseif($pourcentage <60){
@@ -63,21 +63,21 @@
                                     </td>
                                     <td class="tr_bordered text-danger">
                                         @php
-                                            if($item->etat == 'valider'){
+                                            if($item_crowd->etat == 'valider'){
                                                 $couleur= "success";
-                                            }elseif($item->etat == 'recaler'){
+                                            }elseif($item_crowd->etat == 'recaler'){
                                                 $couleur = "danger";
                                             }else{
                                                 $couleur = "dark";
                                             }
                                         @endphp
                                         <b class="badge badge-{{$couleur}}">
-                                            {{$item->etat}}
+                                            {{$item_crowd->etat}}
                                         </b>
                                     </td>
 
                                     <td class="tr_bordered" style="padding: 8px">
-                                        <a href="{{route('admin.details_waricrowd',[$item['id']])}}" class="btn btn-primary">Details</a>
+                                        <a href="{{route('admin.details_waricrowd',[$item_crowd['id']])}}" class="btn btn-primary">Details</a>
                                     </td>
                                 </tr>
                             @endforeach

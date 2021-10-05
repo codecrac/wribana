@@ -178,8 +178,8 @@
                         <tbody>
                         @foreach($mes_transactions_pour_ce_crowd as $item_soutien)
                             <tr>
-                                <td>{{date('d/m/Y H:m',strtotime($item_soutien['created_at']))}}</td>
-                                <td>{{number_format($item_soutien->montant,0,',',' ')}} F</td>
+                                <td>{{date('d/m/Y H:i',strtotime($item_soutien['created_at']))}}</td>
+                                <td>{{number_format($item_soutien->montant,0,',',' ')}} {{$item_soutien->waricrowd->createur->devise_choisie->monaie}}</td>
                                 <td> {{$item_soutien->statut}} </td>
                             </tr>
                         @endforeach

@@ -81,7 +81,8 @@ class EspaceMenbreWaricrowdController extends Controller
             $la_caisse_de_crowd->montant = 0;
             $la_caisse_de_crowd->save();
 
-            $notification = "<div class='alert alert-success text-center'> Operation effectuée avec succes </div>";
+            $route = route('espace_menbre.details_waricrowd',[$le_crowd->id]);
+            $notification = "<div class='alert alert-success text-center'> Operation effectuée avec succes <a href='$route'>Voir le waricrowd</a> </div>";
         }else{
             $notification = "<div class='alert alert-danger text-center'> Quelquechose s'est mal passée, veuillez rééssayer </div>";
         }
@@ -223,6 +224,7 @@ class EspaceMenbreWaricrowdController extends Controller
         $la_transaction = new TransactionWaricrowd();
         $la_transaction->id_menbre = $id_menbre_connecter;
         $la_transaction->id_waricrowd = $id_crowd;
+        $la_transaction->statut = "ACCEPTED";
         $la_transaction->montant = $montant_soutien;
 
         if($la_transaction->save()){
@@ -239,7 +241,7 @@ class EspaceMenbreWaricrowdController extends Controller
             $menbre_souteneur->waricrowd_id = $id_crowd;
             $menbre_souteneur->save();
 
-            $notification = "<div class='alert alert-success text-center'> Operation bien effectuee </div>";
+            $notification = "<div class='alert alert-success text-center'> Votre paiement a bien effectué, soutien enregistré. </div>";
 
             $le_menbre = Menbre::find($id_menbre_connecter);
             $le_crowd = Waricrowd::find($id_crowd);
@@ -253,13 +255,13 @@ class EspaceMenbreWaricrowdController extends Controller
             $this->recu_de_paiement_waricrowd($infos_pour_recu);
 
             $date_paiement = date('d/m/Y H:i');
-            $this->notifier_paiement_sms($le_menbre->telephone,$le_menbre->nom_complet,$montant_soutien,$le_crowd->titre,$date_paiement);
+            $this->notifier_paiement_sms($le_menbre->telephone,$le_menbre->nom_complet,$montant_soutien,$le_crowd->createur->devise_choisie->monaie,$le_crowd->titre,$date_paiement);
 
         }else{
             $notification = "<div class='alert alert-danger text-center'> Quelque chose s'est mal passé </div>";
         }
 
-        return redirect()->back()->with('notification',$notification);
+        return redirect()->route('espace_menbre.details_waricrowd',[$le_crowd->id])->with('notification',$notification);
     }
 
     public function recu_de_paiement_waricrowd($infos_pour_recu){
@@ -288,9 +290,9 @@ class EspaceMenbreWaricrowdController extends Controller
         return $email->Send();
     }
 
-     private function notifier_paiement_sms($numeropayeur,$nom_payeur,$montant_soutien,$titre_du_waricrowd,$date_paiement){
-         $numeropayeur = "225$numeropayeur";
-            $message_sms = "Soutien a hauteur de $montant_soutien F par $nom_payeur sur $titre_du_waricrowd le $date_paiement ";
+     private function notifier_paiement_sms($numeropayeur,$nom_payeur,$montant_soutien,$devise,$titre_du_waricrowd,$date_paiement){
+         $numeropayeur = $numeropayeur;
+            $message_sms = "Soutien a hauteur de $montant_soutien $devise par $nom_payeur sur waricrowd << $titre_du_waricrowd >> le $date_paiement ";
             SmsController::sms_info_bip("$numeropayeur",$message_sms);
     }
 }

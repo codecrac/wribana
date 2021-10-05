@@ -54,7 +54,7 @@
 {{--                                        <br/>--}}
 {{--                                        createur : {{$ma_tontine->createur->nom_complet}}--}}
                                     <br/>
-                                        {{number_format($ma_tontine['montant'],0,',',' ')}} F
+                                        <b>{{number_format($ma_tontine['montant'],0,',',' ')}} {{$ma_tontine->createur->devise_choisie->monaie}}</b>
                                         <br/>
                                         {{formater_frequence($ma_tontine['frequence_depot_en_jours'])}}
                                     </td>

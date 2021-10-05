@@ -53,7 +53,7 @@ class MenbreController extends Controller
             $le_menbre->mot_de_passe = $mdp_cacher;
             $le_menbre->save();
         }else{
-            $notification = "<div class='alert alert-info'> Ce numero de telephone n'est associé à aucun compte. </div> ";
+            $notification = "<div class='alert alert-info'> Ce identifiant n'est associé à aucun compte. </div> ";
         }
 
         return redirect()->back()->with('notification',$notification);
@@ -250,6 +250,9 @@ class MenbreController extends Controller
         if ($la_devise_existe!=null) {
             $le_menbre->devise = $id_devise;
             $le_menbre->save();
+
+            $this->creer_session_menbre($le_menbre);
+
             return redirect()->route('espace_menbre.accueil');
         } else {
             return redirect()->back()->with('notification', $notification);
@@ -329,7 +332,11 @@ class MenbreController extends Controller
     {
         $id_menbre = $le_menbre->id;
         $nom_complet = $le_menbre->nom_complet;
-        $devise = $le_menbre->devise_choisie->monaie;
+        if($le_menbre->devise_choisie !=null){
+            $devise = $le_menbre->devise_choisie->monaie;
+        }else{
+            $devise ='---';
+        }
         session()->put(MenbreController::$cle_session, ['id' => $id_menbre, 'nom_complet' => $nom_complet, 'devise' => $devise]);
     }
 
