@@ -19,6 +19,7 @@ class CreateTransactionWaricrowdsTable extends Migration
             $table->foreignId('id_waricrowd');
             $table->integer("montant");
             $table->string("statut")->nullable();
+            $table->text("trans_id")->unique()->nullable();
             $table->timestamps();
         });
     }

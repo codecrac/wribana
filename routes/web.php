@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CinetpayPaiementController;
 use App\Http\Controllers\EspaceMenbre;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\MenbreController;
@@ -70,6 +71,11 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
 
 Route::get("/deconnexion",[EspaceMenbre::class,'deconnexion'])->name('espace_menbre.deconnexion');
 
+
+
+Route::get("/generer-lien-de-paiement",[CinetpayPaiementController::class,'generer_lien_paiement'])->name('generer_lien_paiement');
+//la route de notification est une api
+Route::get("/recup_statut_paiement_cinetpay",[CinetpayPaiementController::class,'recup_statut_paiement_cinetpay'])->name('recup_statut_paiement_cinetpay');
 
 
 Route::post("/payer-ma-cotisation/reponse-tontine",[NotificationPaiementCinetPay::class,'notification_paiement_tontine'])->name('espace_menbre.notification_paiement_tontine');

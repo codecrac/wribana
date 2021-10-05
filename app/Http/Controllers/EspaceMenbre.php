@@ -180,6 +180,7 @@ class EspaceMenbre extends Controller
 
         //afficher les autre section seulement si le nombre de particpant est atteinds
         $pret = false;
+
         if($la_tontine->nombre_participant == sizeof($la_tontine->participants)){
             $pret = true;
         }
@@ -203,12 +204,9 @@ class EspaceMenbre extends Controller
             $a_deja_cotiser = false;
         }
 
-
-
 //a decoder a la notication;utiliser pour recuperer la trasaction sans l'id
         $notre_custom_field = "id_menbre=$id_menbre_connecter&id_tontine=$id_tontine&id_menbre_qui_prend=$id_menbre_qui_prend";
 //        parse_str($a, $output);
-//        dd($output);
         return view("espace_menbre.tontine.details_tontine",compact('la_tontine','invitations_envoyees',
                             'pret','a_deja_cotiser','liste_ayant_cotiser',
                             'notre_custom_field'));
@@ -441,7 +439,12 @@ class EspaceMenbre extends Controller
 //    ===================Cotisation======================
     public function paiement_cotisation($id_tontine){
 
-        $la_session = session(MenbreController::$cle_session);
+//===================POUR PAIEMENT AVEC CINETPAY================================
+        $la_tontine = Tontine::find($id_tontine);
+        $payment_url = CinetpayPaiementController::generer_lien_paiement($id_tontine,$la_tontine->montant,'tontine');
+        return redirect($payment_url);
+//=========================POUR SIMULATION=============================
+   /*     $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
         $le_menbre = Menbre::find($id_menbre_connecter);
         $la_tontine = Tontine::find($id_tontine);
@@ -549,8 +552,9 @@ class EspaceMenbre extends Controller
             }
 
         }
-        return redirect()->back()->with('notification',$notification);
+        return redirect()->back()->with('notification',$notification);*/
     }
+
     public function recu_de_paiement_tontine($infos_pour_recu=null){
         if($infos_pour_recu==null){
             $infos_pour_recu = ['email_destinataire'=>'yvessantoz@gmail.com','nom_complet'=>'sh sdfds','montant'=>'232343','titre_tontine'=>'tontine ice','nom_menbre_qui_prend'=>'djsdh dskhdsjk'];

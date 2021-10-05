@@ -1,5 +1,13 @@
 @php
     $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+
+
+$statut_transaction = null;
+if(isset($_GET['trans_id'])){
+    $trans_id = $_GET['trans_id'];
+    $la_transaction = \App\Models\Transaction::where('trans_id','=',$trans_id)->first();
+    $statut_transaction = $la_transaction->statut;
+}
 @endphp
 
 
@@ -22,13 +30,13 @@
             <div class="card">
                 <div class='card-header'>
                     {!! Session::get('notification','') !!}
-                    @isset($_GET['statut'])
-                        @if($_GET['statut'] == 'ACCEPTED')
-                            <div class='alert alert-success text-center'>Votre paiement a bien été</div>
+                    @if($statut_transaction !=null)
+                        @if($statut_transaction == 'ACCEPTED')
+                            <div class='alert alert-success text-center'>Votre paiement a bien été effectué</div>
                         @else
                             <div class='alert alert-danger text-center'>Echec du paiement</div>
                         @endif
-                    @endisset
+                    @endif
                 </div>
                 <div class="card-body">
                     <hr/>

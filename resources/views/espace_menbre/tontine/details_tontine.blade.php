@@ -7,78 +7,12 @@ if ($la_tontine->caisse != null) {
     $en_retard = time() >= strtotime($prochaine_date_encaissement);
 }
 
-//========================================================utile pour cinetpay
-//Credentials apiKey & siteId
-$apikey = \App\Http\Controllers\NotificationPaiementCinetPay::$apikey;
-$cpm_site_id = \App\Http\Controllers\NotificationPaiementCinetPay::$cpm_site_id;
-
-
-//Post Parameters
-$cpm_version = 'V1';
-$cpm_language = 'fr';
-$cpm_currency = 'CFA';
-$cpm_page_action = 'PAYMENT';
-$cpm_payment_config = 'SINGLE';
-$cpSecure = "https://secure.cinetpay.com";
-$signatureUrl = "https://api.cinetpay.com/v1/?method=getSignatureByPost";
-/////////////////////////////
-
-$cpm_amount = $la_tontine->montant; //TransactionAmount
-$cpm_custom = "$notre_custom_field";// This field exist soanything can be inserted in it;it will be send back after payment
-
-$cpm_designation = 'waribana-transaction'; //this field exist to identify the article being paid
-
-
-$cpm_trans_date = date("Y-m-d H:i:s");
-$cpm_trans_id = time() . (string)date("YmdHis"); //Transaction id that will be send to identify the transaction
-$return_url = "https://waribana.jeberge.xyz/api/payer-ma-cotisation/reponse-tontine"; //The customer will be redirect on this page after successful payment
-$cancel_url = "https://waribana.jeberge.xyz";//The customer will be redirect on this page if the payment get cancel
-$notify_url = "";//This page must be a webhook (webservice).
-//it will be called weither or nor the payment is success or failed
-//you must only listen to this to update transactions status
-
-
-//Data that will be send in the form
-$getSignatureData = array(
-    'apikey' => $apikey,
-    'cpm_amount' => $cpm_amount,
-    'cpm_custom' => $cpm_custom,
-    'cpm_site_id' => $cpm_site_id,
-    'cpm_version' => $cpm_version,
-    'cpm_currency' => $cpm_currency,
-    'cpm_trans_id' => $cpm_trans_id,
-    'cpm_language' => $cpm_language,
-    'cpm_trans_date' => $cpm_trans_date,
-    'cpm_page_action' => $cpm_page_action,
-    'cpm_designation' => $cpm_designation,
-    'cpm_payment_config' => $cpm_payment_config
-);
-// use key 'http' even if you send the request to https://...
-$options = array(
-    'http' => array(
-        'method' => "POST",
-        'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-        'content' => http_build_query($getSignatureData)
-    )
-);
-
-$context = stream_context_create($options);
-try {
-    $result = file_get_contents($signatureUrl, false, $context);
-    if ($result === false) {
-        /* Handle error */
-        \header($return_url);
-        exit();
-    }
-// var_dump($getSignatureData);
-// echo("\n");
-    $signature = json_decode($result);
-//var_dump($signature);
-} catch (Exception $e) {
-    $signature = 'uneErreurEstSurvenue';
+$statut_transaction = null;
+if(isset($_GET['trans_id'])){
+    $trans_id = $_GET['trans_id'];
+    $la_transaction = \App\Models\Transaction::where('trans_id','=',$trans_id)->first();
+    $statut_transaction = $la_transaction->statut;
 }
-
-
 
 ?>
 
@@ -97,13 +31,13 @@ try {
 @section('content')
 
     {!! Session::get('notification','') !!}
-    @isset($_GET['statut'])
-        @if($_GET['statut'] == 'ACCEPTED')
-            <div class='alert alert-success text-center'>Votre paiement a bien été</div>
+    @if($statut_transaction !=null)
+        @if($statut_transaction == 'ACCEPTED')
+            <div class='alert alert-success text-center'>Votre paiement a bien été effectué</div>
         @else
             <div class='alert alert-danger text-center'>Echec du paiement</div>
         @endif
-    @endisset
+    @endif
     {{-- SECTION A propos de la tontine et invitaion  --}}
     <div class="row">
         <div class="col-md-6 grid-margin stretch-card">
@@ -308,28 +242,7 @@ try {
                                     votre cotisation pour ce tour.</b></h5>
                         @else
                             <h3 class="text-center">
-                            <form action="{{route('espace_menbre.paiement_cotisation',[$la_tontine->id])}}" method="post">
-                                {{--<form action="<?php echo $cpSecure; ?>" method="post">--}}
-                        {{--            <input type="hidden" value="<?php echo $apikey; ?>" name="apikey">
-                                    <p><input type="hidden" value="<?php echo $cpm_amount; ?>" name="cpm_amount"></p>
-                                    <input type="hidden" value="<?php echo $cpm_custom; ?>" name="cpm_custom">
-                                    <input type="hidden" value="<?php echo $cpm_site_id; ?>" name="cpm_site_id">
-                                    <input type="hidden" value="<?php echo $cpm_version; ?>" name="cpm_version">
-                                    <p><input type="hidden" value="<?php echo $cpm_currency; ?>" name="cpm_currency">
-                                    </p>
-                                    <input type="hidden" value="<?php echo $cpm_trans_id; ?>" name="cpm_trans_id">
-                                    <input type="hidden" value="<?php echo $cpm_language; ?>" name="cpm_language">
-                                    <input type="hidden" value="<?php echo $getSignatureData['cpm_trans_date']; ?>"
-                                           name="cpm_trans_date">
-                                    <input type="hidden" value="<?php echo $cpm_page_action; ?>" name="cpm_page_action">
-                                    <p><input type="hidden" value="<?php echo $cpm_designation; ?>"
-                                              name="cpm_designation"></p>
-                                    <input type="hidden" value="<?php echo $cpm_payment_config; ?>"
-                                           name="cpm_payment_config">
-                                    <input type="hidden" value="<?php echo $signature; ?>" name="signature">
-                                    <input type="hidden" value="<?php echo $return_url; ?>" name="return_url">
-                                    <input type="hidden" value="<?php echo $cancel_url; ?>" name="cancel_url">--}}
-                                <!--<input type="hidden" value="<?php echo $notify_url; ?>" name="notify_url">-->
+                                 <form action="{{route('espace_menbre.paiement_cotisation',[$la_tontine->id])}}" method="post">
                                     @csrf
                                     <button type="submit" class="btn btn-primary" style="">Payer ma cotisation</button>
                                 </form>

@@ -215,7 +215,18 @@ class EspaceMenbreWaricrowdController extends Controller
 
     public function soutenir_projet(Request $request,$id_crowd){
 
+
+//================INTEGRATION CINETPAY===================
         $la_session = session(MenbreController::$cle_session);
+        $id_menbre_connecter = $la_session['id'];
+
+        $donnees_formulaire = $request->all();
+        $montant_soutien = $donnees_formulaire['montant_soutien'];
+
+        $payment_url = CinetpayPaiementController::generer_lien_paiement($id_crowd,$montant_soutien,'waricrowd');
+        return redirect($payment_url);
+//================SIMULATION LOCALE===================
+    /*    $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
 
         $donnees_formulaire = $request->all();
@@ -260,8 +271,8 @@ class EspaceMenbreWaricrowdController extends Controller
         }else{
             $notification = "<div class='alert alert-danger text-center'> Quelque chose s'est mal passé </div>";
         }
+        return redirect()->route('espace_menbre.details_waricrowd',[$le_crowd->id])->with('notification',$notification);*/
 
-        return redirect()->route('espace_menbre.details_waricrowd',[$le_crowd->id])->with('notification',$notification);
     }
 
     public function recu_de_paiement_waricrowd($infos_pour_recu){
