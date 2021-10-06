@@ -46,17 +46,29 @@ class CinetpayPaiementController extends Controller
         }
 //        dd($notify_url);
 
+        $nom_complet_eclater = explode(' ',$le_menbre->nom_complet);
+        $nom = $nom_complet_eclater[0];
+        if(isset($nom_complet_eclater[1])){
+            unset($nom_complet_eclater[0]);
+            $prenom = implode(' ',$nom_complet_eclater);
+        }else{
+            $prenom = "";
+        }
+
+        // dd($nom,$prenom);
         $url_pour_generer = "https://api-checkout.cinetpay.com/v2/payment";
         $data = array(
             "apikey" => $apikey,
             "site_id" => $site_id,
             "transaction_id" => $transaction_id,
-            "amount" => $montant_convertit_en_fcfa,
+            "amount" => round($montant_convertit_en_fcfa),
             "currency" => $currency,
             "description" => $description,
             "return_url" => $return_url,
             "notify_url" => $notify_url,
 
+            "customer_name" => $nom,
+            "customer_surname" => $prenom,
             "customer_phone_number" => $le_menbre->telephone,
             "customer_email" => $le_menbre->email,
             "customer_address" => $le_menbre->adresse,
@@ -73,7 +85,8 @@ class CinetpayPaiementController extends Controller
         }
 
         $data_json = json_encode($data);
-        // dd($data_json);
+    //    echo $data_json;
+        // die();
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
