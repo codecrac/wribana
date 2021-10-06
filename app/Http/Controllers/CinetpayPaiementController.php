@@ -86,7 +86,7 @@ class CinetpayPaiementController extends Controller
 
         $data_json = json_encode($data);
     //    echo $data_json;
-        // die();
+        // die(); 
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
