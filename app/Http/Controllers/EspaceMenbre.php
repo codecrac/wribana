@@ -442,11 +442,22 @@ class EspaceMenbre extends Controller
 //===================POUR PAIEMENT AVEC CINETPAY================================
         $la_tontine = Tontine::find($id_tontine);
 
+        // CONVERSION EN CFA AVANT PAIEMENT
+            $le_montant = $la_tontine->montant;
+            if($la_tontine->createur->devise_choisie->code != "XOF"){
+                $monaie_createur_tontine = $la_tontine->createur->devise_choisie->code;
+                $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_createur_tontine,"XOF");
+                $le_montant_en_xof = $quotient_de_conversion * $le_montant;
+            }else{
+                $le_montant_en_xof = $le_montant;
+            }
+        // CONVERSION EN CFA AVANT PAIEMENT
+
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
         $le_menbre = Menbre::find($id_menbre_connecter);
         
-        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_tontine,$la_tontine->montant,'tontine');
+        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_tontine,$le_montant_en_xof,$le_montant,'tontine');
         return redirect($payment_url);
 //=========================POUR SIMULATION=============================
    /*     $la_session = session(MenbreController::$cle_session);
@@ -810,7 +821,19 @@ class EspaceMenbre extends Controller
         if($utlisateur_existe){
             $le_menbre = Menbre::find($id_menbre_connecter);
 
-            $response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait($le_menbre,$montant_retrait);
+            
+            // CONVERSION EN CFA AVANT PAIEMENT
+            $le_montant = $montant_retrait;
+            if($le_menbre->devise_choisie->code != "XOF"){
+                $monaie_createur_tontine = $le_crowd->createur->devise_choisie->code;
+                $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_createur_tontine,"XOF");
+                $le_montant_en_xof = $quotient_de_conversion * $le_montant;
+            }else{
+                $le_montant_en_xof = $le_montant;
+            }
+        // CONVERSION EN CFA AVANT PAIEMENT
+
+            $response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait($le_menbre,$le_montant_en_xof);
             $reponse_decoder = json_decode($response);
             $code = $reponse_decoder->code;
             $message = $reponse_decoder->message;

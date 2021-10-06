@@ -344,10 +344,11 @@ class MenbreController extends Controller
         $nom_complet = $le_menbre->nom_complet;
         if($le_menbre->devise_choisie !=null){
             $devise = $le_menbre->devise_choisie->monaie;
+            $code_devise = $le_menbre->devise_choisie->code;
         }else{
             $devise ='---';
         }
-        session()->put(MenbreController::$cle_session, ['id' => $id_menbre, 'nom_complet' => $nom_complet, 'devise' => $devise]);
+        session()->put(MenbreController::$cle_session, ['id' => $id_menbre, 'nom_complet' => $nom_complet, 'devise' => $devise,'code_devise'=>$code_devise]);
     }
 
 }

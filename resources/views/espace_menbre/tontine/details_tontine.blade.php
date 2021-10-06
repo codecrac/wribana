@@ -14,6 +14,24 @@ if(isset($_GET['trans_id'])){
     $statut_transaction = $la_transaction->statut;
 }
 
+$monaie_createur_tontine = $la_tontine->createur->devise_choisie->code;
+$monaie_utilisateur_connecter = $la_session['code_devise'];
+
+
+$quotient_de_conversion =1; //on recupere le quotient puis on fais la conversion localement pour eviter de faire trop d'appel api
+if($monaie_createur_tontine != $monaie_utilisateur_connecter){
+    $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_createur_tontine,$monaie_utilisateur_connecter);
+    // dd($quotient_de_conversion);
+}
+
+function convertir($quotient,$montant) //pour l'esthetic dans le code html
+{
+    $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+    $monaie_utilisateur_connecter = $la_session['devise'];
+    $reponse =  \App\Http\Controllers\CurrencyConverterController::convertir_si_necessaire($quotient,$montant,$monaie_utilisateur_connecter);
+    return $reponse;
+}
+
 ?>
 
 
@@ -89,15 +107,21 @@ if(isset($_GET['trans_id'])){
                                 <mark class="badge badge-info">{{$la_tontine->motif_intervention_admin}}</mark>
                             </li> @endif
                         <li>Crée par : {{$la_tontine->createur->nom_complet}}</li>
-                        <li>Montant à cotiser : {{number_format($la_tontine->montant,0,',',' ')}}
+                        <li>Montant à cotiser : 
+                            {{number_format($la_tontine->montant,0,',',' ')}}
                             <b>{{$la_tontine->createur->devise_choisie->symbole}}</b>
+
+                                {!!convertir($quotient_de_conversion,$la_tontine->montant,)!!}
+
                             <small>par personnes</small></li>
                         @php
                             $montant_total = $la_tontine->montant * $la_tontine->nombre_participant;
                             $frais = round($montant_total * (1/100));
                         @endphp
-                        <li>Montant Objectif : {{number_format($montant_total,0,',',' ')}}
-                            <b>{{$la_tontine->createur->devise_choisie->symbole}}</b></li>
+                        <li>
+                            Montant Objectif : {{number_format($montant_total,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->symbole}}</b>  
+                            {!!convertir($quotient_de_conversion,$montant_total,)!!}
+                        </li>
                         <li>Frais de gestion (1%) : {{number_format($frais,0,',',' ')}}
                             <b>{{$la_tontine->createur->devise_choisie->symbole}}</b>
                             / {{number_format($montant_total,0,',',' ')}}
@@ -227,10 +251,13 @@ if(isset($_GET['trans_id'])){
                         {{--                        <p>Montant Total Objectif : <span class="marquer_presence text-dark">{{number_format( ($la_tontine->montant * $la_tontine->nombre_participant),0,',',' ')}} F</span> </p>--}}
                         <p>Montant à cotiser :
                             <b> {{number_format($la_tontine->montant,0,',',' ')}} {{$la_tontine->createur->devise_choisie->monaie}}</b>
+                            {!!convertir($quotient_de_conversion,$la_tontine->montant,)!!}
                         </p>
                         <p>
                             Montant en caisse : <span class="marquer_presence text-info">
-                                {{number_format($la_tontine->caisse->montant,0,',',' ')}} / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->monaie}}</b>
+                                {{number_format($la_tontine->caisse->montant,0,',',' ')}} {!!convertir($quotient_de_conversion,$la_tontine->caisse->montant,)!!}
+                                / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->monaie}}</b> {!!convertir($quotient_de_conversion,$la_tontine->caisse->montant_objectif,)!!}
+                                 
                             </span>
                         </p>
                         <p> de : <small> de {{sizeof($liste_ayant_cotiser)}}
@@ -244,6 +271,7 @@ if(isset($_GET['trans_id'])){
                             <h3 class="text-center">
                                  <form action="{{route('espace_menbre.paiement_cotisation',[$la_tontine->id])}}" method="post">
                                     @csrf
+                                    <span class="badge badge-info"> le montant sera converti en FCFA(XOF) au guichet </span>
                                     <button type="submit" class="btn btn-primary" style="">Payer ma cotisation</button>
                                 </form>
                             </h3>

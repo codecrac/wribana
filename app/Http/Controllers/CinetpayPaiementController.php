@@ -16,7 +16,7 @@ class CinetpayPaiementController extends Controller
     public static $cpm_site_id = '750304';
     public static $mdp_api_transfert = 'Succes$$2039';
 
-    public static function generer_lien_paiement($le_menbre,$id,$montant,$section="tontine")
+    public static function generer_lien_paiement($le_menbre,$id,$montant_convertit_en_fcfa,$montant,$section="tontine")
     {
         $apikey = CinetpayPaiementController::$apikey ;
         $site_id = CinetpayPaiementController::$cpm_site_id ;
@@ -51,7 +51,7 @@ class CinetpayPaiementController extends Controller
             "apikey" => $apikey,
             "site_id" => $site_id,
             "transaction_id" => $transaction_id,
-            "amount" => $montant,
+            "amount" => $montant_convertit_en_fcfa,
             "currency" => $currency,
             "description" => $description,
             "return_url" => $return_url,
@@ -99,7 +99,7 @@ class CinetpayPaiementController extends Controller
         $payement_token = $la_reponse_en_objet->payment_token;
         $payment_url = $la_reponse_en_objet->payment_url;
 
-        if($section=="tontine"){
+        if($section=="tontine"){ //creer la transaction
             CinetpayPaiementController::preparer_paiement_cotisation($id,$payement_token,$transaction_id);
         }else{
             CinetpayPaiementController::preparer_soutien_waricrowd($id,$montant,$transaction_id);

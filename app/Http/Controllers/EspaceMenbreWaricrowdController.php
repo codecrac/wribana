@@ -221,10 +221,21 @@ class EspaceMenbreWaricrowdController extends Controller
         $id_menbre_connecter = $la_session['id'];
 
         $donnees_formulaire = $request->all();
-        $montant_soutien = $donnees_formulaire['montant_soutien'];
+
+        // CONVERSION EN CFA AVANT PAIEMENT
+        $le_crowd = Waricrowd::find($id_crowd);
+        $le_montant = $donnees_formulaire['montant_soutien'];
+        if($le_crowd->createur->devise_choisie->code != "XOF"){
+            $monaie_createur_tontine = $le_crowd->createur->devise_choisie->code;
+            $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_createur_tontine,"XOF");
+            $le_montant_en_xof = $quotient_de_conversion * $le_montant;
+        }else{
+            $le_montant_en_xof = $le_montant;
+        }
+    // CONVERSION EN CFA AVANT PAIEMENT
 
         $le_menbre = Menbre::find($id_menbre_connecter);
-        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_crowd,$montant_soutien,'waricrowd');
+        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_crowd,$le_montant_en_xof,$le_montant,'waricrowd');
         return redirect($payment_url);
 //================SIMULATION LOCALE===================
     /*    $la_session = session(MenbreController::$cle_session);
