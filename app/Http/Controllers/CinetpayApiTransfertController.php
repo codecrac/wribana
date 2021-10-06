@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\CahierRetraitSoldeMenbre;
+use App\Models\Menbre;
 
 class CinetpayApiTransfertController extends Controller
 {
@@ -38,7 +40,7 @@ class CinetpayApiTransfertController extends Controller
     {
         //Credentials apiKey & mdp
         $token = CinetpayApiTransfertController::recuperer_token_api_tranfert();
-//        dd($token);
+
         $curl = curl_init();
         curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://client.cinetpay.com/v1/transfer/check/balance?token=' . $token,
@@ -56,7 +58,7 @@ class CinetpayApiTransfertController extends Controller
         );
         $response = curl_exec($curl);
         curl_close($curl);
-//        dd($response);
+
         $reponse_in_json = json_decode($response);
         $solde = $reponse_in_json->data->amount;
         return $reponse_in_json;
@@ -92,7 +94,7 @@ class CinetpayApiTransfertController extends Controller
     }
 
 
-    public static function effectuer_un_retrait($le_menbre)
+    public static function effectuer_un_retrait($le_menbre,$montant_retirer)
     {
         $nom = $le_menbre->nom_complet;
         $telephone = $le_menbre->telephone;
@@ -100,10 +102,25 @@ class CinetpayApiTransfertController extends Controller
         $data_json = 'data=[{ "prefix":"225", "phone":"'.$telephone.'","name":"'.$nom.'","surname":"","email":"'.$email.'" }]';
 
         $token = CinetpayApiTransfertController::recuperer_token_api_tranfert();
+        
         CinetpayApiTransfertController::ajouter_un_contact($data_json,$token);
 
-        $notify_url = "http://waribana.jeberge.xyz/api/retour-retrait";
-        $data_json = 'data=[{ "prefix":"225", "phone":"'.$telephone.'","amount":"100","notify_url":"'.$notify_url.'","client_transaction_id":"'.time().'" }]';
+        $notify_url = route('api.notification_retrait_compte_client');
+        // dd($notify_url);
+        $notify_url = "http://waribana.jeberge.xyz/api/retour-retrait-compte-menbre/reponse-cinetpay";
+        $trans_id = "retrait-".time();
+
+        $data = json_encode( array(
+            "prefix" => "225",
+            "phone" => $telephone,
+            "amount" => $montant_retirer,
+            "notify_url" => $notify_url,
+            "client_transaction_id" => $trans_id
+        ));
+
+        $data_json = 'data=[{ "prefix":"225", "phone":"'.$telephone.'","amount":"100","notify_url":"'.$notify_url.'","client_transaction_id":"'.$trans_id.'" }]';
+        // $data_json = "['data'=[$data]]";
+        // dd($data_json);
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -123,10 +140,37 @@ class CinetpayApiTransfertController extends Controller
         $response = curl_exec($curl);
         curl_close($curl);
         return $response;
-
-       /* die();
-        $reponse_in_json = json_decode($response);
-        $solde = $reponse_in_json->data->amount;
-        return $solde;*/
+        
     }
+
+    public function notification_retrait_compte_client(Request $request){
+        return "ok";
+    }
+
+
+    
+    public static function enregistrer_retrait($le_menbre,$montant_retirer){
+
+        
+        $solde_avant_retrait = $le_menbre->compte->solde;
+        $solde_apres_retrait = $le_menbre->compte->solde - $montant_retirer;
+        
+        //mettre le compte a jour
+        $le_menbre->compte->solde = $solde_apres_retrait;
+        $le_compte = $le_menbre->compte;
+        $le_compte->save();
+        
+        //garder une trace de la transaction
+        $le_retrait = new CahierRetraitSoldeMenbre();
+        $le_retrait->id_menbre = $le_menbre->id;
+        $le_retrait->montant_retirer = $montant_retirer;
+        $le_retrait->solde_avant = $solde_avant_retrait;
+        $le_retrait->solde_apres = $solde_apres_retrait;
+        $le_retrait->statut = "ACCEPTED";
+        $le_retrait->save();
+
+    }
+
+
+
 }

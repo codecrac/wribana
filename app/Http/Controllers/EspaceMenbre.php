@@ -441,7 +441,12 @@ class EspaceMenbre extends Controller
 
 //===================POUR PAIEMENT AVEC CINETPAY================================
         $la_tontine = Tontine::find($id_tontine);
-        $payment_url = CinetpayPaiementController::generer_lien_paiement($id_tontine,$la_tontine->montant,'tontine');
+
+        $la_session = session(MenbreController::$cle_session);
+        $id_menbre_connecter = $la_session['id'];
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        
+        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_tontine,$la_tontine->montant,'tontine');
         return redirect($payment_url);
 //=========================POUR SIMULATION=============================
    /*     $la_session = session(MenbreController::$cle_session);
@@ -801,22 +806,24 @@ class EspaceMenbre extends Controller
         $mdp_md5 = md5($mdp);
 
         $utlisateur_existe = Menbre::where('id','=',$id_menbre_connecter)->where('mot_de_passe','=',$mdp_md5)->first();
-        if($utlisateur_existe){
-//            dd('ok');
-            $le_menbre = Menbre::find($id_menbre_connecter);
-//            dd($le_menbre);
 
-            $response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait($le_menbre);
+        if($utlisateur_existe){
+            $le_menbre = Menbre::find($id_menbre_connecter);
+
+            $response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait($le_menbre,$montant_retrait);
             $reponse_decoder = json_decode($response);
-//            dd($reponse_decoder->code,$reponse_decoder->message);
             $code = $reponse_decoder->code;
             $message = $reponse_decoder->message;
-            if($code == 0){
-                die('retrait effecuter! enregistre');
+            
+            
+            if($code != 0){ // 0 = succes , les autres = prbleme
+                $notification = "<div class='alert alert-success text-center'> Retrait bien effectué </div>";
+                \App\Http\Controllers\CinetpayApiTransfertController::enregistrer_retrait($le_menbre,$montant_retrait);
+                mail($le_menbre->email,'RETRAIT EFFECTUER',"Bonjour $le_menbre->nom_complet, votre retrait de $montant_retrait a bien été effectué.");
             }else{
-                $notification = "<div class='alert alert-danger'> Echec de retrait, motif : $message </div>";
-                return redirect()->back()->with('notification',$notification);
+                $notification = "<div class='alert alert-danger text-center'> Echec de retrait, motif : $message </div>";
             }
+            return redirect()->back()->with('notification',$notification);
         }else{
             $notification = "<div class='alert alert-danger text-center'> Mot de passe Incorrect </div>";
             return redirect()->back()->with('notification',$notification);

@@ -75,6 +75,11 @@ class MenbreController extends Controller
         $donnee_formulaire = $request->all();
 //        dd($donnee_formulaire);
         $nom_complet = $donnee_formulaire['nom_complet'];
+        $pays = $donnee_formulaire['pays'];
+        $ville = $donnee_formulaire['ville'];
+        $adresse = $donnee_formulaire['adresse'];
+        $etat_us = $donnee_formulaire['etat_us'];
+        $code_postal = $donnee_formulaire['code_postal'];
         $prefix = $donnee_formulaire['prefixe'];
         $telephone = $donnee_formulaire['telephone'];
         $numero = $prefix.''.$telephone;
@@ -109,6 +114,11 @@ class MenbreController extends Controller
 
             $le_menbre = new Menbre();
             $le_menbre->nom_complet = $nom_complet;
+            $le_menbre->pays = $pays;
+            $le_menbre->ville = $ville;
+            $le_menbre->adresse = $adresse;
+            $le_menbre->etat_us = $etat_us;
+            $le_menbre->telephone = $code_postal;
             $le_menbre->telephone = $numero;
             $le_menbre->email = $email;
             $le_menbre->mot_de_passe = $mot_de_passe_cacher;

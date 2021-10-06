@@ -4,6 +4,8 @@ use App\Http\Controllers\EspaceMenbre;
 
 Route::get("/mes-tontines", [EspaceMenbre::class, 'liste_tontine'])->name('espace_menbre.liste_tontine');
 Route::get("/details-tontines/{id_tontine}", [EspaceMenbre::class, 'details_tontine'])->name('espace_menbre.details_tontine');
+//pour retour de paiement
+Route::post("/details-tontines/{id_tontine}", [EspaceMenbre::class, 'details_tontine']);
 Route::post("/details-tontines/{id_tontine}", [EspaceMenbre::class, 'ouvrir_tontine'])->name('espace_menbre.ouvrir_tontine');
 
 Route::get("/inviter-des-amis-dans-la-tontine/{id_tontine}", [EspaceMenbre::class, 'inviter_des_amis'])->name('espace_menbre.inviter_des_amis');

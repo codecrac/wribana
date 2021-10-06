@@ -16,6 +16,11 @@ class CreateMenbresTable extends Migration
         Schema::create('menbres', function (Blueprint $table) {
             $table->id();
             $table->string("nom_complet");
+            $table->string("pays");
+            $table->string("ville");
+            $table->string("adresse");
+            $table->string("etat_us");
+            $table->string("code_postal");
             $table->string("telephone")->unique();
             $table->string("email")->nullable()->unique();
             $table->string("mot_de_passe");

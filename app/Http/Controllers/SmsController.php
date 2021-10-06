@@ -18,8 +18,7 @@ class SmsController extends Controller
         $post_field = "{'messages':[{'from':'Waribana','destinations':[{'to':'$telephone'}],'text':'$message'}]}";
 
 // api sms les # et les espaces sont la pour eviter la detection de la mise sur github
-//ecdb334b93b64c09a97916de69921a50 ###  -70e3d6ed-24c8-   ###    467f-8be9-7822e011f4fc // api uberson #retirer les #
-//aaecfdbcb5d9a0676af5ce03ad02bd6a   ####   -2c9a3ef7-deea-441c-87a1-   ###   ae0d986310cf //api qui marche
+//remplace api-key-here par api key
 
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://jd988v.api.infobip.com/sms/2/text/advanced' ,

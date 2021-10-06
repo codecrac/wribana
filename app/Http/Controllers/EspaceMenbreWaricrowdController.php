@@ -223,7 +223,8 @@ class EspaceMenbreWaricrowdController extends Controller
         $donnees_formulaire = $request->all();
         $montant_soutien = $donnees_formulaire['montant_soutien'];
 
-        $payment_url = CinetpayPaiementController::generer_lien_paiement($id_crowd,$montant_soutien,'waricrowd');
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_crowd,$montant_soutien,'waricrowd');
         return redirect($payment_url);
 //================SIMULATION LOCALE===================
     /*    $la_session = session(MenbreController::$cle_session);

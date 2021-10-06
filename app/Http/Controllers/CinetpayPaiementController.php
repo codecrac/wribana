@@ -16,7 +16,7 @@ class CinetpayPaiementController extends Controller
     public static $cpm_site_id = '750304';
     public static $mdp_api_transfert = 'Succes$$2039';
 
-    public static function generer_lien_paiement($id,$montant,$section="tontine")
+    public static function generer_lien_paiement($le_menbre,$id,$montant,$section="tontine")
     {
         $apikey = CinetpayPaiementController::$apikey ;
         $site_id = CinetpayPaiementController::$cpm_site_id ;
@@ -25,6 +25,14 @@ class CinetpayPaiementController extends Controller
         $description = 'PAIEMENT WARIBANA';
         $return_url = "";
         $notify_url = "";
+
+        $customer_phone_number = $le_menbre->telephone;
+        $customer_email = $le_menbre->email;
+        $customer_address = $le_menbre->adresse;
+        $customer_city = $le_menbre->ville;
+        $customer_country = $le_menbre->pays;
+        $customer_state = $le_menbre->etat_us;
+        $customer_zip_code = $le_menbre->code_postal;
 
         if($section=="tontine"){
             $notify_url = route('notification_paiement_cotisation_tontine');
@@ -48,9 +56,24 @@ class CinetpayPaiementController extends Controller
             "description" => $description,
             "return_url" => $return_url,
             "notify_url" => $notify_url,
+
+            "customer_phone_number" => $le_menbre->telephone,
+            "customer_email" => $le_menbre->email,
+            "customer_address" => $le_menbre->adresse,
+            "customer_city" => $le_menbre->ville,
+            "customer_country" => $le_menbre->pays,
+            "customer_zip_code" => $le_menbre->code_postal,
         );
 
+        if($le_menbre->etat_us !=null){
+            $data["customer_state"] = $le_menbre->etat_us;
+        }
+        if($le_menbre->code_postal ==null){
+            $data["customer_zip_code"] = "00225";
+        }
+
         $data_json = json_encode($data);
+        // dd($data_json);
 
         $curl = curl_init();
         curl_setopt_array($curl, array(

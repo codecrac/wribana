@@ -1,25 +1,13 @@
 @php
-    $client  = @$_SERVER['HTTP_CLIENT_IP'];
-        $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
-        $remote  = @$_SERVER['REMOTE_ADDR'];
-        $result  = array('country'=>'', 'city'=>'');
-        if(filter_var($client, FILTER_VALIDATE_IP)){
-            $ip = $client;
-        }elseif(filter_var($forward, FILTER_VALIDATE_IP)){
-            $ip = $forward;
-        }else{
-            $ip = $remote;
-        }
-        $ip_data = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=".$ip));
+    $query = @unserialize(file_get_contents('http://ip-api.com/php/'));
+    if($query && $query['status'] == 'success'){
+        $country_code = $query['countryCode'];
+        $ville = $query['city'];
+        $code_postal = $query['zip'];
+    }
 
-        $country_code = "CI";
-        if($ip_data && $ip_data->geoplugin_countryName != null){
-            $country_code = $ip_data->geoplugin_countryCode;
-            $result['city'] = $ip_data->geoplugin_city;
-        }
-
-        $code = \App\Http\Controllers\CountryPrefixController::getPrefix($country_code);
-        //dd($code);
+    $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($country_code);
+    //dd($code_prefixe);
 @endphp
 
 
@@ -54,15 +42,43 @@
 						<div class="container">
                             <form class="form-group" method="post" action="{{route('post_inscription_menbre')}}">
                                 <div class="form-group">
-                                    <label>Nom complet *</label>
-                                        <input required class="form-control" placeholder="LADDE Yves" type="text" name="nom_complet" />
-                                    <br/>
-                                    <label>Contact *</label>
 
+            <!-- ------------------------UTILE POUR CARTE BANCAIRE -->
+                                    <!-- <div style="display:{{($country_code!='') ? 'none' : '' }};background-color:yellow"> -->
+                                    <div style="background-color:yellow">
+                                        <label>PAYS *</label>
+                                            <input required class="form-control" placeholder="CI,US" value="{{$country_code}}" type="text" name="pays" />
+                                        <br/>
+                                    </div>
+                                    
+                                    <div class="form-group" style="display:{{($country_code != 'US') ? 'none' : '' }}">
+                                        <label>Etat (si vous vivez au etats unis)</label>
+                                            <input class="form-control" placeholder="Illinois" type="text" name="etat_us" />
+                                        <br/>
+                                    </div>
+
+                                    <label>Ville *</label>
+                                        <input required class="form-control" placeholder="Yammoussoukro" value="{{$ville}}" type="text" name="ville" />
+                                    <br/>
+                                    
+                                    <label>Code postal</label>
+                                        <input class="form-control" placeholder="" value="{{$code_postal}}" type="text" name="code_postal" />
+                                    <br/>
+                <!-- / ------------------UTILE POUR CARTE BANCAIRE -->
+                                    <label>Nom complet *</label>
+                                        <input required class="form-control" placeholder="LADDE YVES" type="text" name="nom_complet" />
+                                    <br/>
+
+                                    <label>Adresse *</label>
+                                        <input required class="form-control" placeholder="Cocody palmeraie" type="text" name="adresse" />
+                                    <br/>
+
+
+                                    <label>Contact *</label>
                                     <div class="row">
                                         <div class="col-md-4">
                                             <label><small>prefixe</small></label>
-                                            <input required class="form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code}}" />
+                                            <input required class="form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code_prefixe}}" />
                                         </div>
                                         <div class="col-md-8">
                                             <label><small>Telephone</small></label>

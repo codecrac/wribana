@@ -40,9 +40,8 @@
                             </div>
                             <div class="col-12">
                                 <label class="text-dark">Entrer le montant *</label>
-                                <input type="number" name="montant" required
-                                       class="form-control" max='{{$le_menbre->compte->solde}}'
-                                       type="form-control" style="border: 1px solid black" placeholder="Entrer le montant" />
+                                <!-- <input type="number" name="montant" required class="form-control" max='{{$le_menbre->compte->solde}}' type="form-control" style="border: 1px solid black" placeholder="Entrer le montant" /> -->
+                                <input type="number" name="montant" required class="form-control" type="form-control" style="border: 1px solid black" placeholder="Entrer le montant" />
                             </div>
                             <div class="col-12 text-center">
                                 <br/>
