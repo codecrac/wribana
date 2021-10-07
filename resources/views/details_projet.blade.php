@@ -27,6 +27,10 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
+                    
+                @isset($_GET['probleme_lien_paiement'])
+                                    <div class='alert alert-danger text-center'>{{$_GET['probleme_lien_paiement']}}</div>
+                            @endisset
                     <br/>
                     <div class="project-summery">
                         <a href="{{route('decouvrir_projets')}}" class="category">Retour</a>
@@ -64,6 +68,10 @@
                             </div>
                         </div>
                         <div class="project-form">
+                            
+                            @isset($_GET['probleme_lien_paiement'])
+                                    <div class='alert alert-danger text-center'>{{$_GET['probleme_lien_paiement']}}</div>
+                            @endisset
                             @if($est_connecter)
                         <form method="post" action="{{route('espace_menbre.confirmation_soutien_waricrowd')}}">
                                     <div class="form-group">

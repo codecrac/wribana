@@ -20,6 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('montant');
             $table->string('statut')->nullable();
             $table->foreignId('id_menbre_qui_prend');
+            $table->foreignId('index_ouverture');
             $table->string('trans_id')->unique()->nullable();
             $table->text('token')->unique();
             $table->timestamps();

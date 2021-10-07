@@ -59,6 +59,7 @@
                                     <td>Nom Complet</td>
                                     <td>Montant</td>
                                     <td>Tour de</td>
+                                    <td>Rotation No.</td>
                                     </thead>
                                     <tbody>
                                     @foreach($historique_transactions_tontine as $item_cotisation)
@@ -68,6 +69,7 @@
                                             <td>{{$item_cotisation->cotiseur->nom_complet}}</td>
                                             <td>{{number_format($item_cotisation->montant,0,',',' ')}} F</td>
                                             <td>{{$item_cotisation->menbre_qui_prend->nom_complet}}</td>
+                                            <td>{{$item_cotisation->tontine->caisse->index_ouverture}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

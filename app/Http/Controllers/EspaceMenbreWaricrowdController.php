@@ -235,7 +235,8 @@ class EspaceMenbreWaricrowdController extends Controller
     // CONVERSION EN CFA AVANT PAIEMENT
 
         $le_menbre = Menbre::find($id_menbre_connecter);
-        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_crowd,$le_montant_en_xof,$le_montant,'waricrowd');
+        $route_back_en_cas_derreur = route('details_projet',[$id_crowd]);
+        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_crowd,$le_montant_en_xof,$le_montant,'waricrowd',$route_back_en_cas_derreur);
         return redirect($payment_url);
 //================SIMULATION LOCALE===================
     /*    $la_session = session(MenbreController::$cle_session);

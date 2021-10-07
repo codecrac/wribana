@@ -40,7 +40,7 @@ function convertCurrency($amount,$from_currency,$to_currency){
                 <div class="d-flex align-items-end flex-wrap">
                     <div class="mr-md-3 mr-xl-5">
                         <h2>Bienvenue <small>{{$le_menbre['nom_complet']}}.</small></h2>
-                        <h4>1 eur = <?php  echo convertCurrency(1, 'USD', 'XOF'); ?></h4>
+                        <h4>1 {{$la_session['code_devise']}} = <?php  echo convertCurrency(1, $la_session['code_devise'], 'XOF'); ?> XOF</h4>
 {{--                        <p class="mb-md-0">Your analytics dashboard template.</p>--}}
                     </div>
                     <div class="d-flex">

@@ -22,6 +22,7 @@ class CreateCaisseTontinesTable extends Migration
             $table->integer('montant_a_verser');
             $table->integer('id_menbre_qui_prend');
             $table->integer('index_menbre_qui_prend')->default(0);
+            $table->integer('index_ouverture')->default(1);
             $table->string('prochaine_date_encaissement');
             $table->timestamps();
         });

@@ -56,6 +56,9 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
             <div class='alert alert-danger text-center'>Echec du paiement</div>
         @endif
     @endif
+    @isset($_GET['probleme_lien_paiement'])
+            <div class='alert alert-danger text-center'>{{$_GET['probleme_lien_paiement']}}</div>
+    @endisset
     {{-- SECTION A propos de la tontine et invitaion  --}}
     <div class="row">
         <div class="col-md-6 grid-margin stretch-card">
@@ -163,7 +166,7 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                             </h3>
                         @endif
                     @elseif($la_tontine->etat =='terminer')
-                        {{--<p class="badge badge-success text-center">Votre tontine s'est effectuée avec succes vous(le createur) pouvez
+                        <p class="badge badge-success text-center">Votre tontine s'est effectuée avec succes vous(le createur) pouvez
                             la relancée!</p>
                         <form method="post" action="{{route('espace_menbre.ouvrir_tontine',[$la_tontine['id']])}}">
                             @if($la_tontine->createur->id == $la_session['id'])
@@ -174,7 +177,7 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                                     <button type="submit" class="btn btn-success">Recommencer les cotisations</button>
                                 </h3>
                             @endif
-                        </form>--}}
+                        </form>
                     @endif
 
                     <br/>

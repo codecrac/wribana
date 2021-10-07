@@ -191,6 +191,7 @@ class EspaceMenbre extends Controller
             $a_deja_cotiser = Transaction::where("id_menbre",'=',$id_menbre_connecter)
                 ->where('id_tontine','=',$id_tontine)
                 ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)
+                ->where('index_ouverture','=',$la_tontine->caisse->index_ouverture)
                 ->where('statut','=','ACCEPTED')
                 ->first();
             $a_deja_cotiser = ($a_deja_cotiser!=null) ? true : false;
@@ -198,7 +199,9 @@ class EspaceMenbre extends Controller
             //Liste des transaction pour le tour courant
             $liste_ayant_cotiser = Transaction::where('id_tontine','=',$id_tontine)
             ->where('statut','=','ACCEPTED')
-                ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)->get();
+                ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)
+                ->where('index_ouverture','=',$la_tontine->caisse->index_ouverture)
+                ->get();
         }else{
             $liste_ayant_cotiser = [];
             $a_deja_cotiser = false;
@@ -226,6 +229,12 @@ class EspaceMenbre extends Controller
         // on cree la caisse dedie a la tontine et on commence par le menbre qui a creer la tontine
         $la_caisse_de_la_tontine = CaisseTontine::findOrNew($id_tontine);
         $la_caisse_de_la_tontine->id_tontine= $la_tontine->id;
+
+        //pour gerer les reouverture de tontine
+        if($la_caisse_de_la_tontine->index_ouverture != null){
+            $index_actuel = $la_caisse_de_la_tontine->index_ouverture;
+            $la_caisse_de_la_tontine->index_ouverture = $index_actuel + 1;
+        }
 
         $montant_objectif = $la_tontine->montant * $la_tontine->nombre_participant;
         $frais_de_gestion = round( $montant_objectif * (1/100) );
@@ -457,10 +466,12 @@ class EspaceMenbre extends Controller
         $id_menbre_connecter = $la_session['id'];
         $le_menbre = Menbre::find($id_menbre_connecter);
         
-        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_tontine,$le_montant_en_xof,$le_montant,'tontine');
+        $route_back_en_cas_derreur = route('espace_menbre.details_tontine',[$id_tontine]);
+        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_tontine,$le_montant_en_xof,$le_montant,'tontine',$route_back_en_cas_derreur);
         return redirect($payment_url);
 //=========================POUR SIMULATION=============================
-   /*     $la_session = session(MenbreController::$cle_session);
+/*====================/simulation=============
+        $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
         $le_menbre = Menbre::find($id_menbre_connecter);
         $la_tontine = Tontine::find($id_tontine);
@@ -472,6 +483,7 @@ class EspaceMenbre extends Controller
         $la_transaction->montant = $montant;
         $la_transaction->statut = "ACCEPTED";
         $la_transaction->id_menbre_qui_prend = $la_tontine->caisse->menbre_qui_prend->id;
+        $la_transaction->index_ouverture = $la_tontine->caisse->index_ouverture;
 
         $notification = " <div class='alert alert-danger text-center'> Quelque chose s'est mal passé, veuillez reessayez </div>";
         if($la_transaction->save()){
@@ -568,7 +580,8 @@ class EspaceMenbre extends Controller
             }
 
         }
-        return redirect()->back()->with('notification',$notification);*/
+        return redirect()->back()->with('notification',$notification);
+====================/simulation=============*/
     }
 
     public function recu_de_paiement_tontine($infos_pour_recu=null){

@@ -45,8 +45,8 @@ class AdministrateurController extends Controller
 
             $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_debut']."- 1 days"));
             $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_fin']."+ 1 days"));
-            $historique_transactions_tontine = Transaction::orderBy('id','desc')->where('created_at','>=',$date_debut_pour_esquiver_probleme_avec_timestamps)
-                                                ->where('created_at','<=',$date_fin_pour_esquiver_probleme_avec_timestamps)->get();
+            $historique_transactions_tontine = Transaction::where('created_at','>=',$date_debut_pour_esquiver_probleme_avec_timestamps)
+                                                ->where('created_at','<=',$date_fin_pour_esquiver_probleme_avec_timestamps)->orderBy('id','desc')->get();
         }else{
             $historique_transactions_tontine = Transaction::orderBy('id','desc')->limit(25)->get();
         }

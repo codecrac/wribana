@@ -16,7 +16,7 @@ class CinetpayPaiementController extends Controller
     public static $cpm_site_id = '750304';
     public static $mdp_api_transfert = 'Succes$$2039';
 
-    public static function generer_lien_paiement($le_menbre,$id,$montant_convertit_en_fcfa,$montant,$section="tontine")
+    public static function generer_lien_paiement($le_menbre,$id,$montant_convertit_en_fcfa,$montant,$section="tontine",$route_back_en_cas_derreur)
     {
         $apikey = CinetpayPaiementController::$apikey ;
         $site_id = CinetpayPaiementController::$cpm_site_id ;
@@ -106,8 +106,15 @@ class CinetpayPaiementController extends Controller
         $response = curl_exec($curl);
         curl_close($curl);
         $la_reponse_en_objet = json_decode($response);
-//        dd($la_reponse_en_objet->data);
+    //    dd($la_reponse_en_objet);
 
+
+       if(!isset($la_reponse_en_objet->data)){ //on a un probleme
+
+            $notification = "Erreur : $la_reponse_en_objet->description;  (FCFA, XOF)";
+            // dd($route_back_en_cas_derreur);
+            return "$route_back_en_cas_derreur?probleme_lien_paiement=$notification";
+       }
         $la_reponse_en_objet = $la_reponse_en_objet->data;
         $payement_token = $la_reponse_en_objet->payment_token;
         $payment_url = $la_reponse_en_objet->payment_url;
@@ -211,6 +218,7 @@ class CinetpayPaiementController extends Controller
         $la_transaction->trans_id = $trans_id;
         $la_transaction->token = $token;
         $la_transaction->id_menbre_qui_prend = $la_tontine->caisse->menbre_qui_prend->id;
+        $la_transaction->index_ouverture = $la_tontine->caisse->index_ouverture;
         $la_transaction->save();
     }
 
