@@ -33,20 +33,38 @@
                 <br/><br/>
                 <div class="row">
                     <div class="table-responsive">
-                        <table width="100%" class="table text-center" border="1" id="datatable">
-                            <thead class="text-center">
-                                <th>Nom complet</th>
-                                <th>Telephone</th>
-                                <th>Email</th>
+                        <table width="100%" class="table text-left" border="1" id="datatable">
+                            <thead class="text-left">
+                                <th>#(ordre inscription)</th>
+                                <th>Menbre</th>
+                                <th>Contact</th>
+                                <th>Devise</th>
                                 <th>Etat</th>
                                 <th>#</th>
                             </thead>
                             <tbody>
+                                @php $i=1; @endphp
                             @foreach($liste_menbres_inscrits as $item_menbre)
                                 <tr>
-                                    <td> {{$item_menbre->nom_complet}} </td>
-                                    <td> {{$item_menbre->telephone}} </td>
-                                    <td> {{$item_menbre->email}} </td>
+                                    <td class="text-center">#{{$i++}}</td>
+                                    <td> 
+                                        Nom complet : <b>{{$item_menbre->nom_complet}}</b>  <br/>
+                                        pays-ville : {{$item_menbre->pays}}, {{$item_menbre->ville}}  <br/>
+                                        Etat USA : {{$item_menbre->etat_us}}  <br/>
+                                        Adresse : {{$item_menbre->adresse}}  <br/>
+                                    </td>
+                                    <td>
+                                       Tel :  {{$item_menbre->telephone}} <br/>
+                                       Email :  {{$item_menbre->email}} <br/>
+                                     </td>
+                                     <td>
+                                         @if($item_menbre->devise_choisie != null)
+                                            {{$item_menbre->devise_choisie->code}} ({{$item_menbre->devise_choisie->monaie}}) 
+                                        @else
+                                          -
+                                        @endif    
+                                        <br/>
+                                     </td>
                                     <td>
                                         <h3>
                                             <span class="badge badge-{{$item_menbre->etat =='suspendu'? 'danger' : 'success'}}">{{$item_menbre->etat}}</span>

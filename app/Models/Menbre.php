@@ -23,6 +23,12 @@ class Menbre extends Model
     public function compte(){
         return $this->hasOne(CompteMenbre::class,'id_menbre');
     }
+    
+    public function historique_retraits()
+    {
+        return $this->hasMany(CahierRetraitSoldeMenbre::class,'id_menbre')->orderBy('id','desc');
+    }
+
 
     public function historique_virement_tontine(){
         return $this->hasMany(CahierCompteTontine::class,'id_menbre');

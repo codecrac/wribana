@@ -149,7 +149,11 @@ class MenbreController extends Controller
     public function connexion(Request $request)
     {
         $donnees_formulaire = $request->all();
-        $identifiant = $donnees_formulaire['identifiant'];
+        
+        $prefixe = $donnees_formulaire['prefixe'];
+        $telephone = $donnees_formulaire['telephone'];
+        // $identifiant = $donnees_formulaire['identifiant'];
+        $identifiant = $prefixe . $telephone;
         $mot_de_passe = $donnees_formulaire['mot_de_passe'];
 
         $mot_de_passe_caher = md5($mot_de_passe);
@@ -347,6 +351,7 @@ class MenbreController extends Controller
             $code_devise = $le_menbre->devise_choisie->code;
         }else{
             $devise ='---';
+            $code_devise ='--';
         }
         session()->put(MenbreController::$cle_session, ['id' => $id_menbre, 'nom_complet' => $nom_complet, 'devise' => $devise,'code_devise'=>$code_devise]);
     }

@@ -1,13 +1,81 @@
 @php
-    $query = @unserialize(file_get_contents('http://ip-api.com/php/'));
-    if($query && $query['status'] == 'success'){
-        $country_code = $query['countryCode'];
-        $ville = $query['city'];
-        $code_postal = $query['zip'];
-    }
 
-    $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($country_code);
-    //dd($code_prefixe);
+
+function ip_info($ip = NULL, $purpose = "location", $deep_detect = TRUE) {
+    $output = NULL;
+    if (filter_var($ip, FILTER_VALIDATE_IP) === FALSE) {
+        $ip = $_SERVER["REMOTE_ADDR"];
+        if ($deep_detect) {
+            if (filter_var(@$_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP))
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            if (filter_var(@$_SERVER['HTTP_CLIENT_IP'], FILTER_VALIDATE_IP))
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
+        }
+    }
+    $purpose    = str_replace(array("name", "\n", "\t", " ", "-", "_"), NULL, strtolower(trim($purpose)));
+    $support    = array("country", "countrycode", "state", "region", "city", "location", "address");
+    $continents = array(
+        "AF" => "Africa",
+        "AN" => "Antarctica",
+        "AS" => "Asia",
+        "EU" => "Europe",
+        "OC" => "Australia (Oceania)",
+        "NA" => "North America",
+        "SA" => "South America"
+    );
+    if (filter_var($ip, FILTER_VALIDATE_IP) && in_array($purpose, $support)) {
+        $ipdat = @json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=" . $ip));
+        if (@strlen(trim($ipdat->geoplugin_countryCode)) == 2) {
+            switch ($purpose) {
+                case "location":
+                    $output = array(
+                        "city"           => @$ipdat->geoplugin_city,
+                        "state"          => @$ipdat->geoplugin_regionName,
+                        "country"        => @$ipdat->geoplugin_countryName,
+                        "country_code"   => @$ipdat->geoplugin_countryCode,
+                        "continent"      => @$continents[strtoupper($ipdat->geoplugin_continentCode)],
+                        "continent_code" => @$ipdat->geoplugin_continentCode
+                    );
+                    break;
+                case "address":
+                    $address = array($ipdat->geoplugin_countryName);
+                    if (@strlen($ipdat->geoplugin_regionName) >= 1)
+                        $address[] = $ipdat->geoplugin_regionName;
+                    if (@strlen($ipdat->geoplugin_city) >= 1)
+                        $address[] = $ipdat->geoplugin_city;
+                    $output = implode(", ", array_reverse($address));
+                    break;
+                case "city":
+                    $output = @$ipdat->geoplugin_city;
+                    break;
+                case "state":
+                    $output = @$ipdat->geoplugin_regionName;
+                    break;
+                case "region":
+                    $output = @$ipdat->geoplugin_regionName;
+                    break;
+                case "country":
+                    $output = @$ipdat->geoplugin_countryName;
+                    break;
+                case "countrycode":
+                    $output = @$ipdat->geoplugin_countryCode;
+                    break;
+            }
+        }
+    }
+    return $output;
+}
+
+$ip_info = ip_info();
+//dd($ip_info);
+
+$country_code = $ip_info['country_code'];
+$ville = $ip_info['city'];
+//$code_postal = $ip_info['zip'];
+
+
+$code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($country_code);
+    
 @endphp
 
 
@@ -34,8 +102,8 @@
                     <div class="about-text mb-lg-50">
 						<div class="common-heading mb-30">
 							<span class="tagline">
-								<i class="fas fa-plus"></i> Inscription
-								<span class="heading-shadow-text">Espace Menbre</span>
+								<!--<i class="fas fa-plus"></i> Inscription-->
+								<span class="heading-shadow-text"><!--Espace Menbre--></span>
 							</span>
 							<h2 class="title">Inscription</h2>
 						</div>
@@ -43,34 +111,12 @@
                             <form class="form-group" method="post" action="{{route('post_inscription_menbre')}}">
                                 <div class="form-group">
 
-            <!-- ------------------------UTILE POUR CARTE BANCAIRE -->
-                                    <!-- <div style="display:{{($country_code!='') ? 'none' : '' }};background-color:yellow"> -->
-                                    <div style="background-color:yellow">
-                                        <label>PAYS *</label>
-                                            <input required class="form-control" placeholder="CI,US" value="{{$country_code}}" type="text" name="pays" />
-                                        <br/>
-                                    </div>
-                                    
-                                    <div class="form-group" style="display:{{($country_code != 'US') ? 'none' : '' }}">
-                                        <label>Etat (si vous vivez au etats unis)</label>
-                                            <input class="form-control" placeholder="Illinois" type="text" name="etat_us" />
-                                        <br/>
-                                    </div>
-
-                                    <label>Ville *</label>
-                                        <input required class="form-control" placeholder="Yammoussoukro" value="{{$ville}}" type="text" name="ville" />
-                                    <br/>
-                                    
-                                    <label>Code postal</label>
-                                        <input class="form-control" placeholder="" value="{{$code_postal}}" type="text" name="code_postal" />
-                                    <br/>
-                <!-- / ------------------UTILE POUR CARTE BANCAIRE -->
                                     <label>Nom complet *</label>
-                                        <input required class="form-control" placeholder="LADDE YVES" type="text" name="nom_complet" />
+                                        <input required class="form-control text-uppercase" placeholder="LADDE YVES" type="text" name="nom_complet" />
                                     <br/>
 
-                                    <label>Adresse *</label>
-                                        <input required class="form-control" placeholder="Cocody palmeraie" type="text" name="adresse" />
+                                    <label>Adresse (zone d'habitation) *</label>
+                                        <input required class="form-control text-uppercase" placeholder="Cocody palmeraie" type="text" name="adresse" />
                                     <br/>
 
 
@@ -78,7 +124,7 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <label><small>prefixe</small></label>
-                                            <input required class="form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code_prefixe}}" />
+                                            <input required class="form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code_prefixe}}" required />
                                         </div>
                                         <div class="col-md-8">
                                             <label><small>Telephone</small></label>
@@ -97,6 +143,29 @@
                                         <input required class="form-control" placeholder="Confirmer le mot de passe" type="password" name="confirmer_mot_de_passe" />
                                     <br/>
 
+            <!-- ------------------------UTILE POUR CARTE BANCAIRE -->
+                                    <!-- <div style="display:{{($country_code!='') ? 'none' : '' }};background-color:yellow"> -->
+                                    <div style="">
+                                        <label>CODE PAYS (CI,US...) *</label>
+                                            <input required class="form-control text-uppercase" placeholder="CI,US" type="text" value="{{$country_code}}" maxLength='2' name="pays" />
+                                        <br/>
+                                    </div>
+                                    
+                                    <div class="form-group" style="display:{{($country_code != 'US') ? 'none' : '' }}">
+                                    <!--<div class="form-group">-->
+                                        <label>Etat (si vous vivez au etats unis)</label>
+                                            <input class="form-control text-uppercase" placeholder="Illinois" type="text" name="etat_us" />
+                                        <br/>
+                                    </div>
+
+                                    <label>Ville *</label>
+                                        <input required class="form-control text-uppercase"  value="{{$ville}}" placeholder="Yammoussoukro" value="" type="text" name="ville" />
+                                    <br/>
+                                    
+                                    <label>Code postal (facultatif)</label>
+                                        <input class="form-control text-uppercase" placeholder="" value="" type="text" name="code_postal" />
+                                    <br/>
+                <!-- / ------------------UTILE POUR CARTE BANCAIRE -->
                                     @csrf
                                     <button class="main-btn wow fadeInUp" type="submit">
                                             Je m'inscris <i class="far fa-arrow-right"></i>

@@ -1,15 +1,15 @@
 <?php
 
 use App\Http\Controllers\EspaceMenbre;
+use App\Http\Controllers\InvitationController;
 
 Route::get("/mes-tontines", [EspaceMenbre::class, 'liste_tontine'])->name('espace_menbre.liste_tontine');
 Route::get("/details-tontines/{id_tontine}", [EspaceMenbre::class, 'details_tontine'])->name('espace_menbre.details_tontine');
-//pour retour de paiement
-Route::post("/details-tontines/{id_tontine}", [EspaceMenbre::class, 'details_tontine']);
 Route::post("/details-tontines/{id_tontine}", [EspaceMenbre::class, 'ouvrir_tontine'])->name('espace_menbre.ouvrir_tontine');
 
-Route::get("/inviter-des-amis-dans-la-tontine/{id_tontine}", [EspaceMenbre::class, 'inviter_des_amis'])->name('espace_menbre.inviter_des_amis');
-Route::post("/inviter-des-amis-dans-la-tontine/{id_tontine}", [EspaceMenbre::class, 'envoyer_invitation'])->name('espace_menbre.post_inviter_des_amis');
+Route::get("/inviter-des-amis-dans-la-tontine/{id_tontine}", [InvitationController::class, 'inviter_des_amis'])->name('espace_menbre.inviter_des_amis');
+Route::post("/inviter-des-amis-dans-la-tontine/{id_tontine}", [InvitationController::class, 'envoyer_invitation'])->name('espace_menbre.post_inviter_des_amis');
+Route::post("/inviter-des-amis-dans-la-tontine-via-sms/{id_tontine}", [InvitationController::class, 'envoyer_invitation_via_sms'])->name('espace_menbre.post_envoyer_invitation_via_sms');
 
 Route::get("/editer-une-tontine/{id_tontine}", [EspaceMenbre::class, 'editer_tontine'])->name('espace_menbre.editer_tontine');
 Route::put("/editer-une-tontine/{id_tontine}", [EspaceMenbre::class, 'modifier_tontine'])->name('espace_menbre.post_editer_tontine');
@@ -20,9 +20,9 @@ Route::get("/creer-une-tontine", [EspaceMenbre::class, 'ajouter_tontine'])->name
 Route::post("/creer-une-tontine", [EspaceMenbre::class, 'enregistrer_tontine'])->name('espace_menbre.post_ajouter_tontine');
 
 
-Route::get("/invitations", [EspaceMenbre::class, 'invitations'])->name('espace_menbre.invitations');
-Route::post("/invitations/{id_invitation}", [EspaceMenbre::class, 'reponse_invitation'])->name('espace_menbre.reponse_invitation');
-Route::post("/invitations-via-code", [EspaceMenbre::class, 'adhesion_via_code_invitation'])->name('espace_menbre.adhesion_via_code_invitation');
+Route::get("/invitations", [InvitationController::class, 'invitations'])->name('espace_menbre.invitations');
+Route::post("/invitations/{id_invitation}", [InvitationController::class, 'reponse_invitation'])->name('espace_menbre.reponse_invitation');
+Route::post("/invitations-via-code", [InvitationController::class, 'adhesion_via_code_invitation'])->name('espace_menbre.adhesion_via_code_invitation');
 
 Route::post("/payer-ma-cotisation/{id_tontine}", [EspaceMenbre::class, 'paiement_cotisation'])->name('espace_menbre.paiement_cotisation');
 

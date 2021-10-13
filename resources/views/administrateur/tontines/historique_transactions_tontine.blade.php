@@ -60,6 +60,7 @@
                                     <td>Montant</td>
                                     <td>Tour de</td>
                                     <td>Rotation No.</td>
+                                    <td>Statut</td>
                                     </thead>
                                     <tbody>
                                     @foreach($historique_transactions_tontine as $item_cotisation)
@@ -67,9 +68,10 @@
                                             <td>{{date('d/m/Y H:m',strtotime($item_cotisation['created_at']))}}</td>
                                             <td><a href="{{route('admin.details_tontine',[$item_cotisation->tontine->id])}}"> {{$item_cotisation->tontine->titre}} </a></td>
                                             <td>{{$item_cotisation->cotiseur->nom_complet}}</td>
-                                            <td>{{number_format($item_cotisation->montant,0,',',' ')}} F</td>
+                                            <td>{{number_format($item_cotisation->montant,0,',',' ')}} {{ $item_cotisation->tontine->createur->devise_choisie->monaie }}</td>
                                             <td>{{$item_cotisation->menbre_qui_prend->nom_complet}}</td>
-                                            <td>{{$item_cotisation->tontine->caisse->index_ouverture}}</td>
+                                            <td>{{$item_cotisation->index_ouverture}}</td>
+                                            <td class="text-{{($item_cotisation->statut=='ACCEPTED') ? 'success' : 'danger'}}"> [ {{$item_cotisation->statut}} ]</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

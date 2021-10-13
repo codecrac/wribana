@@ -241,8 +241,8 @@
     <div class="container">
         <div class="common-heading mb-30">
 				<span class="tagline">
-					<i class="fas fa-plus"></i> Nos partenaires
-					<span class="heading-shadow-text">Ils nous font confiance</span>
+					<!--<i class="fas fa-plus"></i> Nos partenaires-->
+					<span class="heading-shadow-text"><!--Ils nous font confiance--></span>
 				</span>
             <h2 class="title">Nos partenaires</h2>
         </div>

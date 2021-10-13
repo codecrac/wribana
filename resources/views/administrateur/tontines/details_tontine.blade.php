@@ -302,6 +302,8 @@
                         <th>Menbre</th>
                         <th>Date paiement</th>
                         <th>Tour de</th>
+                        <th>Rotation No</th>
+                        <th>Statut</th>
                         </thead>
                         <tbody>
                         @foreach($transactions_de_la_tontine as $item_transaction)
@@ -309,6 +311,8 @@
                                 <td>{{$item_transaction->cotiseur->nom_complet}}</td>
                                 <td>{{date("d/m/Y H:i",strtotime($item_transaction->updated_at))}}</td>
                                 <td>{{$item_transaction->menbre_qui_prend->nom_complet}}</td>
+                                <td>{{$item_transaction->tontine->caisse->index_ouverture}}</td>
+                                <td class="text-{{($item_transaction->statut == 'ACCEPTED') ? 'success' : 'danger'}}"> [ {{$item_transaction->statut}} ]</td>
                             </tr>
                         @endforeach
                         </tbody>

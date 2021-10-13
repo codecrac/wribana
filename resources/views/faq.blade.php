@@ -6,8 +6,8 @@
 
 			<div class="common-heading text-center mb-30">
 				<span class="tagline">
-					<i class="fas fa-plus"></i> FAQ
-					<span class="heading-shadow-text">FAQ</span>
+					<!--<i class="fas fa-plus"></i> FAQ-->
+					<span class="heading-shadow-text"><!--FAQ--></span>
 				</span>
 				<h2 class="title">Questions reccurentes</h2>
 			</div>

@@ -1,13 +1,11 @@
 @php
     $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
 
+    $statut_transaction = null;
+    if(isset($_GET['statut_transaction'])){
+        $statut_transaction = $_GET['statut_transaction'];
+    }
 
-$statut_transaction = null;
-if(isset($_GET['trans_id'])){
-    $trans_id = $_GET['trans_id'];
-    $la_transaction = \App\Models\Transaction::where('trans_id','=',$trans_id)->first();
-    $statut_transaction = $la_transaction->statut;
-}
 @endphp
 
 
@@ -149,7 +147,11 @@ if(isset($_GET['trans_id'])){
                         <hr/>
                     </div>
                     <div class="card-body">
-                        <h5 class="text-center">Entrer le montant</h5>
+                        <h5 class="text-center">Entrer le montant </h5>
+                        <p class="text-center">
+                            (en <b>{{$le_crowd->createur->devise_choisie->monaie}}</b>) 
+                        </p>
+                        
                         <form method="post" action="{{route('espace_menbre.confirmation_soutien_waricrowd')}}">
                             <div class="form-group">
 

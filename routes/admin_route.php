@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 Route::get("/les-tontines",[AdministrateurController::class,'les_tontines'])->name('admin.les_tontines');
 Route::get("/details-tontines/{id_tontine}",[AdministrateurController::class,'details_tontine'])->name('admin.details_tontine');
 Route::get("/historique-transactions/tontines",[AdministrateurController::class,'historique_transactions_tontine'])->name('admin.historique_transactions_tontine');
+Route::get("/historique-versements-au-menbres",[AdministrateurController::class,'historique_versements'])->name('admin.historique_versements');
+
 
 Route::put("/details-tontines/changer-etat/{id_tontine}",[AdministrateurController::class,'changer_etat_tontine'])->name('admin.changer_etat_tontine');
 Route::put("/les-menbres/suspendre/{id_menbre}",[AdministrateurController::class,'suspendre_menbre'])->name('admin.suspendre_menbre');
@@ -27,6 +29,7 @@ Route::put("/details-waricrowd/validation/{id_tontine}",[AdministrateurControlle
 
 //    ===================Menbres Inscrits======================
 Route::get("/liste-menbres-inscrits/{filtre?}",[AdministrateurController::class,'liste_menbres_inscrits'])->name('admin.liste_menbres_inscrits');
+Route::get("/historique-retraits-compte-menbres",[AdministrateurController::class,'historique_retraits'])->name('admin.historique_retraits');
 
 
 //    ===================WARICROWD======================

@@ -125,6 +125,16 @@ class EspaceMenbre extends Controller
                 $la_tontine->montant = $montant;
                 $la_tontine->frequence_depot_en_jours = $frequence_de_depot;
                 $la_tontine->nombre_participant = $nombre_participant;
+                
+                
+                if($la_tontine->caisse!=null){
+                    
+                    $la_caisse_tontine = $la_tontine->caisse;
+                    $la_caisse_tontine->montant_objectif = $la_tontine->montant * $la_tontine->nombre_participant;
+                    $la_caisse_tontine->montant_a_verser = $la_caisse_tontine->montant_objectif - ($la_caisse_tontine->montant_objectif * (1/100) );
+                    // dd($la_caisse_tontine->montant_a_verser);
+                    $la_caisse_tontine->save();
+                }
             }
 
             if($la_tontine->save()){
@@ -255,196 +265,6 @@ class EspaceMenbre extends Controller
 
 //    =============================INVITATIONS==============================
 
-    public function inviter_des_amis($id_tontine){
-        $la_tontine = Tontine::find($id_tontine);
-        if($la_tontine == null){
-            return redirect()->route('espace_menbre.liste_tontine');
-        }
-        return view("espace_menbre/tontine/inviter_des_amis",compact("la_tontine"));
-    }
-
-    public function envoyer_invitation(Request $request,$id_tontine){
-        $donnees_formulaire = $request->all();
-
-        $adresse =  "https://" . $_SERVER['SERVER_NAME'] .'/espace-menbre/invitations';
-
-        $la_session = session(MenbreController::$cle_session);
-        $id_menbre_connecter = $la_session['id'];
-        $le_menbre = Menbre::find($id_menbre_connecter);
-        $nom_complet = $le_menbre->nom_complet;
-
-        $la_tontine = Tontine::find($id_tontine);
-        $titre = $la_tontine->titre;
-        $liste_emails = explode(',',$donnees_formulaire['liste_emails']);
-        $emails_to_string = implode(",",$liste_emails);
-//        dd($liste_emails);
-        mail($emails_to_string,
-            "REJOINS LA TONTINE $titre",
-            "
-                        Bonjour, le menbre $nom_complet de waribana vous invite a rejoindre la tontine <<$titre>>,
-                        Connectez vous inscrivez-vous pour repondre a son invitation;
-                        $adresse
-            "
-        );
-
-
-      /*  $telephone = $la_tontine->createur->telephone;
-
-        $contenu_notification = SmsContenuNotification::first();
-        $message_notif = $contenu_notification['invitation_recue'];
-        $le_message = str_replace('$nom_complet$',$nom_complet,$message_notif);
-        $le_message = str_replace('$titre_tontine$',$la_tontine->titre,$message_notif);
-        SmsController::sms_info_bip($telephone,$le_message);*/
-
-        foreach ($liste_emails as $mail_item){
-            $invitation_existante = Invitation::where('email_inviter','=',$mail_item)->where('id_tontine','=',$id_tontine)->first();
-
-            if($invitation_existante ==null){
-                $une_invitation = new Invitation();
-                $une_invitation->id_tontine = $id_tontine;
-                $une_invitation->email_inviter = $mail_item;
-                $une_invitation->menbre_qui_invite = $id_menbre_connecter;
-                $une_invitation->save();
-            }
-        }
-
-        $notification = "<div class='alert alert-success text-center'> Operatin bien éffectuée </div>";
-        return redirect()->back()->with('notification',$notification);
-    }
-
-    public function invitations(){
-        $la_session = session(MenbreController::$cle_session);
-        $id_menbre_connecter =  $la_session['id'];
-        $le_menbre = Menbre::find($id_menbre_connecter);
-        $email_inviter = $le_menbre['email'];
-
-
-        $invitation_recues = [];
-        if($email_inviter!=null){
-            $invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->where('etat','=','attente')->get();
-        }
-        return view("espace_menbre/tontine/invitations",compact('invitation_recues'));
-    }
-
-    public function reponse_invitation(Request $request,$id_invitation){
-        $donnees_formulaire = $request->all();
-        $reponse = $donnees_formulaire['reponse'];
-
-
-        $linvitation = Invitation::find($id_invitation);
-
-        $la_tontine = $linvitation->tontine;
-
-        if(sizeof($la_tontine->participants) < $la_tontine->nombre_participant){
-            $linvitation->etat = $reponse;
-            $linvitation->save();
-            $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
-
-            if($reponse == 'acceptee'){
-                $la_session = session(MenbreController::$cle_session);
-                $id_menbre_connecter = $la_session['id'];
-
-                $deja_menbre = MenbreTontine::where('menbre_id','=',$id_menbre_connecter)->where('tontine_id','=',$la_tontine->id)->first();
-                if($deja_menbre==null){
-                    $nouveau_menbre = new MenbreTontine();
-                    $nouveau_menbre->tontine_id = $la_tontine->id;
-                    $nouveau_menbre->menbre_id = $id_menbre_connecter;
-                    $nouveau_menbre->save();
-                }
-            }
-
-            $id_tontine = $la_tontine['id'];
-            $la_tontine = Tontine::find($id_tontine);
-
-            //NOMBRE DE PARTICPANT ATTEINDS, LA TONTINE EST PRETE
-            if(sizeof($la_tontine->participants) == $la_tontine->nombre_participant){
-                Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
-                $la_tontine->etat = 'prete';
-                $la_tontine->save();
-
-
-                $telephone = $la_tontine->createur->telephone;
-                $contenu_notification = SmsContenuNotification::first();
-                $message_notif = $contenu_notification['etat_tontine'];
-
-                $le_message = str_replace('$etat$',"prete",$message_notif);
-                $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
-                $le_message = str_replace('$motif$',"",$le_message);
-
-                SmsController::sms_info_bip($telephone,$le_message);
-            }
-        }else{
-            Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
-
-            if($reponse == 'acceptee') {
-                $notification = " <div class='alert alert-danger text-center'> Le nombre de participant est dejà atteint</div>";
-            }else{
-                $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
-            }
-        }
-
-        return redirect()->back()->with('notification',$notification);
-    }
-
-    public function adhesion_via_code_invitation(Request $request){
-
-        $donnees_formulaires = $request->all();
-        $code_invitation = $donnees_formulaires['code_invitation'];
-
-        $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
-
-        if($la_tontine ==null){
-            $notification = " <div class='alert alert-danger text-center'> Ce code est invalide</div>";
-        }else{
-
-            $la_session = session(MenbreController::$cle_session);
-            $id_menbre_connecter = $la_session['id'];
-
-            $deja_menbre = MenbreTontine::where('menbre_id','=',$id_menbre_connecter)->where('tontine_id','=',$la_tontine->id)->first();
-            if($deja_menbre==null){
-                if(sizeof($la_tontine->participants) < $la_tontine->nombre_participant){
-
-                    $nouveau_menbre = new MenbreTontine();
-                    $nouveau_menbre->tontine_id = $la_tontine->id;
-                    $nouveau_menbre->menbre_id = $id_menbre_connecter;
-                    $nouveau_menbre->save();
-
-                    $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
-
-
-                    $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
-                    if(sizeof($la_tontine->participants) == $la_tontine->nombre_participant){
-                        Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
-//                        dd('prete');
-                        $la_tontine->etat = 'prete';
-                        $la_tontine->save();
-
-                        $telephone = $la_tontine->createur->telephone;
-                        $contenu_notification = SmsContenuNotification::first();
-                        $message_notif = $contenu_notification['etat_tontine'];
-
-                        $le_message = str_replace('$etat$',"prete",$message_notif);
-                        $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
-                        $le_message = str_replace('$motif$',"",$le_message);
-
-                        SmsController::sms_info_bip($telephone,$le_message);
-                    }
-
-                }else{
-                    $notification = " <div class='alert alert-danger text-center'> Le nombre de participant est dejà atteint</div>";
-                }
-
-            }else{
-                $notification = " <div class='alert alert-danger text-center'> Vous êtes deja un menbre de cette tontine  </div>";
-            }
-
-
-        }
-
-
-        return redirect()->back()->with('notification',$notification);
-    }
-
 //    ===================Cotisation======================
     public function paiement_cotisation($id_tontine){
 
@@ -535,6 +355,7 @@ class EspaceMenbre extends Controller
                     $nouvelle_note->id_menbre = $id_menbre_qui_prend;
                     $nouvelle_note->id_tontine = $id_tontine;
                     $nouvelle_note->montant = $montant_a_verser;
+                    $nouvelle_note->index_ouverture = $la_tontine->caisse->index_ouverture;
                     $nouvelle_note->save();
                 }
 
@@ -546,10 +367,14 @@ class EspaceMenbre extends Controller
                     $message = $base_message['virement_compte_menbre_qui_prend'];
                     $message = str_replace('$nom_menbre_qui_prend$',$la_tontine->caisse->menbre_qui_prend->nom_complet,$message);
                     $message = str_replace('$titre_tontine$',$titre_tontine,$message);
+                    
+                    $headers = 'From: no-reply@waribana.net' . "\r\n" .
+                         'Reply-To: no-reply@waribana.net' . "\r\n" .
+                         'X-Mailer: PHP/' . phpversion();
 
                     $numero = $item_participant->telephone;
                     SmsController::sms_info_bip($numero,$message);
-                    mail($item_participant->email,"$titre_tontine : MONTANT OBJECTIF DE COTISATION ATTEINDS",$message);
+                    mail($item_participant->email,"$titre_tontine : MONTANT OBJECTIF DE COTISATION ATTEINDS",$message,$headers);
 
                 }
 //====================Rotation
@@ -834,8 +659,13 @@ class EspaceMenbre extends Controller
         if($utlisateur_existe){
             $le_menbre = Menbre::find($id_menbre_connecter);
 
+            //est qu'il dispose de cette somme sur son compte
+            if($le_menbre->compte->solde < $montant_retrait){
+                $notification = "<div class='alert alert-danger text-center'> VOUS NE DISPOSEZ PAS DE CE MONTANT. </div>";
+                return redirect()->back()->with('notification',$notification);
+            }
             
-            // CONVERSION EN CFA AVANT PAIEMENT
+            // CONVERSION EN CFA AVANT TRANSFERT
             $le_montant = $montant_retrait;
             if($le_menbre->devise_choisie->code != "XOF"){
                 $monaie_createur_tontine = $le_crowd->createur->devise_choisie->code;
@@ -844,7 +674,7 @@ class EspaceMenbre extends Controller
             }else{
                 $le_montant_en_xof = $le_montant;
             }
-        // CONVERSION EN CFA AVANT PAIEMENT
+        // CONVERSION EN CFA AVANT TRANSFERT
 
             $response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait($le_menbre,$le_montant_en_xof);
             $reponse_decoder = json_decode($response);
@@ -852,10 +682,16 @@ class EspaceMenbre extends Controller
             $message = $reponse_decoder->message;
             
             
-            if($code != 0){ // 0 = succes , les autres = prbleme
+            if($code == 0){ // 0 = succes , les autres = prbleme
                 $notification = "<div class='alert alert-success text-center'> Retrait bien effectué </div>";
                 \App\Http\Controllers\CinetpayApiTransfertController::enregistrer_retrait($le_menbre,$montant_retrait);
-                mail($le_menbre->email,'RETRAIT EFFECTUER',"Bonjour $le_menbre->nom_complet, votre retrait de $montant_retrait a bien été effectué.");
+                $monaie = $le_menbre->devise_choisie->monaie;
+                
+                
+                $headers = 'From: no-reply@waribana.net' . "\r\n" .
+                     'Reply-To: no-reply@waribana.net' . "\r\n" .
+                     'X-Mailer: PHP/' . phpversion();
+                mail($le_menbre->email,'RETRAIT EFFECTUER',"Bonjour $le_menbre->nom_complet, votre retrait de $montant_retrait $monaie a bien été effectué.",$headers);
             }else{
                 $notification = "<div class='alert alert-danger text-center'> Echec de retrait, motif : $message </div>";
             }

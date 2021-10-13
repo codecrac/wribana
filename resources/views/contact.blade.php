@@ -29,8 +29,8 @@
                     <div class="contact-info-text mb-md-70">
                         <div class="common-heading mb-30">
                             <span class="tagline">
-                                <i class="fas fa-plus"></i>
-                                <span class="heading-shadow-text">Allo !</span>
+                                <!--<i class="fas fa-plus"></i>-->
+                                <span class="heading-shadow-text"><!--Allo !--></span>
                             </span>
                             <h2 class="title">Près a en savoir plus</h2>
                         </div>

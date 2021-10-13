@@ -33,8 +33,8 @@
                     <div class="about-text">
                         <div class="common-heading mb-30">
 							<span class="tagline">
-								<i class="fas fa-plus"></i> ?
-								<span class="heading-shadow-text">Comment ça marche</span>
+								<!--<i class="fas fa-plus"></i> ?-->
+								<span class="heading-shadow-text"><!--Comment ça marche--></span>
 							</span>
                             <h2 class="title">Comment ça marche ?</h2>
                         </div>
@@ -67,8 +67,8 @@
                         <div class="col-auto">
                             <div class="common-heading mb-30">
 							<span class="tagline">
-								<i class="fas fa-plus"></i> Avantages
-								<span class="heading-shadow-text">Avantages</span>
+								<!--<i class="fas fa-plus"></i> Avantages-->
+								<span class="heading-shadow-text"><!--Avantages--></span>
 							</span>
                                 <h2 class="title">Pourquoi Nous</h2>
                             </div>

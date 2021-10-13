@@ -6,6 +6,13 @@
         $est_connecter =true;
         $id_menbre_connecter  = $la_session['id'];
     }
+    
+    
+    $statut_transaction = null;
+    if(isset($_GET['statut_transaction'])){
+        $statut_transaction = $_GET['statut_transaction'];
+    }
+
 @endphp
 
 
@@ -28,9 +35,18 @@
                 </div>
                 <div class="col-lg-6">
                     
-                @isset($_GET['probleme_lien_paiement'])
-                                    <div class='alert alert-danger text-center'>{{$_GET['probleme_lien_paiement']}}</div>
-                            @endisset
+                     {!! Session::get('notification','') !!}
+                    
+                    @isset($_GET['probleme_lien_paiement'])
+                            <div class='alert alert-danger text-center'>{{$_GET['probleme_lien_paiement']}}</div>
+                    @endisset
+                    @if($statut_transaction !=null)
+                        @if($statut_transaction == 'ACCEPTED')
+                            <div class='alert alert-success text-center'>Votre paiement a bien été effectué</div>
+                        @else
+                            <div class='alert alert-danger text-center'>Echec du paiement</div>
+                        @endif
+                    @endif
                     <br/>
                     <div class="project-summery">
                         <a href="{{route('decouvrir_projets')}}" class="category">Retour</a>
@@ -72,6 +88,15 @@
                             @isset($_GET['probleme_lien_paiement'])
                                     <div class='alert alert-danger text-center'>{{$_GET['probleme_lien_paiement']}}</div>
                             @endisset
+                            
+                            @if($statut_transaction !=null)
+                                @if($statut_transaction == 'ACCEPTED')
+                                    <div class='alert alert-success text-center'>Votre paiement a bien été effectué</div>
+                                @else
+                                    <div class='alert alert-danger text-center'>Echec du paiement</div>
+                                @endif
+                            @endif
+                            
                             @if($est_connecter)
                         <form method="post" action="{{route('espace_menbre.confirmation_soutien_waricrowd')}}">
                                     <div class="form-group">

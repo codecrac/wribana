@@ -1,5 +1,7 @@
 <?php
-function convertCurrency($amount,$from_currency,$to_currency){
+
+/*
+ function convertCurrency($amount,$from_currency,$to_currency){
     $apikey = '6441d9b217f8a6674225';
 
     $from_Currency = urlencode($from_currency);
@@ -21,6 +23,11 @@ function convertCurrency($amount,$from_currency,$to_currency){
         return 'erreur';
     }
 
+}
+*/
+function convertCurrency($amount,$from_currency,$to_currency){
+    $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($from_currency,$to_currency);
+    return $quotient_de_conversion * $amount;
 }
 
 //uncomment to test

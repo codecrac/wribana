@@ -8,10 +8,8 @@ if ($la_tontine->caisse != null) {
 }
 
 $statut_transaction = null;
-if(isset($_GET['trans_id'])){
-    $trans_id = $_GET['trans_id'];
-    $la_transaction = \App\Models\Transaction::where('trans_id','=',$trans_id)->first();
-    $statut_transaction = $la_transaction->statut;
+if(isset($_GET['statut_transaction'])){
+    $statut_transaction = $_GET['statut_transaction'];
 }
 
 $monaie_createur_tontine = $la_tontine->createur->devise_choisie->code;
@@ -42,6 +40,16 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
         .marquer_presence {
             font-size: 18px;
             font-weight: bold;
+        }
+
+        .show_on_mobile {
+           display: none;
+        }
+
+        @media only screen and (max-width: 768px) {
+            .show_on_mobile {
+                display: inline-block;
+            }
         }
     </style>
 @endsection
@@ -119,13 +127,13 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                             <small>par personnes</small></li>
                         @php
                             $montant_total = $la_tontine->montant * $la_tontine->nombre_participant;
-                            $frais = round($montant_total * (1/100));
+                            $frais = $montant_total * (1/100);
                         @endphp
                         <li>
                             Montant Objectif : {{number_format($montant_total,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->symbole}}</b>  
                             {!!convertir($quotient_de_conversion,$montant_total,)!!}
                         </li>
-                        <li>Frais de gestion (1%) : {{number_format($frais,0,',',' ')}}
+                        <li>Frais de gestion (1%) : {{number_format($frais,2,',',' ')}}
                             <b>{{$la_tontine->createur->devise_choisie->symbole}}</b>
                             / {{number_format($montant_total,0,',',' ')}}
                             <b>{{$la_tontine->createur->devise_choisie->symbole}}</b></li>
@@ -192,25 +200,74 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                         <hr>
                         <h4 class="text-uppercase text-center"> Inviter des amis </h4>
                         <hr>
+                        @php $le_lien = route('espace_menbre.liste_tontine').'?code_invitation='.$la_tontine->identifiant_adhesion @endphp
+                        
+                        Partager sur :
+                        <br/>
+                        
+                        <a href="whatsapp://send?text=Bonjour je t'invite a rejoindre la tontine <<{{$la_tontine->titre}}>> sur WARIBANA via ce lien :
+                        {{$le_lien}}"  class="btn btn-success show_on_mobile">Whatsapp</a>
+                        
+                        <a  class="btn btn-primary show_on_mobile" href="fb-messenger://share/?link=Bonjour je t'invite a rejoindre la tontine <<{{$la_tontine->titre}}>> sur WARIBANA via ce lien :
+                        {{$le_lien}}">Messenger</a>
+                        
+                        <a class="btn btn-info" href="https://twitter.com/share?url={{$le_lien}}&text=Bonjour je t'invite a rejoindre la tontine <<{{$la_tontine->titre}}>> sur WARIBANA via ce lien :" 
+                            target="_blank" title="Share on Twitter"> twitter</a>
+
+                        
+                       <a target="_blank" class="btn btn-primary" href="https://www.facebook.com/sharer/sharer.php?u={{$le_lien}}/&display=popup">
+                         Facebook
+                        </a>
+                        
                         @if(sizeof($la_tontine->participants) < $la_tontine->nombre_participant)
-                            <br/>
-                            <p class="card-description">
-                                Code invitation : <b>{{$la_tontine->identifiant_adhesion}}</b> (a entrer dans la section
-                                <b>adherer via code d'ivitation</b> sur le tableau de bord )
-                                au personnes a inviter
-                                <br/><br/>
-                                ou Entrez la liste des emails separés des virgules(,)
-                            </p>
+                            
+                            <hr/>
+                                <h5 class="text-uppercase text-center"> ou utiliser </h5>
+                            <hr/>
+                                <p class="card-description">
+                                    <b> le code invitation : {{$la_tontine->identifiant_adhesion}}</b>
+                                <br/>
+                                    <b>le lien d'adhesion</b> : {{$le_lien}} </p> <br/>
+                            <hr/>
+                                <h5 class="text-uppercase text-center"> Inviter via email </h5>
+                            <hr/>
+
                             <form class="forms-sample" method="post"
                                   action="{{route('espace_menbre.post_inviter_des_amis',[$la_tontine['id']])}}">
                                 <div class="form-group">
                                     <label for="exampleInputUsername1">Liste des Emails</label>
-                                    <input required type="text" class="form-control" name="liste_emails"
+                                    <input required type="text" class="form-control text-lowercase" name="liste_emails"
                                            placeholder="adresse1@gmail.com,adresse2@gmail.com">
                                 </div>
                                 <h3 class="text-center">
                                     @csrf
                                     <button type="submit" class="btn btn-primary mr-2">Envoyer les invitations</button>
+                                </h3>
+                            </form>
+
+                            <hr/>
+                                <h5 class="text-uppercase text-center"> Inviter via sms </h5>
+                            <hr/>
+                            
+                            <form class="forms-sample" method="post"
+                                  action="{{route('espace_menbre.post_envoyer_invitation_via_sms',[$la_tontine['id']])}}">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>Prefixe</label><br/>
+                                            <input required type="number" class="form-control text-lowercase" name="prefixe"
+                                           placeholder="225,33...">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label>Telephone</label><br/>
+                                            <input required type="number" class="form-control text-lowercase" name="telephone"
+                                           placeholder="0555005500">
+                                        </div>
+                                    </div>
+                                </div>
+                                <h3 class="text-center">
+                                    @csrf
+                                    <button type="submit" class="btn btn-primary mr-2 text-uppercase">Envoyer le SMS</button>
                                 </h3>
                             </form>
                         @else

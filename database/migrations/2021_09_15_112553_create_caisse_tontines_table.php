@@ -18,7 +18,7 @@ class CreateCaisseTontinesTable extends Migration
             $table->foreignId('id_tontine');
             $table->integer('montant')->default(0);
             $table->integer('montant_objectif');
-            $table->integer('frais_de_gestion');
+            $table->integer('frais_de_gestion')->defaut(1);
             $table->integer('montant_a_verser');
             $table->integer('id_menbre_qui_prend');
             $table->integer('index_menbre_qui_prend')->default(0);

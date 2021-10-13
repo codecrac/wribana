@@ -34,15 +34,30 @@
                 <p class="card-title col-12">Adherer a une tontine via le code d'invitation</p>
                 <div class="col-12">
                     <form method="post" action="{{route('espace_menbre.adhesion_via_code_invitation')}}">
-                        <div class="row">
+
+                        @isset($_GET['code_invitation'])
+
+                        <div class="row" style='border:1px solid orange;padding:5px'>
                             <div class="col-md-4">
-                                <input class="form-control" type="number" name="code_invitation" required placeholder="Entrer le code d'invitation" />
+                                <input class="form-control" type="number" value="{{$_GET['code_invitation']}}" name="code_invitation" required placeholder="Entrer le code d'invitation" />
                             </div>
                             <div class="col-md-4">
                                 @csrf
-                                <button type="submit" class="btn btn-success">Adherer à la tontine</button>
+                                    <button type="submit" class="btn btn-warning">Accepter d'Adherer à la tontine</button>
                             </div>
                         </div>
+                        @else
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input class="form-control" type="number"  name="code_invitation" required placeholder="Entrer le code d'invitation" />
+                            </div>
+                            <div class="col-md-4">
+                                @csrf
+                                    <button type="submit" class="btn btn-success">Adherer à la tontine</button>
+                            </div>
+                        </div>
+                        @endisset
                     </form>
                 </div>
             </div>

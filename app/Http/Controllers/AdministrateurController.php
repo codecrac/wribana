@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\CaisseTontine;
+use App\Models\CahierCompteTontine;
+use App\Models\CahierRetraitSoldeMenbre;
 use App\Models\CategorieWaricrowd;
 use App\Models\Invitation;
 use App\Models\Menbre;
@@ -28,7 +30,9 @@ class AdministrateurController extends Controller
         if($la_tontine->caisse!=null){
             //Liste des transaction pour le tour courant
             $liste_ayant_cotiser = Transaction::where('id_tontine','=',$id_tontine)
-                ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)->get();
+                ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)
+                ->where('statut','=','ACCEPTED')
+                ->get();
         }
 
         $invitations_envoyees = Invitation::where('id_tontine','=',$id_tontine)->get();
@@ -110,6 +114,24 @@ class AdministrateurController extends Controller
         SmsController::sms_info_bip($telephone,$le_message);
 
         return redirect()->back()->with('notification',$notification);
+    }
+    
+    public function historique_versements(){
+        $date_fin =null;
+        $date_debut =null;
+        if(isset($_GET['date_debut']) && $_GET['date_fin']){
+            $date_debut = $_GET['date_debut'];
+            $date_fin = $_GET['date_fin'];
+
+            $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_debut']."- 1 days"));
+            $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_fin']."+ 1 days"));
+            $historique_versements = CahierCompteTontine::where('created_at','>=',$date_debut_pour_esquiver_probleme_avec_timestamps)
+                                                ->where('created_at','<=',$date_fin_pour_esquiver_probleme_avec_timestamps)->orderBy('id','desc')->get();
+        }else{
+            $historique_versements = CahierCompteTontine::orderBy('id','desc')->limit(125)->get();
+        }
+        //        dd($historique_transactions_waricrowd);
+        return view('administrateur/tontines/historique_versements',compact('historique_versements','date_debut','date_fin'));
     }
 
 //    ===============================WARICROWD
@@ -252,6 +274,24 @@ class AdministrateurController extends Controller
         }
         //        dd($historique_transactions_waricrowd);
         return view('administrateur/waricrowds/historique_transactions_waricrowd',compact('historique_transactions_waricrowd','date_debut','date_fin'));
+    }
+    
+    public function historique_retraits(){
+        $date_fin =null;
+        $date_debut =null;
+        if(isset($_GET['date_debut']) && $_GET['date_fin']){
+            $date_debut = $_GET['date_debut'];
+            $date_fin = $_GET['date_fin'];
+
+            $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_debut']."- 1 days"));
+            $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_fin']."+ 1 days"));
+            $historique_retraits = CahierRetraitSoldeMenbre::where('created_at','>=',$date_debut_pour_esquiver_probleme_avec_timestamps)
+                                                ->where('created_at','<=',$date_fin_pour_esquiver_probleme_avec_timestamps)->orderBy('id','desc')->get();
+        }else{
+            $historique_retraits = CahierRetraitSoldeMenbre::orderBy('id','desc')->limit(125)->get();
+        }
+        //        dd($historique_transactions_waricrowd);
+        return view('administrateur/historique_retraits',compact('historique_retraits','date_debut','date_fin'));
     }
 
 //==================================== CONTENU NOTIFICATIONS

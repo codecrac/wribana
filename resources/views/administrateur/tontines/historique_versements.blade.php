@@ -25,7 +25,7 @@
                         <div class="card">
                             <div class="card-header text-uppercase text-center">
                                 <hr/>
-                                    historique transactions waricrowds ( {{sizeof($historique_transactions_waricrowd)}} )
+                                    historique versements des cagnotes des tontines aux menbres ( {{sizeof($historique_versements)}} )
                                 <hr/>
                                 <br/>
                                 <form method="get">
@@ -33,7 +33,7 @@
                                         <div class="col-md-3">
                                             <h5>Afficher les transactions</h5>
                                             @if($date_debut!=null)
-                                                <a href="{{route('admin.historique_transactions_waricrowd')}}" class="btn btn-danger">x</a>
+                                                <a href="{{route('admin.historique_versements')}}" class="btn btn-danger">x</a>
                                             @endif
                                         </div>
                                         <div class="col-md-3">
@@ -55,19 +55,21 @@
                                 <table class="table table-striped" id="datatable">
                                     <thead>
                                     <td>Date</td>
-                                    <td>Waricrowd</td>
-                                    <td>Nom Complet</td>
-                                    <td>Montant</td>
-                                    <td>Statut</td>
+                                    <td>Tontine</td>
+                                    <td>Nom Complet beneficiaire</td>
+                                    <td>Montant cagnote</td>
+                                    <td>Montant verser <br/> ( - 1% frais de gestion)</td>
+                                    <td>Rotation No.</td>
                                     </thead>
                                     <tbody>
-                                    @foreach($historique_transactions_waricrowd as $item_soutien)
+                                    @foreach($historique_versements as $item_versement)
                                         <tr>
-                                            <td>{{date('d/m/Y H:m',strtotime($item_soutien['created_at']))}}</td>
-                                            <td><a href="{{route('admin.details_waricrowd',[$item_soutien->waricrowd->id])}}"> {{$item_soutien->waricrowd->titre}} </a></td>
-                                            <td>{{$item_soutien->souteneur->nom_complet}}</td>
-                                            <td>{{number_format($item_soutien->montant,0,',',' ')}} {{ $item_soutien->waricrowd->createur->devise_choisie->monaie }}</td>
-                                            <td class="text-{{($item_soutien->statut=='ACCEPTED') ? 'success' : 'danger'}}"> [ {{$item_soutien->statut}} ]</td>
+                                            <td>{{date('d/m/Y H:m',strtotime($item_versement['created_at']))}}</td>
+                                            <td><a href="{{route('admin.details_tontine',[$item_versement->tontine->id])}}"> {{$item_versement->tontine->titre}} </a></td>
+                                            <td>{{$item_versement->beneficiaire->nom_complet}}</td>
+                                            <td>{{number_format($item_versement->tontine->caisse->montant_objectif,2,',',' ')}} {{ $item_versement->tontine->createur->devise_choisie->monaie }}</td>
+                                            <td>{{number_format($item_versement->montant,2,',',' ')}} {{ $item_versement->tontine->createur->devise_choisie->monaie }}</td>
+                                            <td>{{$item_versement->index_ouverture}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

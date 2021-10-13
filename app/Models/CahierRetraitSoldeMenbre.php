@@ -9,4 +9,8 @@ class CahierRetraitSoldeMenbre extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    
+    public function menbre(){
+        return $this->belongsTo(Menbre::class,'id_menbre');
+    }
 }

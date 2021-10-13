@@ -158,8 +158,9 @@
                     <table class="table table-striped" id="datatable">
                         <thead>
                         <td>Nom Complet</td>
-                        <td>Date</td>
                         <td>Montant</td>
+                        <td>Date</td>
+                        <td>Statut</td>
                         </thead>
                         <tbody>
                         @foreach($transactions_du_waricrowd as $item_soutien)
@@ -167,6 +168,7 @@
                                 <td>{{$item_soutien->souteneur->nom_complet}}</td>
                                 <td>{{number_format($item_soutien->montant,0,',',' ')}} {{$item_soutien->waricrowd->createur->devise_choisie->monaie}}</td>
                                 <td>{{date('d/m/Y H:i',strtotime($item_soutien['created_at']))}}</td>
+                                <td class="text-{{($item_soutien->statut == 'ACCEPTED')? 'success' : 'danger'}}">[ {{$item_soutien->statut}} ]</td>
                             </tr>
                         @endforeach
                         </tbody>

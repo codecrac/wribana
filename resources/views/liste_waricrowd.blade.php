@@ -5,8 +5,8 @@
     <div class="col-auto">
         <div class="common-heading mb-30">
 							<span class="tagline">
-								<i class="fas fa-plus"></i> +
-								<span class="heading-shadow-text">Soutenez ou faites financer votre projet </span>
+								<!--<i class="fas fa-plus"></i> +-->
+								<span class="heading-shadow-text"><!--Soutenez ou faites financer votre projet --></span>
 							</span>
             <h2 class="title text-center">WARICROWDS</h2>
         </div>

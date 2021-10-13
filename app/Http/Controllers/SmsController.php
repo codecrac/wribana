@@ -17,10 +17,52 @@ class SmsController extends Controller
 
         $post_field = "{'messages':[{'from':'Waribana','destinations':[{'to':'$telephone'}],'text':'$message'}]}";
 
-// api sms les # et les espaces sont la pour eviter la detection de la mise sur github
 //remplace api-key-here par api key
-
-        curl_setopt_array($curl, array(
+        
+        $date_time= date(now());
+        // dd($date_time);
+        
+        // API INFO sms nmtechnologie
+         $param = array(
+        'username' => 'WARIBANA',
+        'password' => 'w@ribana114',
+        'sender' => 'WARIBANA',
+        'text' => $message,
+        'type' => 'text',
+        'datetime' => $date_time,
+    );
+    $recipients = array("$telephone");
+    $post = 'to=' . implode(';', $recipients);
+    foreach ($param as $key => $val) {
+        $post .= '&' . $key . '=' . rawurlencode($val);
+    }
+    $url = "https://sms.nmtechnologie.com/api/api_http.php";
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Connection: close"));
+    $result = curl_exec($ch);
+    if(curl_errno($ch)) {
+        $result = "cURL ERROR: " . curl_errno($ch) . " " . curl_error($ch);
+        dd($result);
+    } else {
+        $returnCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        switch($returnCode) {
+            case 200 :
+                break;
+            default :
+                $result = "HTTP ERROR: " . $returnCode;
+        }
+    }
+    $response = curl_exec($ch);
+    curl_close($ch);
+        
+        
+        // API INFOBIP
+        /*
+            curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://jd988v.api.infobip.com/sms/2/text/advanced' ,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
@@ -31,15 +73,15 @@ class SmsController extends Controller
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => '{"messages":[{"from":"WARIBANA","destinations":[{"to":"'.$telephone.'"}],"text":"'.$message.'"}]}',
             CURLOPT_HTTPHEADER => array(
-                'Authorization:App api-key-here',
+                'Authorization:App f4768e32696944125f2735a7463bc6ed-658b77f4-0f2a-449c-b0f6-8d4b5c944b70',
                 'Content-Type: application/json',
                 'Accept: application/json'
             ),
         ));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
+            $response = curl_exec($curl);
+            curl_close($curl);
+        */
+        
  //       dd($response);
 //        echo $response ."<br/>";
 

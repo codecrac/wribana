@@ -40,8 +40,8 @@
                             </div>
                             <div class="col-12">
                                 <label class="text-dark">Entrer le montant *</label>
-                                <!-- <input type="number" name="montant" required class="form-control" max='{{$le_menbre->compte->solde}}' type="form-control" style="border: 1px solid black" placeholder="Entrer le montant" /> -->
-                                <input type="number" name="montant" required class="form-control" type="form-control" style="border: 1px solid black" placeholder="Entrer le montant" />
+                                 <input type="number" name="montant" required class="form-control" max='{{$le_menbre->compte->solde}}' type="form-control" style="border: 1px solid black" placeholder="Entrer le montant" /> 
+                                <!--<input type="number" name="montant" required class="form-control" type="form-control" style="border: 1px solid black" placeholder="Entrer le montant" />-->
                             </div>
                             <div class="col-12 text-center">
                                 <br/>
@@ -158,12 +158,13 @@
             </div>
         </div>
     </div>
+    </div>
     <div class="row" id="details">
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-header">
                     <hr/>
-                    <h4 class="card-title text-center text-uppercase"> Historique des transactions </h4>
+                    <h4 class="card-title text-center text-uppercase"> Historique des transactions entrantes </h4>
                     <hr/>
                 </div>
                 <div class="card-body text-center">
@@ -178,7 +179,38 @@
                                 <tr>
                                     <td>{{date("d/m/Y H:m",strtotime($item_virement['created_at']))}}</td>
                                     <td>{{$item_virement->tontine->titre}}</td>
-                                    <td>{{number_format($item_virement['montant'],0,',',' ')}}</td>
+                                    <td>{{number_format($item_virement['montant'],0,',',' ')}} {{$le_menbre->devise_choisie->monaie}}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="historie_retraits">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-header">
+                    <hr/>
+                    <h4 class="card-title text-center text-uppercase"> Historique des mes retraits </h4>
+                    <hr/>
+                </div>
+                <div class="card-body text-center">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <th>Date</th>
+                            <th>Solde Avant</th>
+                            <th>Montant Retiré</th>
+                            <th>Solde Apres</th>
+                        </thead>
+                        <tbody>
+                            @foreach($le_menbre->historique_retraits as $item_retrait)
+                                <tr>
+                                    <td>{{date("d/m/Y H:m",strtotime($item_retrait['created_at']))}}</td>
+                                    <td>{{number_format($item_retrait->solde_avant,0,',',' ')}} {{$le_menbre->devise_choisie->monaie}}</td>
+                                    <td>{{number_format($item_retrait->montant,0,',',' ')}} {{$le_menbre->devise_choisie->monaie}}</td>
+                                    <td>{{number_format($item_retrait->solde_apres,0,',',' ')}} {{$le_menbre->devise_choisie->monaie}}</td>
                                 </tr>
                             @endforeach
                         </tbody>

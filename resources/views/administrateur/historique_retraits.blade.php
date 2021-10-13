@@ -25,7 +25,7 @@
                         <div class="card">
                             <div class="card-header text-uppercase text-center">
                                 <hr/>
-                                    historique transactions waricrowds ( {{sizeof($historique_transactions_waricrowd)}} )
+                                    historique retraits des menbres ( {{sizeof($historique_retraits)}} )
                                 <hr/>
                                 <br/>
                                 <form method="get">
@@ -33,7 +33,7 @@
                                         <div class="col-md-3">
                                             <h5>Afficher les transactions</h5>
                                             @if($date_debut!=null)
-                                                <a href="{{route('admin.historique_transactions_waricrowd')}}" class="btn btn-danger">x</a>
+                                                <a href="{{route('admin.historique_versements')}}" class="btn btn-danger">x</a>
                                             @endif
                                         </div>
                                         <div class="col-md-3">
@@ -52,24 +52,24 @@
                                 </form>
                             </div>
                             <div class="card-body">
-                                <table class="table table-striped" id="datatable">
+                               <table class="table table-bordered table-striped">
                                     <thead>
-                                    <td>Date</td>
-                                    <td>Waricrowd</td>
-                                    <td>Nom Complet</td>
-                                    <td>Montant</td>
-                                    <td>Statut</td>
+                                        <th>Date</th>
+                                        <th>Menbre</th>
+                                        <th>Solde Avant</th>
+                                        <th>Montant Retiré</th>
+                                        <th>Solde Apres</th>
                                     </thead>
                                     <tbody>
-                                    @foreach($historique_transactions_waricrowd as $item_soutien)
-                                        <tr>
-                                            <td>{{date('d/m/Y H:m',strtotime($item_soutien['created_at']))}}</td>
-                                            <td><a href="{{route('admin.details_waricrowd',[$item_soutien->waricrowd->id])}}"> {{$item_soutien->waricrowd->titre}} </a></td>
-                                            <td>{{$item_soutien->souteneur->nom_complet}}</td>
-                                            <td>{{number_format($item_soutien->montant,0,',',' ')}} {{ $item_soutien->waricrowd->createur->devise_choisie->monaie }}</td>
-                                            <td class="text-{{($item_soutien->statut=='ACCEPTED') ? 'success' : 'danger'}}"> [ {{$item_soutien->statut}} ]</td>
-                                        </tr>
-                                    @endforeach
+                                        @foreach($historique_retraits as $item_retrait)
+                                            <tr>
+                                                <td>{{date("d/m/Y H:m",strtotime($item_retrait['created_at']))}}</td>
+                                                <td>{{$item_retrait->menbre->nom_complet}}</td>
+                                                <td>{{number_format($item_retrait->solde_avant,0,',',' ')}} {{$item_retrait->menbre->devise_choisie->monaie}}</td>
+                                                <td>{{number_format($item_retrait->montant,0,',',' ')}} {{$item_retrait->menbre->devise_choisie->monaie}}</td>
+                                                <td>{{number_format($item_retrait->solde_apres,0,',',' ')}} {{$item_retrait->menbre->devise_choisie->monaie}}</td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

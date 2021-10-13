@@ -133,6 +133,20 @@
                     </div>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#ui-basic-2" aria-expanded="false"
+                       aria-controls="ui-basic">
+                        <i class="mdi mdi-account-multiple menu-icon"></i>
+                        <span class="menu-title">Versement et retraits</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="ui-basic-2">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="{{route('admin.historique_versements')}}"> Historique Versements  </a> </li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('admin.historique_retraits')}}"> Historique Retraits </a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{route('admin.definir_contenu_notifications')}}">
                         <i class="mdi mdi-home-outline menu-icon"></i>
                         <span class="menu-title">Contenu Notifications</span>
