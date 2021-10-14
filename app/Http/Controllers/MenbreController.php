@@ -175,7 +175,6 @@ class MenbreController extends Controller
             $message = "Identifiant ou Mot de passe Incorrect";
             $notification = "<div class='alert alert-danger'> $message  </div>";
             return redirect()->route('connexion_menbre')->with('notification', $notification);
-            return redirect()->route('connexion_menbre');
         }
 
 

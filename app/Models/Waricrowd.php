@@ -24,6 +24,6 @@ class Waricrowd extends Model
     }
 
     public function createur(){
-        return $this->belongsTo(Menbre::class,'id_menbre');
+        return $this->belongsTo(Menbre::class,'id_menbre')->with('devise_choisie');
     }
 }
