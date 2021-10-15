@@ -63,7 +63,7 @@ class EspaceMenbre extends Controller
 
     public function enregistrer_tontine(Request $request){
         $donnees_formulaire = $request->all();
-//        dd($donnees_formulaire);
+        //        dd($donnees_formulaire);
 
         $identifiant_adhesion = intdiv( (rand(111,999) * rand(11,99)) ,12 );
         $titre = $donnees_formulaire['titre'];

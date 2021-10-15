@@ -88,6 +88,62 @@ class MobileApiController extends Controller
         return json_encode($infos_pour_tableau_de_bord);
     }
 
+
+    
+    public function enregistrer_tontine(Request $request,$id_menbre_connecter){
+        $donnees_formulaire = $request->input();
+        //        dd($donnees_formulaire);
+
+        $identifiant_adhesion = intdiv( (rand(111,999) * rand(11,99)) ,12 );
+        $titre = $donnees_formulaire['titre'];
+        $montant = $donnees_formulaire['montant'];
+        $frequence_de_depot = $donnees_formulaire['frequence_depot_en_jours'];
+        $nombre_participant = $donnees_formulaire['nombre_participant'];
+
+        if(empty($titre) || empty($montant) || empty($frequence_de_depot) || empty($nombre_participant) ){
+            $reponse = array(
+                "success" => false,
+                "message" => "Veuillez renseignez tous les champs",
+            );
+            return json_encode($reponse);
+        }
+
+        if(!empty($titre) && !empty($montant) && !empty($frequence_de_depot) && !empty($nombre_participant)){
+            $la_tontine = new Tontine();
+
+            $la_tontine->identifiant_adhesion = $identifiant_adhesion;
+            $la_tontine->titre = $titre;
+            $la_tontine->montant = $montant;
+            $la_tontine->frequence_depot_en_jours = $frequence_de_depot;
+            $la_tontine->nombre_participant = $nombre_participant;
+            $la_tontine->id_menbre = $id_menbre_connecter;
+
+            if($la_tontine->save()){
+                $menbre_tontine = new MenbreTontine();
+                $menbre_tontine->menbre_id = $id_menbre_connecter;
+                $menbre_tontine->tontine_id = $la_tontine->id;
+                if($menbre_tontine->save()){
+                    $route_details_tontine = route('espace_menbre.details_tontine',[$la_tontine->id]);
+                    $notification = "la tontine ($la_tontine->titre) a bien été créé";
+                }else{
+                    $notification = "Un probleme est survenu";
+                }
+
+            }else{
+                $notification = "Echec de l'Operation, veuillez rééssayer";
+            }
+
+            $reponse = array(
+                "success" => true,
+                "id_tontine" => $la_tontine->id,
+                "message" => $notification
+            );
+
+            return $reponse;
+            //  redirect()->route('espace_menbre.ajouter_tontine')->with('notification',$notification);
+        }
+    }
+
     public function liste_tontine($id_menbre){ //les tontines de l'utilisateur connecter
         $le_menbre = Menbre::find($id_menbre);
     
