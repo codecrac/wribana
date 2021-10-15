@@ -15,9 +15,16 @@ class Menbre extends Model
     {
         return $this->belongsTo(Devise::class,'devise');
     }
+    
     public function tontines()
     {
         return $this->belongsToMany(Tontine::class)->orderBy('id','desc');
+    }
+
+    public function mes_tontines_pour_mobile()
+    {
+        // return $this->belongsToMany(Tontine::class)->with('caisse')->with('createur')->with('participants')->orderBy('id','desc');
+        return $this->belongsToMany(Tontine::class)->with('createur')->orderBy('id','desc');
     }
 
     public function compte(){

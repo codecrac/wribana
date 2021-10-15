@@ -24,7 +24,8 @@ class CinetpayPaiementController extends Controller
     public static $cpm_site_id = '750304';
     public static $mdp_api_transfert = 'Succes$$2039';
 
-    public static function generer_lien_paiement($le_menbre,$id,$montant_convertit_en_fcfa,$montant,$section="tontine",$route_back_en_cas_derreur)
+    public static function generer_lien_paiement($le_menbre,$id,$montant_convertit_en_fcfa,
+    $montant,$section="tontine",$route_back_en_cas_derreur,$from_mobile=false)
     {
         $apikey = CinetpayPaiementController::$apikey ;
         $site_id = CinetpayPaiementController::$cpm_site_id ;
@@ -38,11 +39,21 @@ class CinetpayPaiementController extends Controller
         if($section=="tontine"){
             $notify_url = route('notification_paiement_cotisation_tontine');
             $return_url = route('api.details_tontine',[$id]).'?trans_id='.$transaction_id;
+
+            
+            if($from_mobile){
+                $return_url = route('api.mobile.statut_transaction').'?trans_id='.$transaction_id;
+            }
 //            $notify_url = "https://waribana.jeberge.xyz/api/notification_paiement_cotisation_tontine";
         }else{
             //dans ce cas c'est un crowd
             $notify_url = route('notification_paiement_cotisation_crowd');
             $return_url = route('api.details_waricrowd',[$id]).'?trans_id='.$transaction_id;
+
+             
+            if($from_mobile){
+                $return_url = route('api.mobile.statut_transaction').'?trans_id='.$transaction_id;
+            }
 //            $notify_url = "https://waribana.jeberge.xyz/api/notification_paiement_cotisation_crowd";
         }
 //        dd($notify_url);
@@ -111,7 +122,6 @@ class CinetpayPaiementController extends Controller
 
 
        if(!isset($la_reponse_en_objet->data)){ //on a un probleme
-
             $notification = "Erreur : $la_reponse_en_objet->description;  (FCFA, XOF)";
             // dd($route_back_en_cas_derreur);
             return "$route_back_en_cas_derreur?probleme_lien_paiement=$notification";
@@ -121,9 +131,9 @@ class CinetpayPaiementController extends Controller
         $payment_url = $la_reponse_en_objet->payment_url;
 
         if($section=="tontine"){ //creer la transaction
-            CinetpayPaiementController::preparer_paiement_cotisation($id,$payement_token,$transaction_id);
+            CinetpayPaiementController::preparer_paiement_cotisation($le_menbre->id,$id,$payement_token,$transaction_id);
         }else{
-            CinetpayPaiementController::preparer_soutien_waricrowd($id,$montant,$transaction_id);
+            CinetpayPaiementController::preparer_soutien_waricrowd($le_menbre->id,$id,$montant,$transaction_id);
         }
 
         return $payment_url;
@@ -208,10 +218,7 @@ class CinetpayPaiementController extends Controller
 
     }
 
-    private static function preparer_paiement_cotisation($id_tontine,$token,$trans_id){
-        $la_session = session(MenbreController::$cle_session);
-        $id_menbre_connecter = $la_session['id'];
-
+    private static function preparer_paiement_cotisation($id_menbre_connecter,$id_tontine,$token,$trans_id){
         $la_tontine = Tontine::find($id_tontine);
         $montant = $la_tontine->montant;
 
@@ -331,10 +338,7 @@ class CinetpayPaiementController extends Controller
 
     }
 
-    private static function preparer_soutien_waricrowd($id_crowd,$montant_soutien,$trans_id){
-        $la_session = session(MenbreController::$cle_session);
-        $id_menbre_connecter = $la_session['id'];
-
+    private static function preparer_soutien_waricrowd($id_menbre_connecter,$id_crowd,$montant_soutien,$trans_id){
         $la_transaction = new TransactionWaricrowd();
         $la_transaction->id_waricrowd = $id_crowd;
         $la_transaction->id_menbre = $id_menbre_connecter;

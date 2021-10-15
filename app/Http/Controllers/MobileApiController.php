@@ -1,14 +1,24 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Waricrowd;
 use App\Models\Menbre;
 use App\Models\Invitation;
 use App\Models\Tontine;
+use App\Models\MenbreTontine;
+use App\Models\CaisseTontine;
+use App\Models\Transaction;
+
+use App\Http\Controllers\SmsController;
+use App\Models\SmsContenuNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MobileApiController extends Controller
 {
+
+//===================VITRINE#VITRINE---#----VITRINE#VITRINE--------#----------VITRINE#VITRINE#VITRINE#VITRINE#VITRINE
     public function liste_crowd($index_pagination=0){
         $les_crowds = Waricrowd::with('categorie')->with('createur')->with('caisse')->skip($index_pagination)->limit(25)->get();
         return $les_crowds;
@@ -55,6 +65,10 @@ class MobileApiController extends Controller
 
     }
 
+
+//===================espace MEMBRE#espace MEMBRE---#----espace MEMBRE#espace MEMBRE--------#----------°°°°°°°°°°°°°°
+   
+#===============TONTINE==========TONTINE==========TONTINE==========
     public function infos_pour_tableau_de_bord($id_menbre){
         $le_menbre = Menbre::find($id_menbre);
         // dd($le_menbre);
@@ -74,11 +88,214 @@ class MobileApiController extends Controller
         return json_encode($infos_pour_tableau_de_bord);
     }
 
-    public function liste_tontine($id_menbre){
-        $les_tontines = Tontine::with('createur')->where('id_menbre','=',$id_menbre)->orderBy('id','desc')->get();
+    public function liste_tontine($id_menbre){ //les tontines de l'utilisateur connecter
+        $le_menbre = Menbre::find($id_menbre);
+    
+        $les_tontines = $le_menbre->mes_tontines_pour_mobile;
         return json_encode($les_tontines);
     }
+    
+    
+    public function details_tontine($id_tontine,$id_menbre_connecter){
 
+
+        $la_tontine = Tontine::where('id','=',$id_tontine)->with('caisse')->with('createur')->with('participants')->first();
+
+        $id_menbre_qui_prend =null;
+        if($la_tontine->caisse != null){
+            $id_menbre_qui_prend = $la_tontine->caisse->menbre_qui_prend->id;
+        }
+
+        $invitations_envoyees = Invitation::where("menbre_qui_invite",'=',$id_menbre_connecter)->where('id_tontine','=',$id_tontine)->get();
+        if($la_tontine ==null){
+            $message = "tontine invalide";
+        }
+
+
+        if($la_tontine->caisse!=null){
+
+            //Eviter paiement multiple de cotisation par la meme personne pour le meme tour
+            $a_deja_cotiser = Transaction::where("id_menbre",'=',$id_menbre_connecter)
+                ->where('id_tontine','=',$id_tontine)
+                ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)
+                ->where('index_ouverture','=',$la_tontine->caisse->index_ouverture)
+                ->where('statut','=','ACCEPTED')
+                ->first();
+            $a_deja_cotiser = ($a_deja_cotiser!=null) ? true : false;
+
+            //Liste des transaction pour le tour courant
+            $liste_ayant_cotiser = Transaction::where('id_tontine','=',$id_tontine)
+                ->where('statut','=','ACCEPTED')
+                ->where('id_menbre_qui_prend','=',$la_tontine->caisse->menbre_qui_prend->id)
+                ->where('index_ouverture','=',$la_tontine->caisse->index_ouverture)
+                ->with('cotiseur')
+                ->get();
+        }else{
+            $liste_ayant_cotiser = [];
+            $a_deja_cotiser = false;
+        }
+
+        //a decoder a la notication;utiliser pour recuperer la trasaction sans l'id
+        $notre_custom_field = "id_menbre=$id_menbre_connecter&id_tontine=$id_tontine&id_menbre_qui_prend=$id_menbre_qui_prend";
+        //        parse_str($a, $output);
+        
+        
+        $la_tontine['a_deja_cotiser'] = $a_deja_cotiser;
+        $la_tontine['liste_ayant_cotiser'] = $liste_ayant_cotiser;
+        
+        return $la_tontine;
+    }
+
+
+    public function ouvrir_tontine($id_tontine){
+        
+        $la_tontine = Tontine::find($id_tontine);
+        if($la_tontine->etat =="prete"){
+                $la_tontine->etat = 'ouverte';
+                $la_tontine->save();
+
+                //la date prochaine on ajoute le nombre de jour definit dans la frequence de pot a partir d'aujourd'hui
+                $aujourdhui = new \DateTime("now", new \DateTimeZone("UTC"));
+                $aujourdhui = $aujourdhui->format("d-m-Y");
+                $nombre_de_jours_en_plus = $la_tontine->frequence_depot_en_jours;
+                $prochaine_date_encaissement = date('d-m-Y', strtotime($aujourdhui. " + $nombre_de_jours_en_plus days"));
+
+                // on cree la caisse dedie a la tontine et on commence par le menbre qui a creer la tontine
+                $la_caisse_de_la_tontine = CaisseTontine::findOrNew($id_tontine);
+                $la_caisse_de_la_tontine->id_tontine= $la_tontine->id;
+
+                //pour gerer les reouverture de tontine
+                if($la_caisse_de_la_tontine->index_ouverture != null){
+                    $index_actuel = $la_caisse_de_la_tontine->index_ouverture;
+                    $la_caisse_de_la_tontine->index_ouverture = $index_actuel + 1;
+                }
+
+                $montant_objectif = $la_tontine->montant * $la_tontine->nombre_participant;
+                $frais_de_gestion = round( $montant_objectif * (1/100) );
+                $montant_moins_frais = $montant_objectif - $frais_de_gestion;
+
+                $la_caisse_de_la_tontine->montant_objectif= $montant_objectif;
+                $la_caisse_de_la_tontine->frais_de_gestion= $frais_de_gestion;
+                $la_caisse_de_la_tontine->montant_a_verser= $montant_moins_frais;
+        //        $la_caisse_de_la_tontine->montant= 0;
+                $la_caisse_de_la_tontine->id_menbre_qui_prend= $la_tontine->id_menbre;
+                $la_caisse_de_la_tontine->prochaine_date_encaissement= $prochaine_date_encaissement;
+                $la_caisse_de_la_tontine->save();
+
+                //notifier les participant de l'ouverture
+                $contenu_notification = SmsContenuNotification::first();
+                $message_notif = $contenu_notification['etat_tontine'];
+
+                $le_message = str_replace('$etat$',"ouverte",$message_notif);
+                $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
+                $le_message = str_replace('$motif$',"",$le_message);
+
+                foreach($la_tontine->participants as $item_participant){
+                    SmsController::sms_info_bip($item_participant->telephone,$le_message);
+                }
+                
+
+                $message = "La tontine a bien été ouverte ";
+                $success = true;
+            }else{
+                $message = "Echec de l'operation ";
+                $success = true;
+            }
+        $reponse = array(
+            "success" => $success,
+            "message" => $message,
+        );
+        return $reponse;
+        
+    }
+
+    public function paiement_cotisation($id_tontine,$id_menbre_connecter){
+        //===================POUR PAIEMENT AVEC CINETPAY================================
+                $la_tontine = Tontine::find($id_tontine);
+        
+                // CONVERSION EN CFA AVANT PAIEMENT
+                    $le_montant = $la_tontine->montant;
+                    if($la_tontine->createur->devise_choisie->code != "XOF"){
+                        $monaie_createur_tontine = $la_tontine->createur->devise_choisie->code;
+                        $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_createur_tontine,"XOF");
+                        $le_montant_en_xof = $quotient_de_conversion * $le_montant;
+                    }else{
+                        $le_montant_en_xof = $le_montant;
+                    }
+                // CONVERSION EN CFA AVANT PAIEMENT
+        
+                $le_menbre = Menbre::find($id_menbre_connecter);
+                $route_back_en_cas_derreur = route('api.mobile.statut_transaction');
+                $payment_url_ou_false = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_tontine,$le_montant_en_xof,$le_montant,'tontine',$route_back_en_cas_derreur);
+            
+
+                $reponse = array(
+                    "success" => true,
+                    "url_paiement" => $payment_url_ou_false,
+                    "message" => $payment_url_ou_false
+                );
+
+                return $reponse;
+    }
+    //================INVITATIONS
+
+    public function adhesion_via_code_invitation($code_invitation,$id_menbre){
+
+
+    $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
+    $success = false;
+    // dd($la_tontine->titre);
+    if($la_tontine ==null){
+        $message = "Ce code est invalide";
+    }else{
+
+        $id_menbre_connecter = $id_menbre;
+
+        $deja_menbre = MenbreTontine::where('menbre_id','=',$id_menbre_connecter)->where('tontine_id','=',$la_tontine->id)->first();
+        if($deja_menbre==null){
+            if(sizeof($la_tontine->participants) < $la_tontine->nombre_participant){
+
+                $nouveau_menbre = new MenbreTontine();
+                $nouveau_menbre->tontine_id = $la_tontine->id;
+                $nouveau_menbre->menbre_id = $id_menbre_connecter;
+                $nouveau_menbre->save();
+
+                $message = "Vous avez rejoins la tontine << $la_tontine->titre >>";
+                $success = true;
+
+                $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
+                if(sizeof($la_tontine->participants) == $la_tontine->nombre_participant){
+                    Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
+                    $la_tontine->etat = 'prete';
+                    $la_tontine->save();
+
+                    $telephone = $la_tontine->createur->telephone;
+                    $contenu_notification = SmsContenuNotification::first();
+                    $message_notif = $contenu_notification['etat_tontine'];
+
+                    $le_message = str_replace('$etat$',"prete",$message_notif);
+                    $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
+                    $le_message = str_replace('$motif$',"",$le_message);
+
+                    SmsController::sms_info_bip($telephone,$le_message);
+                }
+            }else{
+                $message = "Le nombre de participant est dejà atteint";
+            }
+
+        }else{
+            $message = "Vous êtes deja un menbre de cette tontine";
+        }
+
+
+    }
+
+    $reponse = array(
+        "success" => $success,
+        "message" => $message,
+    );
+    return json_encode($reponse);
+}
 
 
 

@@ -16,7 +16,7 @@ class Tontine extends Model
 
     public function caisse()
     {
-        return $this->hasOne(CaisseTontine::class,'id_tontine');
+        return $this->hasOne(CaisseTontine::class,'id_tontine')->with("menbre_qui_prend");
     }
 
     public function participants()
