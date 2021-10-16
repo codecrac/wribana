@@ -202,6 +202,57 @@ class MobileApiController extends Controller
         return $la_tontine;
     }
 
+    public function modifier_tontine(Request $request,$id_tontine){
+        $donnees_formulaire = $request->all();
+
+        $titre = $donnees_formulaire['titre'];
+        $montant = $donnees_formulaire['montant'];
+        $frequence_de_depot = $donnees_formulaire['frequence_depot_en_jours'];
+        $nombre_participant = $donnees_formulaire['nombre_participant'];
+
+        if(!empty($titre) && !empty($montant) && !empty($frequence_de_depot) && !empty($nombre_participant)){
+            $la_tontine = Tontine::find($id_tontine);
+
+            if($la_tontine ==null){
+                $reponse = array(
+                    "success" => false,
+                    "message" => "tontine invalide"
+                );
+                return $reponse;
+            }
+
+
+            //il ne peut pas modifier la tontines apres que des gens ai payer
+            if(sizeof($la_tontine->transactions) <1 ){
+                $la_tontine->titre = $titre;
+                $la_tontine->montant = $montant;
+                $la_tontine->frequence_depot_en_jours = $frequence_de_depot;
+                $la_tontine->nombre_participant = $nombre_participant;
+                
+                
+                if($la_tontine->caisse!=null){
+                    
+                    $la_caisse_tontine = $la_tontine->caisse;
+                    $la_caisse_tontine->montant_objectif = $la_tontine->montant * $la_tontine->nombre_participant;
+                    $la_caisse_tontine->montant_a_verser = $la_caisse_tontine->montant_objectif - ($la_caisse_tontine->montant_objectif * (1/100) );
+                    // dd($la_caisse_tontine->montant_a_verser);
+                    $la_caisse_tontine->save();
+                }
+            }
+
+            if($la_tontine->save()){
+                $message = "Operation bien éffectuée";
+            }else{
+                $message = "Echec de l'Operation, veuillez rééssayer";
+            }
+
+            $reponse = array(
+                "success" => true,
+                "message" => $message,
+            );
+            return $reponse;
+        }
+    }
 
     public function ouvrir_tontine($id_tontine){
         
@@ -298,63 +349,134 @@ class MobileApiController extends Controller
     public function adhesion_via_code_invitation($code_invitation,$id_menbre){
 
 
-    $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
-    $success = false;
-    // dd($la_tontine->titre);
-    if($la_tontine ==null){
-        $message = "Ce code est invalide";
-    }else{
+        $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
+        $success = false;
+        // dd($la_tontine->titre);
+        if($la_tontine ==null){
+            $message = "Ce code est invalide";
+        }else{
 
-        $id_menbre_connecter = $id_menbre;
+            $id_menbre_connecter = $id_menbre;
 
-        $deja_menbre = MenbreTontine::where('menbre_id','=',$id_menbre_connecter)->where('tontine_id','=',$la_tontine->id)->first();
-        if($deja_menbre==null){
+            $deja_menbre = MenbreTontine::where('menbre_id','=',$id_menbre_connecter)->where('tontine_id','=',$la_tontine->id)->first();
+            if($deja_menbre==null){
+                if(sizeof($la_tontine->participants) < $la_tontine->nombre_participant){
+
+                    $nouveau_menbre = new MenbreTontine();
+                    $nouveau_menbre->tontine_id = $la_tontine->id;
+                    $nouveau_menbre->menbre_id = $id_menbre_connecter;
+                    $nouveau_menbre->save();
+
+                    $message = "Vous avez rejoins la tontine << $la_tontine->titre >>";
+                    $success = true;
+
+                    $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
+                    if(sizeof($la_tontine->participants) == $la_tontine->nombre_participant){
+                        Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
+                        $la_tontine->etat = 'prete';
+                        $la_tontine->save();
+
+                        $telephone = $la_tontine->createur->telephone;
+                        $contenu_notification = SmsContenuNotification::first();
+                        $message_notif = $contenu_notification['etat_tontine'];
+
+                        $le_message = str_replace('$etat$',"prete",$message_notif);
+                        $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
+                        $le_message = str_replace('$motif$',"",$le_message);
+
+                        SmsController::sms_info_bip($telephone,$le_message);
+                    }
+                }else{
+                    $message = "Le nombre de participant est dejà atteint";
+                }
+
+            }else{
+                $message = "Vous êtes deja un menbre de cette tontine";
+            }
+        }
+        
+        $reponse = array(
+            "success" => $success,
+            "message" => $message,
+        );
+        return json_encode($reponse);
+    }
+
+        
+    public function invitations_recues($id_menbre_connecter){
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        $email_inviter = $le_menbre['email'];
+
+        $invitations_recues = [];
+        if($email_inviter!=null){
+            $invitations_recues = Invitation::where('email_inviter','=',$email_inviter)->with('tontine')->with('menbre_inviteur')->where('etat','=','attente')->get();
+        }
+
+        return json_encode($invitations_recues);
+    }
+
+    public function repondre_a_une_invitation($id_invitation,$id_menbre_connecter,$reponse){
+    
+            $linvitation = Invitation::find($id_invitation);
+    
+            $la_tontine = $linvitation->tontine;
+
+            $success = true;
+            $message = "quelque chose s'est mal passé";
+
             if(sizeof($la_tontine->participants) < $la_tontine->nombre_participant){
-
-                $nouveau_menbre = new MenbreTontine();
-                $nouveau_menbre->tontine_id = $la_tontine->id;
-                $nouveau_menbre->menbre_id = $id_menbre_connecter;
-                $nouveau_menbre->save();
-
-                $message = "Vous avez rejoins la tontine << $la_tontine->titre >>";
-                $success = true;
-
-                $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
+                $linvitation->etat = $reponse;
+                $linvitation->save();
+                
+                $message = "Invitation refusee";
+    
+                if($reponse == 'acceptee'){
+                    $message = "Invitation acceptee";
+    
+                    $deja_menbre = MenbreTontine::where('menbre_id','=',$id_menbre_connecter)->where('tontine_id','=',$la_tontine->id)->first();
+                    if($deja_menbre==null){
+                        $nouveau_menbre = new MenbreTontine();
+                        $nouveau_menbre->tontine_id = $la_tontine->id;
+                        $nouveau_menbre->menbre_id = $id_menbre_connecter;
+                        $nouveau_menbre->save();
+                    }
+                }
+    
+                $id_tontine = $la_tontine['id'];
+                $la_tontine = Tontine::find($id_tontine);
+    
+                //NOMBRE DE PARTICPANT ATTEINDS, LA TONTINE EST PRETE
                 if(sizeof($la_tontine->participants) == $la_tontine->nombre_participant){
                     Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
                     $la_tontine->etat = 'prete';
                     $la_tontine->save();
-
+    
+    
                     $telephone = $la_tontine->createur->telephone;
                     $contenu_notification = SmsContenuNotification::first();
                     $message_notif = $contenu_notification['etat_tontine'];
-
+    
                     $le_message = str_replace('$etat$',"prete",$message_notif);
                     $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
                     $le_message = str_replace('$motif$',"",$le_message);
-
+    
                     SmsController::sms_info_bip($telephone,$le_message);
                 }
             }else{
-                $message = "Le nombre de participant est dejà atteint";
+                Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
+    
+                if($reponse == 'acceptee') {
+                    $success = false;
+                    $message  = "Le nombre de participant est dejà atteint";
+                }
             }
-
-        }else{
-            $message = "Vous êtes deja un menbre de cette tontine";
-        }
-
-
+    
+            $reponse = array(
+                "success" => $success,
+                "message" => $message,
+            );
+            return json_encode($reponse);
     }
-
-    $reponse = array(
-        "success" => $success,
-        "message" => $message,
-    );
-    return json_encode($reponse);
-}
-
-
-
 
 ////===================UTILITAIRES=========================
     private function creer_session_menbre($reponse,$le_menbre)
@@ -380,4 +502,7 @@ class MobileApiController extends Controller
         ];
         return $reponse;
     }
+
+
+
 }

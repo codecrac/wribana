@@ -118,10 +118,10 @@ class EspaceMenbre extends Controller
 
             $la_session = session(MenbreController::$cle_session);
             $id_menbre_connecter =  $la_session['id'];
-            $la_tontine->titre = $titre;
 
             //il ne peut pas modifier la tontines apres que des gens ai payer
             if(sizeof($la_tontine->transactions) <1 ){
+                $la_tontine->titre = $titre;
                 $la_tontine->montant = $montant;
                 $la_tontine->frequence_depot_en_jours = $frequence_de_depot;
                 $la_tontine->nombre_participant = $nombre_participant;

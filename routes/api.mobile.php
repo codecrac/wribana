@@ -14,13 +14,23 @@ Route::prefix('/mobile')->group(function(){
     // });
 
     Route::get("/liste-crowd/{index_pagination?}",[MobileApiController::class,'liste_crowd']);
+    
+    
     Route::get("/connexion",[MobileApiController::class,'connexion']);
     Route::get("/infos_pour_tableau_de_bord/{id_menbre}",[MobileApiController::class,'infos_pour_tableau_de_bord']);
+
+    
+    Route::get("/adhesion_via_code_invitation/{identifiant_adhesion}/{id_menbre}",[MobileApiController::class,'adhesion_via_code_invitation']);
+    Route::get("/invitations_recues/{id_menbre}",[MobileApiController::class,'invitations_recues']);
+    Route::get("/repondre_a_une_invitation/{id_invitation}/{id_menbre}/{reponse}",[MobileApiController::class,'repondre_a_une_invitation']);
+
+
     Route::post("/creer_tontine/{id_menbre}",[MobileApiController::class,'enregistrer_tontine']);
+    Route::post("/modifier_tontine/{id_tontine}",[MobileApiController::class,'modifier_tontine']);
     Route::get("/liste_tontine/{id_menbre}",[MobileApiController::class,'liste_tontine']);
     Route::get("/details_tontine/{id_tontine}/{id_menbre_connecter}",[MobileApiController::class,'details_tontine']);
-    Route::get("/adhesion_via_code_invitation/{identifiant_adhesion}/{id_menbre}",[MobileApiController::class,'adhesion_via_code_invitation']);
     Route::get("/ouvrir_tontine/{id_tontine}",[MobileApiController::class,'ouvrir_tontine']);
+
     Route::get("/paiement_cotisation/{id_tontine}/{id_menbre}",[MobileApiController::class,'paiement_cotisation']);
 
 
