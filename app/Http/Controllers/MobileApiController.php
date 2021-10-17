@@ -9,6 +9,7 @@ use App\Models\Tontine;
 use App\Models\MenbreTontine;
 use App\Models\CaisseTontine;
 use App\Models\Transaction;
+use App\Models\CompteMenbre;
 
 use App\Http\Controllers\SmsController;
 use App\Models\SmsContenuNotification;
@@ -23,6 +24,105 @@ class MobileApiController extends Controller
         $les_crowds = Waricrowd::with('categorie')->with('createur')->with('caisse')->skip($index_pagination)->limit(25)->get();
         return $les_crowds;
         return json_encode($les_crowds);
+    }
+
+
+    public function enregistrer_un_menbre(Request $request)
+    {
+
+        $code_de_confirmation = rand(1111, 9999);
+
+        $donnee_formulaire = $request->all();
+        $nom_complet = $donnee_formulaire['nom_complet'];
+        $pays = $donnee_formulaire['pays'];
+        $ville = $donnee_formulaire['ville'];
+        $adresse = $donnee_formulaire['adresse'];
+        $etat_us = $donnee_formulaire['etat_us'];
+        $code_postal = $donnee_formulaire['code_postal'];
+        $prefix = $donnee_formulaire['prefixe'];
+        $telephone = $donnee_formulaire['telephone'];
+        $numero = $prefix.''.$telephone;
+        $email = $donnee_formulaire['email'];
+        $mot_de_passe = $donnee_formulaire['mot_de_passe'];
+        $confirmer_mot_de_passe = $donnee_formulaire['confirmer_mot_de_passe'];
+
+        if( empty($nom_complet) || empty($pays) || 
+        empty($ville) || empty($adresse) || empty($prefix)
+         || empty($telephone) || empty($mot_de_passe) ){
+            
+            $message = "Tous les champs avec (*) sont obligatoire" ;
+            $reponse = array(
+                "success" => false,
+                "message" => $message,
+            );
+            return $reponse;
+        }
+
+
+        //        ---------------Verifie existence des identifiant
+        if ($email != null) {
+            $route_connexion = route('connexion_menbre');
+            if ($email_existe_deja) {
+                $message = "Cette adresse email est déja utilisée.";
+                $reponse = array(
+                    "success" => false,
+                    "message" => $message,
+                );
+                return $reponse;
+            }
+        }
+        $telephone_existe_deja = $this->checkExistenceNumero($numero);
+        if ($telephone_existe_deja) {
+            $message = "Ce numero ($numero) de telephone a déja utilisé.";
+            
+            $reponse = array(
+                "success" => false,
+                "message" => $message,
+            );
+            return $reponse;
+        }
+
+        //        ---------------Verifie mot de passe et enregistrement
+
+        if ($mot_de_passe != $confirmer_mot_de_passe) {
+            $success = false;
+            $message = "Echec inscription, Les mots de passe ne sont pas identiques.";
+        } else {
+            $mot_de_passe_cacher = md5($confirmer_mot_de_passe);
+
+            $le_menbre = new Menbre();
+            $le_menbre->nom_complet = $nom_complet;
+            $le_menbre->pays = $pays;
+            $le_menbre->ville = $ville;
+            $le_menbre->adresse = $adresse;
+            $le_menbre->etat_us = $etat_us;
+            $le_menbre->telephone = $code_postal;
+            $le_menbre->telephone = $numero;
+            $le_menbre->email = $email;
+            $le_menbre->mot_de_passe = $mot_de_passe_cacher;
+            $le_menbre->code_de_confirmation = $code_de_confirmation;
+            $le_menbre->date_derniere_visite = null;
+
+            //            dd($le_menbre);
+            if ($le_menbre->save()) {
+
+                $le_compte = CompteMenbre::findOrNew($le_menbre->id);
+                $le_compte->id_menbre = $le_menbre->id;
+                $le_compte->solde = 0;
+                $le_compte->save();
+
+                $success = true;
+                $message = "Inscription éffectuée, connectez-vous";
+            }
+        }
+
+        
+        $reponse = array(
+            "success" => $success,
+            "message" => $message,
+        );
+        return $reponse;
+
     }
 
     public function connexion(Request $request){
@@ -65,6 +165,42 @@ class MobileApiController extends Controller
 
     }
 
+    public function reinitialiser_mot_de_passe($identifiant)
+    {
+
+        $notification = "Un message de recuperation de compte vous été envoyer par sms et par email";
+        $le_menbre = Menbre::where('telephone','=',$identifiant)->orWhere('email','=',$identifiant)->first();
+//        dd($le_menbre);
+        if($le_menbre != null){
+            $nouveau_mdp = intdiv( time() ,99) * rand(1111,9999) ;
+            $mdp_cacher = md5($nouveau_mdp);
+
+            $telephone = $le_menbre->telephone;
+            $message = "Bonjour,votre mot de passe a bien été reinitialiser, utilisez le nouveau mot de passe pour vous connecter puis changez le.
+            nouveau mot de passe : $nouveau_mdp ";
+            SmsController::sms_info_bip($telephone,$message);
+
+            $email = $le_menbre->email;
+            if($email!=null){
+                $headers = 'From: no-reply@waribana.com' . "\r\n";
+                mail($email,'REINITIALISATION DE MOT DE PASSE',$message,$headers);
+            }
+
+//            dd($nouveau_mdp,$email);
+
+            $le_menbre->mot_de_passe = $mdp_cacher;
+            $le_menbre->save();
+        }else{
+            $notification = "Ce identifiant n'est associé à aucun compte";
+        }
+
+        $reponse = array(
+            "success" => true,
+            "message" => $notification,
+        );
+        return $reponse;
+
+    }
 
 //===================espace MEMBRE#espace MEMBRE---#----espace MEMBRE#espace MEMBRE--------#----------°°°°°°°°°°°°°°
    
@@ -503,6 +639,25 @@ class MobileApiController extends Controller
         return $reponse;
     }
 
+    private function checkExistenceEmail($email)
+    {
+        $menbre_existant = Menbre::where('email', '=', $email)->first();
+        if ($menbre_existant != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function checkExistenceNumero($numero)
+    {
+        $menbre_existant = Menbre::where('telephone', '=', $numero)->first();
+        if ($menbre_existant != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 
 }

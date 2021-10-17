@@ -16,8 +16,10 @@ Route::prefix('/mobile')->group(function(){
     Route::get("/liste-crowd/{index_pagination?}",[MobileApiController::class,'liste_crowd']);
     
     
+    Route::post("/enregistrer_un_menbre",[MobileApiController::class,'enregistrer_un_menbre']);
     Route::get("/connexion",[MobileApiController::class,'connexion']);
     Route::get("/infos_pour_tableau_de_bord/{id_menbre}",[MobileApiController::class,'infos_pour_tableau_de_bord']);
+    Route::get("/reinitialiser_mot_de_passe/{identifiant}",[MobileApiController::class,'reinitialiser_mot_de_passe']);
 
     
     Route::get("/adhesion_via_code_invitation/{identifiant_adhesion}/{id_menbre}",[MobileApiController::class,'adhesion_via_code_invitation']);

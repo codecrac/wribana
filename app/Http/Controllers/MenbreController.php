@@ -45,7 +45,7 @@ class MenbreController extends Controller
             if($email!=null){
 
                 $headers = 'From: no-reply@waribana.com' . "\r\n";
-                mail($email,'REINITIALISATION DE MOT DE PASSE',$message);
+                mail($email,'REINITIALISATION DE MOT DE PASSE',$message,$headers);
             }
 
 //            dd($nouveau_mdp,$email);
@@ -73,7 +73,7 @@ class MenbreController extends Controller
         $code_de_confirmation = rand(1111, 9999);
 
         $donnee_formulaire = $request->all();
-//        dd($donnee_formulaire);
+        //        dd($donnee_formulaire);
         $nom_complet = $donnee_formulaire['nom_complet'];
         $pays = $donnee_formulaire['pays'];
         $ville = $donnee_formulaire['ville'];
@@ -87,8 +87,8 @@ class MenbreController extends Controller
         $mot_de_passe = $donnee_formulaire['mot_de_passe'];
         $confirmer_mot_de_passe = $donnee_formulaire['confirmer_mot_de_passe'];
 
-//        dd($numero);
-//        ---------------Verifie existence des identifiant
+        //        dd($numero);
+        //        ---------------Verifie existence des identifiant
         if ($email != null) {
             $route_connexion = route('connexion_menbre');
             $email_existe_deja = $this->checkExistenceEmail($email);
@@ -105,7 +105,7 @@ class MenbreController extends Controller
             return redirect()->route('inscription_menbre')->with('notification', $notification);
         }
 
-//        ---------------Verifie mot de passe et enregistrement
+        //        ---------------Verifie mot de passe et enregistrement
 
         if ($mot_de_passe != $confirmer_mot_de_passe) {
             $message = "Echec inscription, Les mots de passe ne sont pas identiques.";
@@ -125,7 +125,7 @@ class MenbreController extends Controller
             $le_menbre->code_de_confirmation = $code_de_confirmation;
             $le_menbre->date_derniere_visite = null;
 
-//            dd($le_menbre);
+            //            dd($le_menbre);
             if ($le_menbre->save()) {
 
                 $le_compte = CompteMenbre::findOrNew($le_menbre->id);
