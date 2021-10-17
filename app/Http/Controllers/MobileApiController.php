@@ -625,8 +625,8 @@ class MobileApiController extends Controller
             $devise = $le_menbre->devise_choisie->monaie;
             $code_devise = $le_menbre->devise_choisie->code;
         }else{
-            $devise ='---';
-            $code_devise ='--';
+            $devise = null;
+            $code_devise = null;
         }
         
         $reponse['utilisateur'] = ['id' => $id_menbre,
