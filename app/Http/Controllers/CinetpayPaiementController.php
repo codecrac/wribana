@@ -44,7 +44,7 @@ class CinetpayPaiementController extends Controller
             if($from_mobile){
                 $return_url = route('api.mobile.statut_transaction').'?trans_id='.$transaction_id;
             }
-//            $notify_url = "https://waribana.jeberge.xyz/api/notification_paiement_cotisation_tontine";
+        //            $notify_url = "https://waribana.jeberge.xyz/api/notification_paiement_cotisation_tontine";
         }else{
             //dans ce cas c'est un crowd
             $notify_url = route('notification_paiement_cotisation_crowd');
@@ -54,9 +54,9 @@ class CinetpayPaiementController extends Controller
             if($from_mobile){
                 $return_url = route('api.mobile.statut_transaction').'?trans_id='.$transaction_id;
             }
-//            $notify_url = "https://waribana.jeberge.xyz/api/notification_paiement_cotisation_crowd";
+        //            $notify_url = "https://waribana.jeberge.xyz/api/notification_paiement_cotisation_crowd";
         }
-//        dd($notify_url);
+        //        dd($notify_url);
 
         $nom_complet_eclater = explode(' ',$le_menbre->nom_complet);
         $nom = $nom_complet_eclater[0];
@@ -97,7 +97,7 @@ class CinetpayPaiementController extends Controller
         }
 
         $data_json = json_encode($data);
-    //    echo $data_json;
+        //    echo $data_json;
         // die(); 
 
         $curl = curl_init();
@@ -118,7 +118,7 @@ class CinetpayPaiementController extends Controller
         $response = curl_exec($curl);
         curl_close($curl);
         $la_reponse_en_objet = json_decode($response);
-    //    dd($la_reponse_en_objet);
+       //    dd($la_reponse_en_objet);
 
 
        if(!isset($la_reponse_en_objet->data)){ //on a un probleme
@@ -149,14 +149,17 @@ class CinetpayPaiementController extends Controller
 
         $la_transaction = Transaction::where('trans_id',$cpm_trans_id)->first();
 
-        if($code_reponse_etat_paiement == 0){
-            $la_transaction->statut = 'ACCEPTED';
-            CinetpayPaiementController::paiement_cotisation_reussie($la_transaction);
-        }else{
-            $la_transaction->statut = 'REFUSED';
+        if($la_transaction->statut == "PENDING"){ //l'api peut etre appeler plusieur fois par cinetpay eviter d'enregistrer le paiement plusieurs fois
+            if($code_reponse_etat_paiement == 0){
+                $la_transaction->statut = 'ACCEPTED';
+                CinetpayPaiementController::paiement_cotisation_reussie($la_transaction);
+            }else{
+                $la_transaction->statut = 'REFUSED';
+            }
+            $la_transaction->save();
+            return true;
         }
-        $la_transaction->save();
-        return true;
+        
     }
 
     public function notification_paiement_cotisation_crowd(Request $request){
@@ -165,13 +168,15 @@ class CinetpayPaiementController extends Controller
 
         $la_transaction = TransactionWaricrowd::where('trans_id',$cpm_trans_id)->first();
 
-        if($code_reponse_etat_paiement == 0){
-            $la_transaction->statut = 'ACCEPTED';
-        }else{
-            $la_transaction->statut = 'REFUSED';
+        if($la_transaction->statut == "PENDING"){ //l'api peut etre appeler plusieur fois par cinetpay eviter d'enregistrer le paiement plusieurs fois
+            if($code_reponse_etat_paiement == 0){
+                $la_transaction->statut = 'ACCEPTED';
+            }else{
+                $la_transaction->statut = 'REFUSED';
+            }
+            $la_transaction->save();
+            return true;
         }
-        $la_transaction->save();
-        return true;
     }
 
 
@@ -184,7 +189,7 @@ class CinetpayPaiementController extends Controller
         if($section=="tontine"){
             $notify_url = route('notification_paiement_cotisation_tontine');
         }
-//        dd($notify_url);
+        //        dd($notify_url);
 
         $url_pour_recuperer = "https://api-checkout.cinetpay.com/v2/payment/check";
         $data = array(
@@ -251,9 +256,9 @@ class CinetpayPaiementController extends Controller
             $la_caisse_de_la_tontine->save();
  
             $maintenant = date('d/m/Y H:i', strtotime(now()));
-//            dd($maintenant);
+        //            dd($maintenant);
             $liste_participants = $la_tontine->participants;
-//            dd($liste_participants);
+        //            dd($liste_participants);
             CinetpayPaiementController::notifier_paiement_cotisation($liste_participants,$le_menbre->nom_complet,$montant,$la_tontine->createur->devise_choisie->monaie,$la_tontine->titre,$maintenant);
 
             if($le_menbre->email !=null){
@@ -267,7 +272,7 @@ class CinetpayPaiementController extends Controller
                 CinetpayPaiementController::recu_de_paiement_tontine($infos_pour_recu);
             }
 
-//===================Montant atteinds
+        //===================Montant atteinds
             if($nouveau_montant == $la_caisse_de_la_tontine->montant_objectif){
                 $index_menbre_qui_prend = $la_caisse_de_la_tontine->index_menbre_qui_prend;
                 $nouvel_index = $index_menbre_qui_prend + 1;
@@ -275,7 +280,7 @@ class CinetpayPaiementController extends Controller
 
                 $montant_a_verser = $la_caisse_de_la_tontine->montant_a_verser;
 
-//===================Virer l'argent sur son compte et le noter dans le cahier
+        //===================Virer l'argent sur son compte et le noter dans le cahier
                 $id_menbre_qui_prend = $la_caisse_de_la_tontine->id_menbre_qui_prend;
                 $le_compte = CompteMenbre::findOrNew($id_menbre_qui_prend);
                 $le_compte->id_menbre = $id_menbre_qui_prend;
@@ -309,7 +314,7 @@ class CinetpayPaiementController extends Controller
                     mail($item_participant->email,"$titre_tontine : MONTANT OBJECTIF DE COTISATION ATTEINDS",$message,$headers);
 
                 }
-//====================Rotation
+        //====================Rotation
                 //SI ON EST PAS AU DERNIER PARTICIPANTS
                 if($nouvel_index < sizeof($la_tontine->participants)){
                     $liste_participant = $la_tontine->participants->toArray();
