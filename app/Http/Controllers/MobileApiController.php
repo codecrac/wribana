@@ -10,6 +10,7 @@ use App\Models\MenbreTontine;
 use App\Models\CaisseTontine;
 use App\Models\Transaction;
 use App\Models\CompteMenbre;
+use App\Models\Devise;
 
 use App\Http\Controllers\SmsController;
 use App\Models\SmsContenuNotification;
@@ -165,12 +166,119 @@ class MobileApiController extends Controller
 
     }
 
+    public function details_menbre($id_menbre){
+        $le_menbre = Menbre::find($id_menbre);
+        $le_menbre['code_devise'] = $le_menbre->devise_choisie->code;
+        return json_encode($le_menbre);
+
+    }
+    
+    public function confirmer_compte_menbre(Request $request,$id_menbre_connecter)
+    {
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        if ($le_menbre == null) {
+            
+            $reponse = array(
+                "success" => false,
+                "message" => "utilisateur invalide",
+            );
+            return json_encode($reponse);
+        }
+
+        $notification = "Numero Invalide";
+        $donnees_formulaire = $request->all();
+        $telephone = $donnees_formulaire['telephone'];
+
+        $existe_pour_quelqun_dautre = $this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre_connecter);
+        if($existe_pour_quelqun_dautre){
+            
+            $reponse = array(
+                "success" => false,
+                "message" => "Ce numero appartient a un autre menbre",
+            );
+            return json_encode($reponse);
+        }
+
+        if (is_numeric($telephone)) {
+                $le_menbre->telephone = $telephone;
+                $le_menbre->save();
+                $le_numero = "$telephone";
+                $code = $le_menbre->code_de_confirmation;
+        //                dd($code);
+                $contenu_notification = SmsContenuNotification::first();
+                $message_confirmation = $contenu_notification['confirmation_compte'];
+                $le_message = str_replace('$code$',$code,$message_confirmation);
+        //                dd($le_numero);
+                SmsController::sms_info_bip($le_numero, $le_message);
+
+                
+                    $reponse = array(
+                        "success" => true,
+                        "message" => "Un code de confirmation vous a ete envoyé",
+                    );
+                    return json_encode($reponse);
+                
+        } 
+        
+        $reponse = array(
+            "success" => false,
+            "message" => $notification,
+        );
+        return json_encode($reponse);
+    }
+
+    public function entrer_code_de_confirmation_et_choisir_devise(Request $request, $id_menbre_connecter){
+
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        if ($le_menbre == null) {
+            $reponse = array(
+                "success" => false,
+                "message" => "utilisateur invalide",
+            );
+            return json_encode($reponse);
+        }
+
+        $donnees_formulaire = $request->all();
+        $le_code_de_confirmation = $donnees_formulaire['code_confirmation'];
+        $le_code_devise = $donnees_formulaire['code_devise'];
+
+        if(empty($le_code_de_confirmation) || empty($le_code_devise)){
+            
+            $reponse = array(
+                "success" => false,
+                "message" => "Veuillez renseigner le code",
+            );
+            return json_encode($reponse);
+        }
+
+        $la_devise = Devise::where('code','=',$le_code_devise)->first();
+
+        if ($le_code_de_confirmation == $le_menbre->code_de_confirmation) {
+            $le_menbre->etat = 'actif';
+            $le_menbre->devise = $la_devise->id;
+            $le_menbre->save();
+            
+            $reponse = array(
+                "success" => true,
+                "message" => "confirmation effectuee",
+            );
+            
+        } else {
+            $reponse = array(
+                "success" => false,
+                "message" => "code invalide, rééssayez",
+            );
+        }
+        
+        return json_encode($reponse);
+    }
+
     public function reinitialiser_mot_de_passe($identifiant)
     {
 
         $notification = "Un message de recuperation de compte vous été envoyer par sms et par email";
         $le_menbre = Menbre::where('telephone','=',$identifiant)->orWhere('email','=',$identifiant)->first();
-//        dd($le_menbre);
+        //        dd($le_menbre);
         if($le_menbre != null){
             $nouveau_mdp = intdiv( time() ,99) * rand(1111,9999) ;
             $mdp_cacher = md5($nouveau_mdp);
@@ -186,7 +294,7 @@ class MobileApiController extends Controller
                 mail($email,'REINITIALISATION DE MOT DE PASSE',$message,$headers);
             }
 
-//            dd($nouveau_mdp,$email);
+        //            dd($nouveau_mdp,$email);
 
             $le_menbre->mot_de_passe = $mdp_cacher;
             $le_menbre->save();
@@ -210,6 +318,7 @@ class MobileApiController extends Controller
         // dd($le_menbre);
         $email_inviter = $le_menbre->email;
         $invitation_recues = [];
+        $nb_invitation_recues =0;
         if($email_inviter!=null){
             $nb_invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->where('etat','=','attente')->count();
         }
@@ -218,7 +327,13 @@ class MobileApiController extends Controller
         $infos_pour_tableau_de_bord['nb_tontine'] = sizeof($le_menbre->tontines);
         $infos_pour_tableau_de_bord['nb_invitations_recues'] = $nb_invitation_recues;
         $infos_pour_tableau_de_bord['nb_waricrowd'] = sizeof($le_menbre->mes_waricrowd);
-        $infos_pour_tableau_de_bord['nb_projets_soutenus'] = sizeof($le_menbre->projets_soutenus);
+
+        if($le_menbre->projets_soutenus !=null){
+            $infos_pour_tableau_de_bord['nb_projets_soutenus'] = sizeof($le_menbre->projets_soutenus);
+        }else{
+            $infos_pour_tableau_de_bord['nb_projets_soutenus'] = 0;
+        }
+
         $infos_pour_tableau_de_bord['solde'] = $le_menbre->compte->solde ." ". $le_menbre->devise_choisie->monaie;
         // return $infos_pour_tableau_de_bord;
         return json_encode($infos_pour_tableau_de_bord);
@@ -660,4 +775,12 @@ class MobileApiController extends Controller
     }
 
 
+    private function checkExistenceNumeroPourAutrePersonne($numero,$id_menbre){
+        $menbre_existant = Menbre::where('telephone','=',$numero)->where('id','!=',$id_menbre)->first();
+        if($menbre_existant != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

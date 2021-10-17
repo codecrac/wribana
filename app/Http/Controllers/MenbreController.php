@@ -218,17 +218,23 @@ class MenbreController extends Controller
         $notification = "<div class='alert alert-danger'>Numero Invalide</div>";
         $donnees_formulaire = $request->all();
         $telephone = $donnees_formulaire['telephone'];
+        $existe_pour_quelqun_dautre =  $this->checkExistenceNumeroPourAutrePersonne($numero,$id_menbre);
+        if($existe_pour_quelqun_dautre){
+            $notification = "<div class='alert alert-danger'>Ce numero est deja associé a un autre compte</div>";
+            return redirect()->back()->with('notification', $notification);
+        }
+
         if (is_numeric($telephone)) {
             if (strlen($telephone) >= 10) {
                 $le_menbre->telephone = $telephone;
                 $le_menbre->save();
                 $le_numero = "$telephone";
                 $code = $le_menbre->code_de_confirmation;
-//                dd($code);
+        //                dd($code);
                 $contenu_notification = SmsContenuNotification::first();
                 $message_confirmation = $contenu_notification['confirmation_compte'];
                 $le_message = str_replace('$code$',$code,$message_confirmation);
-//                dd($le_numero);
+        //                dd($le_numero);
                 SmsController::sms_info_bip($le_numero, $le_message);
                 return redirect()->route('espace_menbre.entrer_code_confirmation');
             } else {
@@ -355,4 +361,14 @@ class MenbreController extends Controller
         session()->put(MenbreController::$cle_session, ['id' => $id_menbre, 'nom_complet' => $nom_complet, 'devise' => $devise,'code_devise'=>$code_devise]);
     }
 
+    
+
+    private function checkExistenceNumeroPourAutrePersonne($numero,$id_menbre){
+        $menbre_existant = Menbre::where('telephone','=',$numero)->where('id','!=',$id_menbre)->first();
+        if($menbre_existant != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
