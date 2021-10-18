@@ -52,4 +52,8 @@ class Menbre extends Model
     public function projets_soutenus(){
         return $this->belongsToMany(Waricrowd::class,'waricrowd_menbres');
     }
+
+    public function projets_soutenus_pour_mobile(){
+        return $this->belongsToMany(Waricrowd::class,'waricrowd_menbres')->with('categorie')->with('createur')->with('caisse')->orderBy('id','desc');
+    }
 }

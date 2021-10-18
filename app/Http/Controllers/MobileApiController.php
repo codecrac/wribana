@@ -620,13 +620,14 @@ class MobileApiController extends Controller
         
                 $le_menbre = Menbre::find($id_menbre_connecter);
                 $route_back_en_cas_derreur = route('api.mobile.statut_transaction');
-                $payment_url_ou_false = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_tontine,$le_montant_en_xof,$le_montant,'tontine',$route_back_en_cas_derreur);
+                $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_tontine,$le_montant_en_xof,
+                $le_montant,'tontine',$route_back_en_cas_derreur);
             
 
                 $reponse = array(
                     "success" => true,
-                    "url_paiement" => $payment_url_ou_false,
-                    "message" => $payment_url_ou_false
+                    "url_paiement" => $payment_url,
+                    "message" => $payment_url
                 );
 
                 return $reponse;
@@ -866,13 +867,28 @@ public function liste_waricrowd_dutilisateur($id_menbre){ //les tontines de l'ut
     return json_encode($mes_waricrowd);
 }
 
+public function liste_projet_soutenus($id_menbre){ //les tontines de l'utilisateur connecter
+    $le_menbre = Menbre::find($id_menbre);
+
+    $projets_soutenus_pour_mobile = $le_menbre->projets_soutenus_pour_mobile;
+    return json_encode($projets_soutenus_pour_mobile);
+}
+
 public function liste_categorie_crowd(){
     $liste_categorie_crowd = CategorieWaricrowd::all();
     return json_encode($liste_categorie_crowd);
 }
 
-public function details_waricrowd($id_crowd,$id_menbre){
-    $liste_categorie_crowd = Waricrowd::with("createur")->with("caisse")->with("transactions")->where("id","=",$id_crowd)->where("id_menbre","=",$id_menbre)->first();
+public function details_waricrowd($id_crowd,$id_menbre=null){
+    if($id_menbre !=null){ //quand c'est un crowd qui appartient au menbre
+        $liste_categorie_crowd = Waricrowd::with("categorie")->with("createur")->with("caisse")->
+        with("transactions")->where("id","=",$id_crowd)->where("id_menbre","=",$id_menbre)->first();
+    }
+    else{ //quand c'est un projet soutenus
+        $liste_categorie_crowd = Waricrowd::with("categorie")->with("createur")->with("caisse")->
+        with("transactions")->where("id","=",$id_crowd)->first();
+    }
+    
     return json_encode($liste_categorie_crowd);
 }
 
@@ -939,6 +955,48 @@ public function enregistrer_un_waricrowd(Request $request,$id_menbre_connecter)
     );
 }
 
+public function paiement_soutien_waricrowd(Request $request,$id_crowd,$id_menbre_connecter)
+{
+   //================INTEGRATION CINETPAY===================
+    $donnees_formulaire = $request->all();
+
+    // CONVERSION EN CFA AVANT PAIEMENT
+    $le_crowd = Waricrowd::find($id_crowd);
+    $le_montant = $donnees_formulaire['montant_soutien'];
+
+
+    if(empty($le_montant) || $le_montant == null ){
+        $reponse = array(
+            "success" => false,
+            "url_paiement" => "",
+            "message" => "Veuillez entrer un montant"
+        );
+        return $reponse;
+    }
+
+    if($le_crowd->createur->devise_choisie->code != "XOF"){
+        $monaie_createur_tontine = $le_crowd->createur->devise_choisie->code;
+        $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_createur_tontine,"XOF");
+        $le_montant_en_xof = $quotient_de_conversion * $le_montant;
+    }else{
+        $le_montant_en_xof = $le_montant;
+    }
+    // CONVERSION EN CFA AVANT PAIEMENT
+
+    $le_menbre = Menbre::find($id_menbre_connecter);
+    $route_back_en_cas_derreur = route('api.mobile.statut_transaction');
+    $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_crowd,$le_montant_en_xof,$le_montant
+    ,'waricrowd',$route_back_en_cas_derreur);
+
+    $reponse = array(
+        "success" => true,
+        "url_paiement" => $payment_url,
+        "message" => $payment_url
+    );
+
+    return $reponse;
+}
+
 public function modifier_un_waricrowd(Request $request,$id_crowd,$id_menbre_connecter){
     $donnees_formulaire = $request->all();
 
@@ -948,6 +1006,15 @@ public function modifier_un_waricrowd(Request $request,$id_crowd,$id_menbre_conn
     $description_complete = $donnees_formulaire['description_complete'];
     $montant_objectif = $donnees_formulaire['montant_objectif'];
     $pitch_video = $this->formaterLienPitch($donnees_formulaire['lien_pitch_video']);
+
+    if( empty($id_categorie_waricrowd)  || empty($titre)  || empty($description_courte)  || empty($description_complete)  || empty($montant_objectif) ){
+        return json_encode(
+            array(
+                "success" => false,
+                "message" => "Tous les champs avec (*) devant sont obligatoires",
+            )
+        );
+    }
 
     $le_crowd = Waricrowd::find($id_crowd);
     $le_crowd->id_categorie = $id_categorie_waricrowd;
@@ -994,10 +1061,10 @@ public function modifier_un_waricrowd(Request $request,$id_crowd,$id_menbre_conn
 
 
 
-public function supprimer_waricrowd(Request $request,$id_tontine){
-    $le_crowd = Waricrowd::find($id_tontine);
+public function supprimer_waricrowd(Request $request,$id_crowd,$id_menbre){
+    $le_crowd = Waricrowd::find($id_crowd);
 //        dd($le_crowd->transactions);
-    if(sizeof($le_crowd->transactions) == 0){
+    if(sizeof($le_crowd->transactions) == 0 && $le_crowd->id_menbre == $id_menbre ){
         $le_crowd->delete();
         $success = true;
         $notification = "Operation bien effectuée";

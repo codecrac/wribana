@@ -1,17 +1,17 @@
-date/time         : 2021-10-18, 02:38:23, 55ms
+date/time         : 2021-10-18, 02:41:06, 988ms
 computer name     : DESKTOP-6HL0812
 user name         : yvess
 registered owner  : yvessantoz@gmail.com
 operating system  : Windows NT New x64 build 9200
 system language   : French
-system up time    : 35 minutes 56 seconds
+system up time    : 38 minutes 39 seconds
 program up time   : 3 seconds
 processors        : 4x Intel(R) Core(TM) i5-3437U CPU @ 1.90GHz
-physical memory   : 2429/8057 MB (free/total)
+physical memory   : 2433/8057 MB (free/total)
 free disk space   : (C:) 235,26 GB
 display mode      : 1366x768, 32 bit
-process id        : $18bc
-allocated memory  : 16,78 MB
+process id        : $2a6c
+allocated memory  : 16,76 MB
 command line      : C:\xampp\sendmail\sendmail.exe -t
 executable        : sendmail.exe
 exec. date/time   : 2012-04-16 17:30
@@ -20,9 +20,9 @@ madExcept version : 3.0l
 callstack crc     : $fecf9b34, $3e229a42, $3e229a42
 exception number  : 1
 exception class   : EIdSMTPReplyError
-exception message : Username and Password not accepted. Learn more at https://support.google.com/mail/?p=BadCredentials bi23sm8184522ejb.122 - gsmtp.
+exception message : Username and Password not accepted. Learn more at https://support.google.com/mail/?p=BadCredentials p13sm5397757ejn.12 - gsmtp.
 
-main thread ($2130):
+main thread ($2ee0):
 0045918a +003e sendmail.exe IdReplySMTP     501   +1 TIdReplySMTP.RaiseReplyError
 0043ff28 +0008 sendmail.exe IdTCPConnection 576   +0 TIdTCPConnection.RaiseExceptionForLastCmdResult
 004402f4 +003c sendmail.exe IdTCPConnection 751  +10 TIdTCPConnection.CheckResponse
@@ -33,22 +33,22 @@ main thread ($2130):
 004b5f81 +10cd sendmail.exe sendmail        822 +340 initialization
 75b5fa27 +0017 KERNEL32.DLL                          BaseThreadInitThunk
 
-thread $238:
+thread $2a4c:
 75b5fa27 +17 KERNEL32.DLL  BaseThreadInitThunk
 
-thread $1f3c:
+thread $111c:
 75b5fa27 +17 KERNEL32.DLL  BaseThreadInitThunk
 
-thread $271c:
+thread $2be4:
 75b5fa27 +17 KERNEL32.DLL  BaseThreadInitThunk
 
 stack dump:
 0019fcb4  8f 91 45 00 de fa ed 0e - 01 00 00 00 07 00 00 00  ..E.............
-0019fcc4  c8 fc 19 00 8f 91 45 00 - a8 cb 3f 02 c0 1d 41 02  ......E...?...A.
+0019fcc4  c8 fc 19 00 8f 91 45 00 - a8 cb 3c 02 c0 1d 3e 02  ......E...<...>.
 0019fcd4  00 00 00 00 17 02 00 00 - f8 fc 19 00 e4 fc 19 00  ................
 0019fce4  38 fd 19 00 c8 4b 40 00 - f8 fc 19 00 34 a5 45 00  8....K@.....4.E.
 0019fcf4  00 00 00 00 14 fd 19 00 - 2b ff 43 00 f7 02 44 00  ........+.C...D.
-0019fd04  00 00 00 00 80 fd 19 00 - 80 fd 19 00 b0 e6 39 02  ..............9.
+0019fd04  00 00 00 00 80 fd 19 00 - 80 fd 19 00 b0 e6 36 02  ..............6.
 0019fd14  2c fd 19 00 bd fe 43 00 - 00 00 00 00 94 34 46 00  ,.....C......4F.
 0019fd24  00 00 00 00 34 a5 45 00 - 58 fd 19 00 8a ff 43 00  ....4.E.X.....C.
 0019fd34  00 00 00 00 68 fd 19 00 - c8 4b 40 00 58 fd 19 00  ....h....K@.X...
@@ -60,7 +60,7 @@ stack dump:
 0019fd94  a0 fd 19 00 c8 4b 40 00 - d0 fd 19 00 d8 fd 19 00  .....K@.........
 0019fda4  c8 4b 40 00 d0 fd 19 00 - ff 00 00 00 bf 5a 40 00  .K@..........Z@.
 0019fdb4  00 00 00 00 00 00 00 00 - eb 00 4e 01 00 00 00 00  ..........N.....
-0019fdc4  d0 69 3e 02 00 00 00 00 - b0 e6 39 02 70 ff 19 00  .i>.......9.p...
+0019fdc4  90 6a 3b 02 00 00 00 00 - b0 e6 36 02 70 ff 19 00  .j;.......6.p...
 0019fdd4  87 5f 4b 00 e4 fd 19 00 - c8 4b 40 00 70 ff 19 00  ._K......K@.p...
 0019fde4  f0 fd 19 00 c8 4b 40 00 - 70 ff 19 00 fc fd 19 00  .....K@.p.......
 

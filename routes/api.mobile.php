@@ -43,11 +43,17 @@ Route::prefix('/mobile')->group(function(){
 
 //waricrowd
 Route::get("/mes_waricrowds/{id_menbre}",[MobileApiController::class,'liste_waricrowd_dutilisateur']);
+Route::get("/liste_projet_soutenus/{id_menbre}",[MobileApiController::class,'liste_projet_soutenus']);
 Route::get("/liste_categorie_crowd",[MobileApiController::class,'liste_categorie_crowd']);
-Route::get("/details_waricrowd/{id_crowd}/{id_menbre}",[MobileApiController::class,'details_waricrowd']);
+Route::get("/details_waricrowd/{id_crowd}/{id_menbre?}",[MobileApiController::class,'details_waricrowd']);
+
+Route::get("/paiement_soutien_waricrowd/{id_crowd}/{id_menbre}",[MobileApiController::class,'paiement_soutien_waricrowd']);
+Route::post("/paiement_soutien_waricrowd/{id_crowd}/{id_menbre}",[MobileApiController::class,'paiement_soutien_waricrowd']);
+
 Route::post("/creer_waricrowd/{id_menbre}",[MobileApiController::class,'enregistrer_un_waricrowd']);
-Route::post("/modifier_un_waricrowd/{id_tontine}",[MobileApiController::class,'modifier_un_waricrowd']);
-Route::post("/supprimer_waricrowd/{id_tontine}",[MobileApiController::class,'supprimer_waricrowd']);
+Route::post("/modifier_un_waricrowd/{id_crowd}/{id_menbre}",[MobileApiController::class,'modifier_un_waricrowd']);
+Route::post("/supprimer_waricrowd/{id_crowd}/{id_menbre}",[MobileApiController::class,'supprimer_waricrowd']);
+
 
 
 //===========================
