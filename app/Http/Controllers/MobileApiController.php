@@ -62,6 +62,7 @@ class MobileApiController extends Controller
 
         //        ---------------Verifie existence des identifiant
         if ($email != null) {
+            $email_existe_deja = $this->checkExistenceEmail($email);
             $route_connexion = route('connexion_menbre');
             if ($email_existe_deja) {
                 $message = "Cette adresse email est déja utilisée.";
@@ -126,7 +127,8 @@ class MobileApiController extends Controller
 
     }
 
-    public function connexion(Request $request){
+    public function connexion(Request $request)
+    {
         
         $message = "";
         $reponse = [
@@ -166,8 +168,10 @@ class MobileApiController extends Controller
 
     }
 
-    public function details_menbre($id_menbre){
+    public function details_menbre($id_menbre)
+    {
         $le_menbre = Menbre::find($id_menbre);
+        $le_menbre['devise'] = $le_menbre->devise_choisie->monaie;
         $le_menbre['code_devise'] = $le_menbre->devise_choisie->code;
         return json_encode($le_menbre);
 
@@ -227,7 +231,8 @@ class MobileApiController extends Controller
         return json_encode($reponse);
     }
 
-    public function entrer_code_de_confirmation_et_choisir_devise(Request $request, $id_menbre_connecter){
+    public function entrer_code_de_confirmation_et_choisir_devise(Request $request, $id_menbre_connecter)
+    {
 
         $le_menbre = Menbre::find($id_menbre_connecter);
         if ($le_menbre == null) {
@@ -313,7 +318,8 @@ class MobileApiController extends Controller
 //===================espace MEMBRE#espace MEMBRE---#----espace MEMBRE#espace MEMBRE--------#----------°°°°°°°°°°°°°°
    
 #===============TONTINE==========TONTINE==========TONTINE==========
-    public function infos_pour_tableau_de_bord($id_menbre){
+    public function infos_pour_tableau_de_bord($id_menbre)
+    {
         $le_menbre = Menbre::find($id_menbre);
         // dd($le_menbre);
         $email_inviter = $le_menbre->email;
@@ -341,7 +347,8 @@ class MobileApiController extends Controller
 
 
     
-    public function enregistrer_tontine(Request $request,$id_menbre_connecter){
+    public function enregistrer_tontine(Request $request,$id_menbre_connecter)
+    {
         $donnees_formulaire = $request->input();
         //        dd($donnees_formulaire);
 
@@ -403,7 +410,8 @@ class MobileApiController extends Controller
     }
     
     
-    public function details_tontine($id_tontine,$id_menbre_connecter){
+    public function details_tontine($id_tontine,$id_menbre_connecter)
+    {
 
 
         $la_tontine = Tontine::where('id','=',$id_tontine)->with('caisse')->with('createur')->with('participants')->first();
@@ -453,7 +461,8 @@ class MobileApiController extends Controller
         return $la_tontine;
     }
 
-    public function modifier_tontine(Request $request,$id_tontine){
+    public function modifier_tontine(Request $request,$id_tontine)
+    {
         $donnees_formulaire = $request->all();
 
         $titre = $donnees_formulaire['titre'];
@@ -503,6 +512,32 @@ class MobileApiController extends Controller
             );
             return $reponse;
         }
+    }
+
+    
+    public function supprimer_la_tontine(Request $request,$id_tontine,$id_menbre)
+    {
+        $la_tontine = Tontine::find($id_tontine);
+        //        dd($la_tontine->transactions);
+        $success = false;
+        $notification = "tontine invalide";
+        if($la_tontine){
+            if(sizeof($la_tontine->transactions) == 0 && $la_tontine->id_menbre == $id_menbre ){
+                $la_tontine->delete();
+                $notification = "Supression de La tontine ($la_tontine->titre) reussie.";
+                $success = true;
+            }else{
+                $success = false;
+                $notification = "Vous ne pouvez pas supprimer une tontine apres que des transactions ai été effectuées";
+            }
+        }
+        
+        return json_encode(
+            array(
+                "success" => $success,
+                "message" => $notification,
+            )
+        );
     }
 
     public function ouvrir_tontine($id_tontine){
@@ -653,8 +688,99 @@ class MobileApiController extends Controller
         return json_encode($reponse);
     }
 
+    
+    public function envoyer_invitation_via_sms(Request $request,$id_tontine,$id_menbre_connecter)
+    {
+        $donnees_formulaire = $request->all();
+        $telephone = $donnees_formulaire['telephone'];
+        $le_numero = $telephone;
+
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        $nom_complet = $le_menbre->nom_complet;
+
+        $la_tontine = Tontine::find($id_tontine);
+        $titre = $la_tontine->titre;
+        $code_adhesion = $la_tontine->identifiant_adhesion;
+
+        $adresse =  "https://" . $_SERVER['SERVER_NAME'] .'/espace-menbre/invitations';
+        $message = " Bonjour, le menbre $nom_complet de waribana vous invite a rejoindre la tontine <<$titre>>,Connectez vous inscrivez-vous pour repondre a son invitation;
+            Code d'adhesion : $code_adhesion.
+            $adresse";
+
+        // dd($le_numero);
+        $reponse = SmsController::sms_info_bip($le_numero,$message);
+        // dd($reponse);
+
         
-    public function invitations_recues($id_menbre_connecter){
+        $une_invitation = new Invitation();
+        $une_invitation->id_tontine = $id_tontine;
+        $une_invitation->email_inviter = $le_numero;
+        $une_invitation->menbre_qui_invite = $id_menbre_connecter;
+        $une_invitation->etat = "invitation envoyee";
+        $une_invitation->save();
+        $notification = "Invitations bien envoyee";
+        
+        return json_encode(
+            array(
+                "success" => true,
+                "message" => $notification
+            )
+        );
+    }
+
+    public function envoyer_invitation_via_email(Request $request,$id_tontine,$id_menbre_connecter)
+    {
+        $donnees_formulaire = $request->all();
+
+        $adresse =  "https://" . $_SERVER['SERVER_NAME'] .'/espace-menbre/invitations';
+
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        $nom_complet = $le_menbre->nom_complet;
+
+        $la_tontine = Tontine::find($id_tontine);
+        $titre = $la_tontine->titre;
+        $code_adhesion = $la_tontine->identifiant_adhesion;
+        $liste_emails = explode(',',strtolower($donnees_formulaire['liste_emails']));
+        $emails_to_string = implode(",",$liste_emails);
+        $headers = 'From: no-reply@waribana.net' . "\r\n" .
+             'Reply-To: no-reply@waribana.net' . "\r\n" .
+             'X-Mailer: PHP/' . phpversion();
+        mail($emails_to_string,
+            "REJOINS LA TONTINE $titre",
+            "
+                        Bonjour, le menbre $nom_complet de waribana vous invite a rejoindre la tontine <<$titre>>,
+                        Connectez vous inscrivez-vous pour repondre a son invitation;
+                        Code d'adhesion : $code_adhesion.
+                        $adresse
+            ",$headers
+        );
+
+
+        foreach ($liste_emails as $mail_item){
+            $invitation_existante = Invitation::where('email_inviter','=',$mail_item)->where('id_tontine','=',$id_tontine)->first();
+
+            if($invitation_existante ==null){
+                $une_invitation = new Invitation();
+                $une_invitation->id_tontine = $id_tontine;
+                $une_invitation->email_inviter = $mail_item;
+                $une_invitation->menbre_qui_invite = $id_menbre_connecter;
+                $une_invitation->save();
+            }
+        }
+
+        $notification = "Invitations bien envoyee";
+        
+        return json_encode(
+            array(
+                "success" => true,
+                "message" => $notification
+            )
+        );
+    }
+
+        
+    public function invitations_recues($id_menbre_connecter)
+    {
         $le_menbre = Menbre::find($id_menbre_connecter);
         $email_inviter = $le_menbre['email'];
 
@@ -666,7 +792,8 @@ class MobileApiController extends Controller
         return json_encode($invitations_recues);
     }
 
-    public function repondre_a_une_invitation($id_invitation,$id_menbre_connecter,$reponse){
+    public function repondre_a_une_invitation($id_invitation,$id_menbre_connecter,$reponse)
+    {
     
             $linvitation = Invitation::find($id_invitation);
     

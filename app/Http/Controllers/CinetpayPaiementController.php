@@ -150,7 +150,7 @@ class CinetpayPaiementController extends Controller
         $la_transaction = Transaction::where('trans_id',$cpm_trans_id)->first();
 
         if($la_transaction->statut == "PENDING"){ //l'api peut etre appeler plusieur fois par cinetpay eviter d'enregistrer le paiement plusieurs fois
-            if($code_reponse_etat_paiement == 0){
+            if($code_reponse_etat_paiement != 0){
                 $la_transaction->statut = 'ACCEPTED';
                 CinetpayPaiementController::paiement_cotisation_reussie($la_transaction);
             }else{
