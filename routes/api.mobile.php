@@ -15,7 +15,7 @@ Route::prefix('/mobile')->group(function(){
 
     Route::get("/liste-crowd/{index_pagination?}",[MobileApiController::class,'liste_crowd']);
     
-    
+    //utilisateur
     Route::post("/enregistrer_un_menbre",[MobileApiController::class,'enregistrer_un_menbre']);
     Route::get("/connexion",[MobileApiController::class,'connexion']);
     Route::get("/details_menbre/{id_menbre}",[MobileApiController::class,'details_menbre']);
@@ -24,7 +24,7 @@ Route::prefix('/mobile')->group(function(){
     Route::get("/infos_pour_tableau_de_bord/{id_menbre}",[MobileApiController::class,'infos_pour_tableau_de_bord']);
     Route::get("/reinitialiser_mot_de_passe/{identifiant}",[MobileApiController::class,'reinitialiser_mot_de_passe']);
 
-    
+    //tontine
     Route::get("/adhesion_via_code_invitation/{identifiant_adhesion}/{id_menbre}",[MobileApiController::class,'adhesion_via_code_invitation']);
     Route::post("/envoyer_invitation_via_sms/{id_tontine}/{id_menbre}",[MobileApiController::class,'envoyer_invitation_via_sms']);
     Route::post("/envoyer_invitation_via_email/{id_tontine}/{id_menbre}",[MobileApiController::class,'envoyer_invitation_via_email']);
@@ -41,7 +41,16 @@ Route::prefix('/mobile')->group(function(){
 
     Route::get("/paiement_cotisation/{id_tontine}/{id_menbre}",[MobileApiController::class,'paiement_cotisation']);
 
+//waricrowd
+Route::get("/mes_waricrowds/{id_menbre}",[MobileApiController::class,'liste_waricrowd_dutilisateur']);
+Route::get("/liste_categorie_crowd",[MobileApiController::class,'liste_categorie_crowd']);
+Route::get("/details_waricrowd/{id_crowd}/{id_menbre}",[MobileApiController::class,'details_waricrowd']);
+Route::post("/creer_waricrowd/{id_menbre}",[MobileApiController::class,'enregistrer_un_waricrowd']);
+Route::post("/modifier_un_waricrowd/{id_tontine}",[MobileApiController::class,'modifier_un_waricrowd']);
+Route::post("/supprimer_waricrowd/{id_tontine}",[MobileApiController::class,'supprimer_waricrowd']);
 
+
+//===========================
     Route::get("/statut-transaction/",function(){
         return view("api/statut_transaction");
     })->name("api.mobile.statut_transaction");

@@ -45,6 +45,10 @@ class Menbre extends Model
         return $this->hasMany(Waricrowd::class,'id_menbre')->orderBy('id','desc');
     }
 
+    public function  mes_waricrowd_pour_mobile(){
+        return $this->hasMany(Waricrowd::class,'id_menbre')->with('categorie')->with('createur')->with('caisse')->orderBy('id','desc');
+    }
+
     public function projets_soutenus(){
         return $this->belongsToMany(Waricrowd::class,'waricrowd_menbres');
     }

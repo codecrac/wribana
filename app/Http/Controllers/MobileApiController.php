@@ -10,6 +10,8 @@ use App\Models\MenbreTontine;
 use App\Models\CaisseTontine;
 use App\Models\Transaction;
 use App\Models\CompteMenbre;
+use App\Models\CategorieWaricrowd;
+use App\Models\CaisseWaricrowd;
 use App\Models\Devise;
 
 use App\Http\Controllers\SmsController;
@@ -408,7 +410,6 @@ class MobileApiController extends Controller
         $les_tontines = $le_menbre->mes_tontines_pour_mobile;
         return json_encode($les_tontines);
     }
-    
     
     public function details_tontine($id_tontine,$id_menbre_connecter)
     {
@@ -856,6 +857,168 @@ class MobileApiController extends Controller
             return json_encode($reponse);
     }
 
+////===================WARICROWDS=========================
+
+public function liste_waricrowd_dutilisateur($id_menbre){ //les tontines de l'utilisateur connecter
+    $le_menbre = Menbre::find($id_menbre);
+
+    $mes_waricrowd = $le_menbre->mes_waricrowd_pour_mobile;
+    return json_encode($mes_waricrowd);
+}
+
+public function liste_categorie_crowd(){
+    $liste_categorie_crowd = CategorieWaricrowd::all();
+    return json_encode($liste_categorie_crowd);
+}
+
+public function details_waricrowd($id_crowd,$id_menbre){
+    $liste_categorie_crowd = Waricrowd::with("createur")->with("caisse")->with("transactions")->where("id","=",$id_crowd)->where("id_menbre","=",$id_menbre)->first();
+    return json_encode($liste_categorie_crowd);
+}
+
+public function enregistrer_un_waricrowd(Request $request,$id_menbre_connecter)
+{
+    $donnees_formulaire = $request->all();
+    $id_categorie_waricrowd = $donnees_formulaire['id_categorie_waricrowd'];
+    $titre = $donnees_formulaire['titre'];
+    $description_courte = $donnees_formulaire['description_courte'];
+    $description_complete = $donnees_formulaire['description_complete'];
+    $montant_objectif = $donnees_formulaire['montant_objectif'];
+    $pitch_video = $this->formaterLienPitch($donnees_formulaire['lien_pitch_video']);
+
+    if( empty($id_categorie_waricrowd)  || empty($titre)  || empty($description_courte)  || empty($description_complete)  || empty($montant_objectif) ){
+        return json_encode(
+            array(
+                "success" => false,
+                "message" => "Tous les champs avec (*) devant sont obligatoires",
+            )
+        );
+    }
+
+    $le_crowd = new Waricrowd();
+    $le_crowd->id_categorie = $id_categorie_waricrowd;
+    $le_crowd->id_menbre = $id_menbre_connecter;
+    $le_crowd->titre = $titre;
+    $le_crowd->description_courte = $description_courte;
+    $le_crowd->description_complete = $description_complete;
+    $le_crowd->montant_objectif = $montant_objectif;
+    $le_crowd->lien_pitch_video = $pitch_video;
+
+    $nom_image_illustration=null;
+    if($request->hasFile('image_illustration')){
+        $uploaddir = public_path('images/waricrowd/');
+        $nom_image_illustration = 'images/waricrowd/'. basename($_FILES['image_illustration']['name']);
+        move_uploaded_file($_FILES['image_illustration']['tmp_name'], $nom_image_illustration);
+
+        $le_crowd->image_illustration = $nom_image_illustration;
+    }
+
+    if($le_crowd->save()){
+        //creer la caisse qui va avec
+        $la_caisse_de_crowd = CaisseWaricrowd::findOrNew($le_crowd->id);
+        $la_caisse_de_crowd->id_waricrowd = $le_crowd->id;
+        $la_caisse_de_crowd->montant_objectif = $montant_objectif;
+        $la_caisse_de_crowd->montant = 0;
+        $la_caisse_de_crowd->save();
+
+        $route = route('espace_menbre.details_waricrowd',[$le_crowd->id]);
+
+        $success = true;
+        $notification = "Operation effectuée avec succes ";
+    }else{
+        $success = false;
+        $notification = "Quelquechose s'est mal passée, veuillez rééssayer";
+    }
+
+    return json_encode(
+        array(
+            "success" => $success,
+            "id_crowd" => $le_crowd->id,
+            "message" => $notification,
+        )
+    );
+}
+
+public function modifier_un_waricrowd(Request $request,$id_crowd,$id_menbre_connecter){
+    $donnees_formulaire = $request->all();
+
+    $id_categorie_waricrowd = $donnees_formulaire['id_categorie_waricrowd'];
+    $titre = $donnees_formulaire['titre'];
+    $description_courte = $donnees_formulaire['description_courte'];
+    $description_complete = $donnees_formulaire['description_complete'];
+    $montant_objectif = $donnees_formulaire['montant_objectif'];
+    $pitch_video = $this->formaterLienPitch($donnees_formulaire['lien_pitch_video']);
+
+    $le_crowd = Waricrowd::find($id_crowd);
+    $le_crowd->id_categorie = $id_categorie_waricrowd;
+    $le_crowd->id_menbre = $id_menbre_connecter;
+    $le_crowd->titre = $titre;
+    $le_crowd->description_courte = $description_courte;
+    $le_crowd->description_complete = $description_complete;
+    $le_crowd->montant_objectif = $montant_objectif;
+    if(!empty($pitch_video)){
+        $le_crowd->lien_pitch_video = $pitch_video;
+    }
+
+    $nom_image_illustration=null;
+    if($request->hasFile('image_illustration')){
+        $uploaddir = public_path('images/waricrowd/');
+        $nom_image_illustration = 'images/waricrowd/'. basename($_FILES['image_illustration']['name']);
+        move_uploaded_file($_FILES['image_illustration']['tmp_name'], $nom_image_illustration);
+
+        $le_crowd->image_illustration = $nom_image_illustration;
+    }
+
+    if($le_crowd->save()){
+        //creer la caisse qui va avec
+        $la_caisse_de_crowd = CaisseWaricrowd::findOrNew($le_crowd->id);
+        $la_caisse_de_crowd->id_waricrowd = $le_crowd->id;
+        $la_caisse_de_crowd->montant_objectif = $montant_objectif;
+        $la_caisse_de_crowd->save();
+
+        $success = true;
+        $notification = "Operation effectuée avec succes";
+    }else{
+        $success = false;
+        $notification = "Quelquechose s'est mal passée, veuillez reessayer";
+    }
+
+  
+    return json_encode(
+        array(
+            "success" => $success,
+            "message" => $notification,
+        )
+    );
+}
+
+
+
+public function supprimer_waricrowd(Request $request,$id_tontine){
+    $le_crowd = Waricrowd::find($id_tontine);
+//        dd($le_crowd->transactions);
+    if(sizeof($le_crowd->transactions) == 0){
+        $le_crowd->delete();
+        $success = true;
+        $notification = "Operation bien effectuée";
+    }else{
+        $success = false;
+        $notification = "Vous ne pouvez pas supprimer un waricrowd apres que des transactions ai été effectuées";
+    }
+    
+  
+    return json_encode(
+        array(
+            "success" => $success,
+            "message" => $notification,
+        )
+    );
+}
+
+
+
+
+
 ////===================UTILITAIRES=========================
     private function creer_session_menbre($reponse,$le_menbre)
     {
@@ -910,4 +1073,24 @@ class MobileApiController extends Controller
             return false;
         }
     }
+
+    public  function formaterLienPitch($lien_pitch){
+        $lien_pour_integration =null;
+        // bon format = https://www.youtube.com/embed/bethOeuIkWI
+        $tableau = explode('watch?v=',$lien_pitch);
+        $copier_dans_la_barre_dadresse = sizeof($tableau)==2;
+        if($copier_dans_la_barre_dadresse) {
+            $lien_pour_integration = str_replace('watch?v=', 'embed/', $lien_pitch);
+        }else{
+//            https://youtu.be/DzH5aRoMYLw
+            if(str_contains($lien_pitch,'youtu.be')){
+                $tableau = explode('youtu.be/',"$lien_pitch");
+//                dd($tableau);
+                $id_video = $tableau[1];
+                $lien_pour_integration = "https://www.youtube.com/embed/$id_video";
+            }
+        }
+        return $lien_pour_integration;
+    }
+    
 }

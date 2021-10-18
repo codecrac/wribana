@@ -156,7 +156,7 @@
                             <div class="form-group">
 
                                 <input class="form-control" type="hidden" name="id_crowd" value='{{$le_crowd->id}}' required/>
-                                <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="100" required/>
+                                <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="1" required/>
                                 <br/>
                                 <h3 class="text-center">
                                     @csrf
@@ -175,7 +175,7 @@
             <div class="card">
                 <div class="card-header">
                     <hr/>
-                    <h5 class="text-center"> Transactions </h5>
+                    <h5 class="text-center"> Mes Transactions </h5>
                     <hr/>
                 </div>
                 <div class="card-body">

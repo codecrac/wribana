@@ -38,7 +38,8 @@ class EspaceMenbreWaricrowdController extends Controller
         return view('espace_menbre/waricrowd/editer',compact('le_crowd','liste_categorie_waricrowd'));
     }
 
-    public function enregistrer_un_waricrowd(Request $request){
+    public function enregistrer_un_waricrowd(Request $request)
+    {
         $donnees_formulaire = $request->all();
         $id_categorie_waricrowd = $donnees_formulaire['id_categorie_waricrowd'];
         $titre = $donnees_formulaire['titre'];
@@ -61,18 +62,18 @@ class EspaceMenbreWaricrowdController extends Controller
 
         $nom_image_illustration=null;
         if($request->hasFile('image_illustration')){
-//            dd("have file");
+        //            dd("have file");
             $uploaddir = public_path('images/waricrowd/');
             $nom_image_illustration = 'images/waricrowd/'. basename($_FILES['image_illustration']['name']);
             move_uploaded_file($_FILES['image_illustration']['tmp_name'], $nom_image_illustration);
 
-//            $nom_image_illustration = time().'.'.request()->img->getClientOriginalExtension();
-//            dd($nom_image_illustration);
-//            $image->move(public_path('images/waricrowd'), $nom_image_illustration);
+            //            $nom_image_illustration = time().'.'.request()->img->getClientOriginalExtension();
+            //            dd($nom_image_illustration);
+            //            $image->move(public_path('images/waricrowd'), $nom_image_illustration);
             $le_crowd->image_illustration = $nom_image_illustration;
         }
 
-//dd("no file");
+        //dd("no file");
         if($le_crowd->save()){
             //creer la caisse qui va avec
             $la_caisse_de_crowd = CaisseWaricrowd::findOrNew($le_crowd->id);
@@ -116,7 +117,6 @@ class EspaceMenbreWaricrowdController extends Controller
 
         $nom_image_illustration=null;
         if($request->hasFile('image_illustration')){
-//            dd("have file");
             $uploaddir = public_path('images/waricrowd/');
             $nom_image_illustration = 'images/waricrowd/'. basename($_FILES['image_illustration']['name']);
             move_uploaded_file($_FILES['image_illustration']['tmp_name'], $nom_image_illustration);
@@ -124,7 +124,6 @@ class EspaceMenbreWaricrowdController extends Controller
             $le_crowd->image_illustration = $nom_image_illustration;
         }
 
-//dd("no file");
         if($le_crowd->save()){
             //creer la caisse qui va avec
             $la_caisse_de_crowd = CaisseWaricrowd::findOrNew($le_crowd->id);
