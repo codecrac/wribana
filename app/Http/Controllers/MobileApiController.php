@@ -479,8 +479,6 @@ class MobileApiController extends Controller
                 mail($email,'REINITIALISATION DE MOT DE PASSE',$message,$headers);
             }
 
-        //            dd($nouveau_mdp,$email);
-
             $le_menbre->mot_de_passe = $mdp_cacher;
             $le_menbre->save();
         }else{

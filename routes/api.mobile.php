@@ -18,6 +18,7 @@ Route::prefix('/mobile')->group(function(){
     //utilisateur
     Route::post("/enregistrer_un_menbre",[MobileApiController::class,'enregistrer_un_menbre']);
     Route::get("/connexion",[MobileApiController::class,'connexion']);
+    Route::post("/connexion",[MobileApiController::class,'connexion']);
     Route::get("/details_menbre/{id_menbre}",[MobileApiController::class,'details_menbre']);
     Route::post("/confirmer_compte_menbre/{id_menbre}",[MobileApiController::class,'confirmer_compte_menbre']);
     Route::post("/entrer_code_de_confirmation_et_choisir_devise/{id_menbre}",[MobileApiController::class,'entrer_code_de_confirmation_et_choisir_devise']);
