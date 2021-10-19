@@ -75,6 +75,7 @@ class MobileApiController extends Controller
         $le_menbre->adresse = $adresse;
         $le_menbre->etat_us = $etat_us;
         $le_menbre->email = $email;
+        $le_menbre->code_postal = $code_postal;
         $le_menbre->save();
 
         $success = true;
