@@ -186,21 +186,22 @@ class MobileApiController extends Controller
         return $reponse;
     }
 
-    public function post_code_confirmation_changer_tel($id_menbre_connecter){
+    public function post_code_confirmation_changer_tel(Request $request,$id_menbre_connecter){
         $donnees_formulaire = $request->all();
-        $le_code = $donnees_formulaire['code'];
+        $le_code = $donnees_formulaire['code_confirmation'];
         $nouveau_telephone = $donnees_formulaire['nouveau_telephone'];
+        $le_menbre = Menbre::find($id_menbre_connecter);
         if ($le_code == $le_menbre->code_de_confirmation) {
             $le_menbre->telephone = $nouveau_telephone;
             $le_menbre->save();
             $success = true;
-            $notification = "Operation bien effectuée";
+            $message = "Operation bien effectuée";
         }else {
             $success = false;
-            $notification = "code invalide, rééssayez.";
+            $message = "code invalide, rééssayez.";
         }
         $reponse = array(
-            "success" => false,
+            "success" => $success,
             "message" => $message,
         );
         return $reponse;
