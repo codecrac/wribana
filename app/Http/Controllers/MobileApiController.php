@@ -24,11 +24,157 @@ class MobileApiController extends Controller
 
 //===================VITRINE#VITRINE---#----VITRINE#VITRINE--------#----------VITRINE#VITRINE#VITRINE#VITRINE#VITRINE
     public function liste_crowd($index_pagination=0){
-        $les_crowds = Waricrowd::with('categorie')->with('createur')->with('caisse')->skip($index_pagination)->limit(25)->get();
+        $les_crowds = Waricrowd::where('etat','=','valider')->with('categorie')->with('createur')->with('caisse')->skip($index_pagination)->limit(25)->get();
         return $les_crowds;
         return json_encode($les_crowds);
     }
 
+
+    public function modifier_infos_genrale_dun_menbre(Request $request,$id_menbre)
+    {
+
+
+        $donnee_formulaire = $request->all();
+        $nom_complet = $donnee_formulaire['nom_complet'];
+        $pays = $donnee_formulaire['pays'];
+        $ville = $donnee_formulaire['ville'];
+        $adresse = $donnee_formulaire['adresse'];
+        $etat_us = $donnee_formulaire['etat_us'];
+        $code_postal = $donnee_formulaire['code_postal'];
+        $email = $donnee_formulaire['email'];
+
+        if( empty($nom_complet) || empty($pays) || 
+        empty($ville) || empty($adresse) ){
+            
+            $message = "Tous les champs avec (*) sont obligatoire" ;
+            $reponse = array(
+                "success" => false,
+                "message" => $message,
+            );
+            return $reponse;
+        }
+
+
+        //        ---------------Verifie existence des identifiant
+        if ($email != null) {
+            $email_existe_deja = $this->checkExistenceEmailPourAutrePersonne($email,$id_menbre);
+            if ($email_existe_deja) {
+                $message = "Cette adresse email est déja utilisée.";
+                $reponse = array(
+                    "success" => false,
+                    "message" => $message,
+                );
+                return $reponse;
+            }
+        }
+       
+        $le_menbre = Menbre::find($id_menbre);
+        $le_menbre->nom_complet = $nom_complet;
+        $le_menbre->pays = $pays;
+        $le_menbre->ville = $ville;
+        $le_menbre->adresse = $adresse;
+        $le_menbre->etat_us = $etat_us;
+        $le_menbre->email = $email;
+        $le_menbre->save();
+
+        $success = true;
+        $message = "Votre profil a bien été mmodifié";
+
+        
+        $reponse = array(
+            "success" => $success,
+            "message" => $message,
+        );
+        return $reponse;
+
+    }
+
+    public function modifier_mot_de_passe_dun_menbre(Request $request,$id_menbre)
+    {
+
+        $donnee_formulaire = $request->all();
+        $mot_de_passe_actuel = $donnee_formulaire['mot_de_passe_actuel'];
+        $bon_mot_de_passe = $this->VerifieLeMotDePasse($mot_de_passe_actuel,$id_menbre);
+
+        if($bon_mot_de_passe){
+            $mot_de_passe = $donnee_formulaire['nouveau_mot_de_passe'];
+            $confirmer_mot_de_passe = $donnee_formulaire['confirmer_nouveau_mot_de_passe'];
+           
+            $le_menbre = Menbre::find($id_menbre);
+            if(!empty($mot_de_passe) && !empty($confirmer_mot_de_passe) ){
+                if($mot_de_passe != $confirmer_mot_de_passe){
+                    $couleur = "danger";
+                    $message = "Les mots de passe ne sont pas identiques.";
+                    $reponse = array(
+                        "success" => false,
+                        "message" => $message,
+                    );
+                }else{
+                    $mot_de_passe_cacher = md5($confirmer_mot_de_passe);
+                    $le_menbre->mot_de_passe = $mot_de_passe_cacher;
+                    $le_menbre->save();
+                    $message = "Modification du mot de passe effectuée ";
+                    $reponse = array(
+                        "success" => true,
+                        "message" => $message,
+                    );
+                }            
+            }else{
+                $reponse = array(
+                    "success" => false,
+                    "message" => "Nouveau mot de passe invalide (vide)",
+                );
+            }
+
+        }else{
+            
+            $reponse = array(
+                "success" => false,
+                "message" =>  "Mot de passe actuel incorrect",
+            );
+        }
+
+        return $reponse;
+    }
+
+
+    public function modifier_telephone_compte(Request $request,$id_menbre_connecter)
+    {
+        //nouveau code
+        $code_de_confirmation = rand(1111, 9999) * 12;
+        $le_menbre->code_de_confirmation = $code_de_confirmation;
+        $le_menbre->save();
+
+        $notification = "Numero Invalide";
+        $donnees_formulaire = $request->all();
+        $telephone = $donnees_formulaire['nouveau_telephone'];
+        if (is_numeric($telephone)) {
+            if (!($this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre_connecter))) {
+                $le_numero = $telephone;
+                $code = $code_de_confirmation;
+                $contenu_notification = SmsContenuNotification::first();
+                $message_confirmation = $contenu_notification['confirmation_compte'];
+                $le_message = str_replace('$code$',$code,$message_confirmation);
+                SmsController::sms_info_bip($le_numero, $le_message);
+
+                $reponse = array(
+                    "success" => true,
+                    "message" => "un message de confirmation vous a été envoyé",
+                );
+            }else{
+              $reponse = array(
+                "success" => false,
+                "message" => "Ce numero a deja été utilisé",
+            );
+            }
+        } else {
+              $reponse = array(
+                        "success" => false,
+                        "message" => "Numero Invalide",
+                    );
+        };
+        return $reponse;
+    }
 
     public function enregistrer_un_menbre(Request $request)
     {
@@ -347,7 +493,10 @@ class MobileApiController extends Controller
         return json_encode($infos_pour_tableau_de_bord);
     }
 
-
+    public function details_profil_utilisateur($id_menbre){
+        $lutilisateur = Menbre::where('id','=',$id_menbre)->first();
+        return json_encode($lutilisateur);
+    }
     
     public function enregistrer_tontine(Request $request,$id_menbre_connecter)
     {
@@ -1121,6 +1270,15 @@ public function supprimer_waricrowd(Request $request,$id_crowd,$id_menbre){
         }
     }
 
+    private function checkExistenceEmailPourAutrePersonne($email,$id_menbre){
+        $menbre_existant = Menbre::where('email','=',$email)->where('id','!=',$id_menbre)->first();
+        if($menbre_existant != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     private function checkExistenceNumero($numero)
     {
         $menbre_existant = Menbre::where('telephone', '=', $numero)->first();
@@ -1141,6 +1299,15 @@ public function supprimer_waricrowd(Request $request,$id_crowd,$id_menbre){
         }
     }
 
+    private function VerifieLeMotDePasse($mdp,$id_menbre){
+        $mdp_cacher = md5($mdp);
+        $menbre_existant = Menbre::where('mot_de_passe','=',$mdp_cacher)->where('id','=',$id_menbre)->first();
+        if($menbre_existant != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
     public  function formaterLienPitch($lien_pitch){
         $lien_pour_integration =null;
         // bon format = https://www.youtube.com/embed/bethOeuIkWI

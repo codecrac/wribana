@@ -22,6 +22,10 @@ Route::prefix('/mobile')->group(function(){
     Route::post("/confirmer_compte_menbre/{id_menbre}",[MobileApiController::class,'confirmer_compte_menbre']);
     Route::post("/entrer_code_de_confirmation_et_choisir_devise/{id_menbre}",[MobileApiController::class,'entrer_code_de_confirmation_et_choisir_devise']);
     Route::get("/infos_pour_tableau_de_bord/{id_menbre}",[MobileApiController::class,'infos_pour_tableau_de_bord']);
+    Route::get("/details_profil_utilisateur/{id_menbre}",[MobileApiController::class,'details_profil_utilisateur']);
+    Route::post("/modifier_infos_genrale_dun_menbre/{id_menbre}",[MobileApiController::class,'modifier_infos_genrale_dun_menbre']);
+    Route::post("/modifier_mot_de_passe_dun_menbre/{id_menbre}",[MobileApiController::class,'modifier_mot_de_passe_dun_menbre']);
+    Route::post("/modifier_telephone_compte/{id_menbre}",[MobileApiController::class,'modifier_telephone_compte']);
     Route::get("/reinitialiser_mot_de_passe/{identifiant}",[MobileApiController::class,'reinitialiser_mot_de_passe']);
 
     //tontine

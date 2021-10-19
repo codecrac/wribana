@@ -492,18 +492,18 @@ class EspaceMenbre extends Controller
         $couleur = "danger";
 
         $donnee_formulaire = $request->all();
-//        dd($donnee_formulaire);
+        //        dd($donnee_formulaire);
         $mot_de_passe_actuel = $donnee_formulaire['mot_de_passe_actuel'];
         $bon_mot_de_passe = $this->VerifieLeMotDePasse($mot_de_passe_actuel,$id_menbre);
 
         if($bon_mot_de_passe){
             $nom_complet = $donnee_formulaire['nom_complet'];
-//            $telephone = $donnee_formulaire['telephone'];
+        //            $telephone = $donnee_formulaire['telephone'];
             $email = $donnee_formulaire['email'];
             $mot_de_passe = $donnee_formulaire['mot_de_passe'];
             $confirmer_mot_de_passe = $donnee_formulaire['confirmer_mot_de_passe'];
 
-//        ---------------Verifie existence des identifiant
+        //        ---------------Verifie existence des identifiant
             if($email !=null){
                 $route_connexion = route('connexion_menbre');
                 $email_existe_deja = $this->checkExistenceEmailPourAutrePersonne($email,$id_menbre);
@@ -514,18 +514,11 @@ class EspaceMenbre extends Controller
                 }
             }
 
-          /*  $telephone_existe_deja = $this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre);
-            if($telephone_existe_deja){
-                $message = "Ce numero de telephone a déja utilisé par une autre personne";
-                $notification = "<div class='alert alert-$couleur'> $message  </div>";
-                return redirect()->back()->with('notification',$notification);
-            }*/
-
-//        ---------------Verifie mot de passe et enregistrement
+        //        ---------------Verifie mot de passe et enregistrement
 
             $le_menbre = Menbre::find($id_menbre);
             $le_menbre->nom_complet = $nom_complet;
-//            $le_menbre->telephone = $telephone;
+        //            $le_menbre->telephone = $telephone;
             $le_menbre->email = $email;
 
             if(!empty($mot_de_passe) && !empty($confirmer_mot_de_passe) ){
@@ -557,7 +550,8 @@ class EspaceMenbre extends Controller
     }
 
 
-    public function modifier_telephone_compte(Request $request){
+    public function modifier_telephone_compte(Request $request)
+    {
         $la_session = session(MenbreController::$cle_session);
         if ($la_session == null) {
             return redirect()->route('connexion_menbre');
@@ -580,16 +574,16 @@ class EspaceMenbre extends Controller
         $donnees_formulaire = $request->all();
         $telephone = $donnees_formulaire['nouveau_telephone'];
         if (is_numeric($telephone)) {
-            if (strlen($telephone) >= 10) {
+            if (!($this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre_connecter))) {
                 $le_numero = $telephone;
                 $code = $le_menbre->code_de_confirmation;
-//                dd($code);
+        //                dd($code);
                 $contenu_notification = SmsContenuNotification::first();
                 $message_confirmation = $contenu_notification['confirmation_compte'];
                 $le_message = str_replace('$code$',$code,$message_confirmation);
-//                dd($le_numero);
+        //                dd($le_numero);
                 SmsController::sms_info_bip($le_numero, $le_message);
-//                return redirect()->route('espace_menbre.entrer_code_confirmation_pour_modification',compact('le_numero'));
+        //                return redirect()->route('espace_menbre.entrer_code_confirmation_pour_modification',compact('le_numero'));
                 return view('espace_menbre/profil/entrer_code_confirmation_pour_modification',compact('le_numero'));
             } else {
                 return redirect()->back()->with('notification', $notification);
