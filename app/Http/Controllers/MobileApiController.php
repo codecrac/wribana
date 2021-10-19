@@ -139,34 +139,43 @@ class MobileApiController extends Controller
     }
 
 
-    public function modifier_telephone_compte(Request $request,$id_menbre_connecter)
+    public function modifier_telephone_compte(Request $request,$id_menbre_connecter,$telephone)
     {
         //nouveau code
         $code_de_confirmation = rand(1111, 9999) * 12;
+        $le_menbre = Menbre::find($id_menbre_connecter);
         $le_menbre->code_de_confirmation = $code_de_confirmation;
         $le_menbre->save();
 
         $notification = "Numero Invalide";
-        $donnees_formulaire = $request->all();
-        $telephone = $donnees_formulaire['nouveau_telephone'];
+        // $donnees_formulaire = $request->input();
+        // $telephone = $donnees_formulaire['nouveau_telephone'];
         if (is_numeric($telephone)) {
-            if (!($this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre_connecter))) {
-                $le_numero = $telephone;
-                $code = $code_de_confirmation;
-                $contenu_notification = SmsContenuNotification::first();
-                $message_confirmation = $contenu_notification['confirmation_compte'];
-                $le_message = str_replace('$code$',$code,$message_confirmation);
-                SmsController::sms_info_bip($le_numero, $le_message);
-
+            if($telephone == $le_menbre->telephone){
                 $reponse = array(
-                    "success" => true,
-                    "message" => "un message de confirmation vous a été envoyé",
+                    "success" => false,
+                    "message" => "Modification effectuée",
                 );
-            }else{
-              $reponse = array(
-                "success" => false,
-                "message" => "Ce numero a deja été utilisé",
-            );
+            }
+            else{
+                    if (!($this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre_connecter))) {
+                        $le_numero = $telephone;
+                        $code = $code_de_confirmation;
+                        $contenu_notification = SmsContenuNotification::first();
+                        $message_confirmation = $contenu_notification['confirmation_compte'];
+                        $le_message = str_replace('$code$',$code,$message_confirmation);
+                        SmsController::sms_info_bip($le_numero, $le_message);
+
+                        $reponse = array(
+                            "success" => true,
+                            "message" => "un message de confirmation vous a été envoyé",
+                        );
+                     }else{
+                        $reponse = array(
+                            "success" => false,
+                            "message" => "Ce numero a deja été utilisé",
+                        );
+                     }
             }
         } else {
               $reponse = array(
@@ -174,6 +183,26 @@ class MobileApiController extends Controller
                         "message" => "Numero Invalide",
                     );
         };
+        return $reponse;
+    }
+
+    public function post_code_confirmation_changer_tel($id_menbre_connecter){
+        $donnees_formulaire = $request->all();
+        $le_code = $donnees_formulaire['code'];
+        $nouveau_telephone = $donnees_formulaire['nouveau_telephone'];
+        if ($le_code == $le_menbre->code_de_confirmation) {
+            $le_menbre->telephone = $nouveau_telephone;
+            $le_menbre->save();
+            $success = true;
+            $notification = "Operation bien effectuée";
+        }else {
+            $success = false;
+            $notification = "code invalide, rééssayez.";
+        }
+        $reponse = array(
+            "success" => false,
+            "message" => $message,
+        );
         return $reponse;
     }
 
