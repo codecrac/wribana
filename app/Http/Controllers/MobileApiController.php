@@ -24,7 +24,8 @@ class MobileApiController extends Controller
 
 //===================VITRINE#VITRINE---#----VITRINE#VITRINE--------#----------VITRINE#VITRINE#VITRINE#VITRINE#VITRINE
     public function liste_crowd($index_pagination=0){
-        $les_crowds = Waricrowd::where('etat','=','valider')->with('categorie')->with('createur')->with('caisse')->skip($index_pagination)->limit(25)->get();
+        $les_crowds = Waricrowd::orderBy('id','DESC')->where('etat','=','valider')->with('categorie')->with('createur')
+        ->with('caisse')->skip($index_pagination)->limit(25)->get();
         return $les_crowds;
         return json_encode($les_crowds);
     }
