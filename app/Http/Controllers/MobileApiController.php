@@ -9,6 +9,7 @@ use App\Models\Tontine;
 use App\Models\MenbreTontine;
 use App\Models\CaisseTontine;
 use App\Models\Transaction;
+use App\Models\TransactionWaricrowd;
 use App\Models\CompteMenbre;
 use App\Models\CategorieWaricrowd;
 use App\Models\CaisseWaricrowd;
@@ -887,11 +888,8 @@ class MobileApiController extends Controller
         $message = " Bonjour, le menbre $nom_complet de waribana vous invite a rejoindre la tontine <<$titre>>,Connectez vous inscrivez-vous pour repondre a son invitation;
             Code d'adhesion : $code_adhesion.
             $adresse";
-
-        // dd($le_numero);
+        
         $reponse = SmsController::sms_info_bip($le_numero,$message);
-        // dd($reponse);
-
         
         $une_invitation = new Invitation();
         $une_invitation->id_tontine = $id_tontine;
@@ -1058,14 +1056,13 @@ public function liste_categorie_crowd(){
     return json_encode($liste_categorie_crowd);
 }
 
-public function details_waricrowd($id_crowd,$id_menbre=null){
+public function details_waricrowd($id_crowd,$id_menbre){
     if($id_menbre !=null){ //quand c'est un crowd qui appartient au menbre
-        $liste_categorie_crowd = Waricrowd::with("categorie")->with("createur")->with("caisse")->
-        with("transactions")->where("id","=",$id_crowd)->where("id_menbre","=",$id_menbre)->first();
-    }
-    else{ //quand c'est un projet soutenus
-        $liste_categorie_crowd = Waricrowd::with("categorie")->with("createur")->with("caisse")->
-        with("transactions")->where("id","=",$id_crowd)->first();
+        $liste_categorie_crowd = Waricrowd::with("categorie")->with("createur")->with("caisse")
+        ->where("id","=",$id_crowd)->first();
+
+        $transaction_du_menbre = TransactionWaricrowd::where('id_menbre','=',$id_menbre)->where('id_waricrowd','=',$id_crowd)->get();
+        $liste_categorie_crowd["transactions"] = $transaction_du_menbre;
     }
     
     return json_encode($liste_categorie_crowd);
@@ -1196,6 +1193,16 @@ public function modifier_un_waricrowd(Request $request,$id_crowd,$id_menbre_conn
     }
 
     $le_crowd = Waricrowd::find($id_crowd);
+
+    if(sizeof($le_crowd->transactions) > 0 ){
+        return json_encode(
+            array(
+                "success" => false,
+                "message" => "Vous ne pouvez pas modifier un crowd apres que des transactions ai été effectuées",
+            )
+        );
+    }
+
     $le_crowd->id_categorie = $id_categorie_waricrowd;
     $le_crowd->id_menbre = $id_menbre_connecter;
     $le_crowd->titre = $titre;

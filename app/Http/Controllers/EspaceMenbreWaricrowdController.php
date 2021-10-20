@@ -105,6 +105,12 @@ class EspaceMenbreWaricrowdController extends Controller
         $id_menbre_connecter = $la_session['id'];
 
         $le_crowd = Waricrowd::find($id_crowd);
+
+        if(sizeof($le_crowd->transactions) > 0 ){
+            $notification = "<div class='alert alert-danger text-center'> Vous ne pouvez pas modifier un crowd apres que des transactions ai été effectuées </div>";
+            return redirect()->back()->with("notification",$notification);
+        }
+    
         $le_crowd->id_categorie = $id_categorie_waricrowd;
         $le_crowd->id_menbre = $id_menbre_connecter;
         $le_crowd->titre = $titre;
