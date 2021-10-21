@@ -96,24 +96,39 @@
                         <li class="{{isset($is_home) ? "current" : "" }}">
                             <a href="{{route('accueil')}}">Accueil</a>
                         </li>
-                        <li class="{{isset($is_decouvrir_projets) ? "current" : "" }}">
-                            <a href="{{route("decouvrir_projets")}}">Decouvrir les projets</a>
-                        </li>
                         <li class="{{isset($is_comment_ca_marche) ? "current" : "" }}">
                             <a href="{{route("comment_ca_marche")}}">Comment ça marche</a>
-                        </li>
-                        <li class="{{isset($is_apropos) ? "current" : "" }}">
-                            <a href="{{route("apropos")}}">Qui Sommes Nous</a>
                         </li>
                         <li class="{{isset($is_faq) ? "current" : "" }}">
                             <a href="{{route("faq")}}">FAQ</a>
                         </li>
+                        
                         <li class="{{isset($is_contact) ? "current" : "" }}">
                             <a href="{{route("contact")}}">Contact</a>
                         </li>
+
+                        <li class="{{isset($is_decouvrir_projets) ? "current" : "" }}">
+                            <a href="{{route("decouvrir_projets")}}">Decouvrir les projets</a>
+                        </li>
+
+                        <li class="{{isset($is_apropos) ? "current" : "" }}">
+                            <a href="{{route("apropos")}}">Qui sommes nous</a>
+                        </li>
+                        @if(!$est_connecter)
+                            <li>
+                                <a href="{{route("inscription_menbre")}}">S'inscrire</a>
+                            </li>
+                            <li>
+                                <a href="{{route("connexion_menbre")}}">Se connecter</a>
+                            </li>
+                        @else
+                            <li class="{{isset($is_apropos) ? "current" : "" }}">
+                                <a href="{{route("espace_menbre.accueil")}}">Mon compte</a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
-                <div class="navbar-extra d-flex align-items-center">
+                {{-- <div class="navbar-extra d-flex align-items-center">
                     @if($est_connecter)
                         <a  href="{{route("espace_menbre.accueil")}}" class="main-btn nav-btn d-none d-sm-inline-block"> Mon Compte <i class="far fa-arrow-right"></i>
                         </a>
@@ -127,7 +142,7 @@
                         <span></span>
                     </a>
                     @endif
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

@@ -6,7 +6,8 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xl-10">
-                    <span class="tagline wow fadeInUp" data-wow-delay="0.3s">une solution web et mobile d’épargne collaborative</span>
+                    <span class="tagline wow fadeInUp" data-wow-delay="0.3s">Votre solution de financement entre proches</span>
+                    {{-- <span class="tagline wow fadeInUp" data-wow-delay="0.3s">une solution web et mobile d’épargne collaborative</span> --}}
                     <h1 class="title wow fadeInUp" data-wow-delay="0.4s">
                         Waribana,<br/> on s’arrange
                     </h1>
@@ -31,7 +32,59 @@
 </section>
 <!--====== Hero Area End ======-->
 
-<!--====== Categories Section Start ======-->
+
+	<!--====== Section Qui sommes nous ======-->
+	<section class="popular-categories section-gap" id="avantages">
+		<div class="container">
+			<div class="row align-items-center justify-content-lg-start justify-content-center">
+				<div class="col-xl-6 col-lg-7 col-md-8">
+					<div class="about-text mt-md-70 mb-md-50">
+						<div class="common-heading mb-30">
+							<h2 class="title">Qui sommes nous </h2>
+						</div>
+						<p>
+							Waribana est une solution de gestion des tontines destinée à toutes personnes souhaitant épargner ou collecter des fonds. 
+                            Toutes les périodes, 
+                            des proches mettent de l'argent sur la table et la collecte est reversée à chacun d'entre eux à tour de rôle
+						</p>
+					</div>
+				</div>
+                <div class="col-md-5">
+						<div class="author-note wow fadeInUp">
+
+							<ul>
+								<li>
+                                    <h6>
+                                        <br/><br/><br/><br/>
+                                        <i class="far fa-check-circle"></i> Tontines
+                                    </h6>
+                                    <p style="padding-left: 15px">Opération de Crédit-Épargne. Un crédit pour les uns et une épargne pour les autres. </p>
+                                </li>
+								<li>
+                                    <h6>
+                                        <br/><br/>
+                                        <i class="far fa-check-circle"></i> Entre proches 
+                                    </h6>
+                                    <p style="padding-left: 15px"> Le financement de vos projets se fait entre proches. Nul besoin d'une banque </p>
+                                </li>
+								<li>
+                                    <h6>
+                                        <br/><br/>
+                                        <i class="far fa-check-circle"></i> Simplissime
+                                    </h6>
+                                    <p style="padding-left: 15px"> Pas de dossier à constituer. Il suffit de se rassembler avec ceux qu'on aime. </p>
+                                </li>
+							</ul>
+						</div>
+                </div>
+			</div>
+		</div>
+	</section>
+	<!--====== About Section End ======-->
+
+
+
+<!--====== Section Avantages ======-->
 <section class="popular-categories section-gap" id="avantages">
     <div class="container">
         <div class="categories-header">
@@ -39,14 +92,14 @@
                 <div class="col-auto">
                     <div class="common-heading mb-30">
 							<span class="tagline">
-{{--								<i class="fas fa-plus"></i>--}}
+    {{--								<i class="fas fa-plus"></i>--}}
 								<span class="heading-shadow-text"></span>
 							</span>
-                        <h2 class="title">Pourquoi Nous</h2>
+                        <h2 class="title">Avantages</h2>
                     </div>
                 </div>
                 <div class="col-auto">
-{{--                    <a href="project-1.html" class="main-btn mb-30">View All Category <i class="far fa-angle-right"></i></a>--}}
+    {{--                    <a href="project-1.html" class="main-btn mb-30">View All Category <i class="far fa-angle-right"></i></a>--}}
                 </div>
             </div>
         </div>
@@ -69,7 +122,7 @@
                     </div>
                     <div class="content">
                         <h4 class="title"><a href="project-details.html">Flexible</a></h4>
-                        <p>Faire la tontine avec des personnes de confiance sans être à proximité</p>
+                        <p>faire la tontine avec des personnes de confiance sans être à proximité</p>
                     </div>
                 </div>
             </div>
@@ -80,7 +133,7 @@
                     </div>
                     <div class="content">
                         <h4 class="title"><a href="project-details.html">Securisée</a></h4>
-                        <p>Toutes les transactions sont sécurisées </p>
+                        <p>une organisation certifiée avec toutes les transactions sécurisées </p>
                     </div>
                 </div>
             </div>
@@ -102,7 +155,7 @@
                     </div>
                     <div class="content">
                         <h4 class="title"><a href="project-details.html">Pratique</a></h4>
-                        <p>Retirez votre argent quelque soit l’endroit et avec le moyen de paiement qui vous convient</p>
+                        <p>retirez votre argent quel que soit l’endroit et avec le moyen de paiement qui vous convient </p>
                     </div>
                 </div>
             </div>
@@ -122,7 +175,60 @@
 </section>
 <!--====== Categories Section End ======-->
 
-<!--====== About Section Start ======-->
+
+
+<!--====== Section Comment ça marche ======-->
+	<section class="popular-categories section-gap" id="avantages">
+		<div class="container">
+            <div class="col-12">
+                <h2 class="title text-center">Comment ça marche </h2>
+            </div>
+			<div class="row align-items-center justify-content-lg-start justify-content-center">
+                <div class="col-md-6">
+                    <div class="about-text mt-md-70 mb-md-50">
+                        <div class="common-heading mb-30">
+                            <br/><br/>
+                            <h5 class="text-uppercase text-center"> Tontine Waribana  </h5>
+                        </div>
+                        <p>
+                            Avec la tontine Waribana, à chaque période, l'argent constitué est versé automatiquement à l'un de vos proches 
+                            en fonction de l'ordre que vous avez défini.
+                        </p>
+                        <br/>
+                        <ul>
+                            <li> <b> &gt; Créer une tontine :</b> Définissez le nombre de personnes, le montant régulier et la fréquence et le tour est joué </li>
+                            <li> <b> &gt;  Invitez vos amis :</b> C'est avec vos proches que vous pouvez désormais effectuer vos opérations de crédit ou d'épargne. </li>
+                            <li> <b> &gt;  Collecter à tour de rôle :</b> Chaque période, vous mettez une somme prédéfinie. La totalité sera reversée à chacun d'entre vous à tour de rôle. </li>
+                        </ul>
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="about-text mt-md-70 mb-md-50">
+                        <div class="common-heading mb-30">
+                            <h5 class="text-uppercase text-center"> Waricrowd  </h5>
+                        </div>
+                        <p>
+                            Avec le Waricrowd, vous pouvez collecter une multitude de petits dons
+                                afin de financer vos projets. Vous pouvez également soutenir des projets.
+                        </p>
+                        <br/>
+                        <ul>
+                            <li> <b> &gt; Soumettre son projet</b> </li>
+                            <li> <b> &gt; Soutenir un projet</b> </li>
+                        </ul>
+
+                    </div>
+                </div>
+			</div>
+		</div>
+	</section>
+	<!--====== About Section End ======-->
+
+
+
+<!--====== About Section Start ======--
 <section class="about-section-one">
     <div class="container">
         <div class="row align-items-center justify-content-lg-start justify-content-center">
@@ -135,7 +241,7 @@
                 <div class="about-text mt-md-70 mb-md-50">
                     <div class="common-heading mb-30">
 							<span class="tagline">
-{{--								<i class="fas fa-plus"></i> Qui Sommes Nous--}}
+            {{--								<i class="fas fa-plus"></i> Qui Sommes Nous--}}
 								<span class="heading-shadow-text">{{--Nous--}}</span>
 							</span>
                         <h2 class="title">Waribana</h2>
@@ -165,7 +271,7 @@
         </div>
     </div>
 </section>
-<!--====== About Section End ======-->
+--====== About Section End ======-->
 
 <!--====== Counter Area Start ======-->
 <section class="counter-section-one mt-negative">
@@ -180,10 +286,12 @@
                     <div class="content white-color text-center">
                         <div class="count-wrap" style="display:block">
                             <h3 class="title">
-                               Des frais de gestion inedit ! Nous facturons la gestion de votre tontine a hauteur de
+                                Des frais de gestion inédit,
+                            
+                                <span class="count">1</span>
+                                <span class="suffix">%</span>
+                                seulement
                             </h3>
-                            <span class="count">1</span>
-                           <span class="suffix">%</span>
 
                         </div>
                     </div>

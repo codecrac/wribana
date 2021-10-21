@@ -219,12 +219,7 @@ class MenbreController extends Controller
         $donnees_formulaire = $request->all();
         $telephone = $donnees_formulaire['telephone'];
         $existe_pour_quelqun_dautre =  $this->checkExistenceNumeroPourAutrePersonne($numero,$id_menbre);
-        if($existe_pour_quelqun_dautre){
-            $notification = "<div class='alert alert-danger'>Ce numero est deja associé a un autre compte</div>";
-            return redirect()->back()->with('notification', $notification);
-        }
-
-        if (is_numeric($telephone)) {
+        if ($existe_pour_quelqun_dautre) {
             if (strlen($telephone) >= 10) {
                 $le_menbre->telephone = $telephone;
                 $le_menbre->save();
@@ -241,6 +236,8 @@ class MenbreController extends Controller
                 return redirect()->back()->with('notification', $notification);
             }
         } else {
+            
+            $notification = "<div class='alert alert-danger'>Ce numero est deja associé a un autre compte</div>";
             return redirect()->back()->with('notification', $notification);
         };
         return view("espace_menbre/profil/confirmation_de_compte", compact('le_menbre'));
