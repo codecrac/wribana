@@ -147,7 +147,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{route('espace_menbre.profil',[$la_session['id']] ) }}">
+                    <a class="nav-link" href="{{route('espace_menbre.index_waribank',[$la_session['id']] ) }}">
                         <i class="mdi mdi-account menu-icon"></i>
                         <span class="menu-title">Waribank </span>
                     </a>

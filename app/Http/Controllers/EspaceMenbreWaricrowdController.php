@@ -93,7 +93,8 @@ class EspaceMenbreWaricrowdController extends Controller
         return redirect()->back()->with("notification",$notification);
     }
 
-    public function modifier_un_waricrowd(Request $request,$id_crowd){
+    public function modifier_un_waricrowd(Request $request,$id_crowd)
+    {
         $donnees_formulaire = $request->all();
 
         $id_categorie_waricrowd = $donnees_formulaire['id_categorie_waricrowd'];

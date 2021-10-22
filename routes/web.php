@@ -62,6 +62,9 @@ Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function 
 //    ===================PROFIL MENBRES======================
     include 'profil_espace_menbre_route.php';
 
+//    ===================COMPTE WALLET======================
+    include 'route_waribank.php';
+
 //    ===================Tontines======================
     include 'tontine_espace_menbre_route.php';
 

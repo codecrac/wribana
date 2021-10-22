@@ -639,6 +639,7 @@ class EspaceMenbre extends Controller
         }
     }
 
+  
     public function confirmer_retrait_dargent(Request $request){
         $donnees_formulaire = $request->input();
         $la_session = session(MenbreController::$cle_session);

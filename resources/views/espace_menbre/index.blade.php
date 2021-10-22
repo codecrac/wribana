@@ -12,14 +12,6 @@ function convertCurrency($amount,$from_currency,$to_currency){
 
 @extends('espace_menbre.base_espace_menbre')
 
-@section('style_completmentaire')
-    <style>
-        li,.nav-link{
-            color : black !important;
-        }
-    </style>
-@endsection
-
 @section('content')
 
     <div class="row">
