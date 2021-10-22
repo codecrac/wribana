@@ -3479,7 +3479,7 @@ a:hover {
 
 /*======= Partners Logo =======*/
 .partners-logos-one .logo {
-	background-color: #e5f6ee;
+	/* background-color: #e5f6ee; */
 	width: 100%;
 	height: 115px;
 	display: -webkit-box;

@@ -354,17 +354,17 @@
             </div>
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="logo mt-30">
-                    <a href="#"><img src="/template/assets/img/partners/02.png" alt="Image"></a>
+                    <a href="#"><img src="/assets/partenaires/moov-africa.jpeg" alt="Image"></a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="logo mt-30">
-                    <a href="#"><img src="/template/assets/img/partners/03.png" alt="Image"></a>
+                    <a href="#"><img src="https://www.africaguinee.com/sites/default/files/field/image/orange_40_3.jpg" alt="Image"></a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="logo mt-30">
-                    <a href="#"><img src="/template/assets/img/partners/04.png" alt="Image"></a>
+                    <a href="#"><img src="/assets/partenaires/mtn.jpg" alt="Image"></a>
                 </div>
             </div>
         </div>
