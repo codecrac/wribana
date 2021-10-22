@@ -84,7 +84,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <span> auteur : {{$item_crowd->createur->nom_complet}} </span>
+                                <span> porteur : {{$item_crowd->createur->nom_complet}} </span>
                                 <br/>
                                 <span class="date"><i class="far fa-calendar-alt"></i> {{date('d-m-Y',strtotime($item_crowd['created_at']))}}</span>
 
