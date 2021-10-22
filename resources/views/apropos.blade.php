@@ -132,7 +132,7 @@
 							<img src="template/assets/img/about/about-gallery-1.jpg" alt="Image">
 						</div>
 						<div class="img-two wow fadeInUp">
-							<img src="template/assets/img/about/about-gallery-2.jpg" alt="Image">
+							<img src="template/assets/img/about/about-gallery-2.jpg" width="500px" alt="Image">
 						</div>
 						<div class="pattern">
 							<img src="template/assets/img/about/about-gallery-pattern.png" alt="Pattern">
@@ -160,19 +160,6 @@
 		<div class="container">
 			<div class="row align-items-center justify-content-center">
 				
-				<div class="col-xl-7 col-lg-8 col-md-10">
-					<div class="about-gallery wow fadeInRight">
-						<div class="img-one">
-							<img src="template/assets/img/about/about-gallery-1.jpg" alt="Image">
-						</div>
-						<div class="img-two wow fadeInUp">
-							<img src="template/assets/img/about/about-gallery-2.jpg" alt="Image">
-						</div>
-						<div class="pattern">
-							<img src="template/assets/img/about/about-gallery-pattern.png" alt="Pattern">
-						</div>
-					</div>
-				</div>
 				<div class="col-xl-5 col-lg-7 col-md-9 col-sm-10">
 					<div class="about-text mb-lg-50">
 						<p>
@@ -197,6 +184,20 @@
 								<p>Le contributeur participe au capital financé de l’entreprise et devient actionnaire du projet et peut recevoir des dividendes.</p>
 							</li>
 						</ul>
+					</div>
+				</div>
+				
+				<div class="col-xl-7 col-lg-8 col-md-10">
+					<div class="about-gallery wow fadeInRight">
+						<div class="img-one">
+							<img src="template/assets/img/about/about-gallery-1.jpg" alt="Image">
+						</div>
+						<div class="img-two wow fadeInUp">
+							<img src="template/assets/img/about/about-gallery-2.jpg" width="500px" alt="Image">
+						</div>
+						<div class="pattern">
+							<img src="template/assets/img/about/about-gallery-pattern.png" alt="Pattern">
+						</div>
 					</div>
 				</div>
 			</div>

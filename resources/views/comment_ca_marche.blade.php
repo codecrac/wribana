@@ -24,12 +24,12 @@
     <section class="about-section-four section-gap">
         <div class="container">
             <div class="row align-items-center justify-content-center">
-                <div class="col-lg-6 col-md-10">
+                {{-- <div class="col-lg-6 col-md-10">
                     <div class="about-img mb-md-70">
                         <img src="template/assets/img/about/about-three.jpg" alt="Image">
                     </div>
-                </div>
-                <div class="col-lg-6 col-md-9">
+                </div> --}}
+                <div class="col-md-12">
                     <div class="about-text">
                         <div class="common-heading mb-30">
 							<span class="tagline">
@@ -45,6 +45,10 @@
                             <li><i class="fas fa-check"></i>Aider les utilisateurs à accéder à un crédit plus facilement et moins cher que les solutions actuelles</li>
                             <li><i class="fas fa-check"></i> la possibilité aux utilisateurs de se constituer une épargne en finançant leurs proches.</li>
                         </ul>
+                        <br/>
+                            <hr/>
+                                <h4 class="text-center"> Tontines << Crédit epargne >> </h4>
+                            <hr/>
                         <br/>
                         <p>
                             C’est une solution de ce qui s'appelle Tontines (Crédit-Epargne) entre proches.
@@ -70,14 +74,20 @@
         <div class="container">
             <div class="row align-items-center justify-content-center">
                 
-                <div class="col-lg-6 col-md-9">
+                <div class="col-md-6">
+                    <div class="about-img mb-md-70">
+                        <img src="template/assets/img/tontine.png" alt="Image">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
                     <div class="about-text">
                         <div class="common-heading mb-30">
 							<span class="tagline">
 								<!--<i class="fas fa-plus"></i> ?-->
 								<span class="heading-shadow-text"><!--Comment ça marche--></span>
 							</span>
-                            <h2 class="title">Comment ça marche ?</h2>
+                            <h2 class="title">Resumé</h2>
                         </div>
                         <p class="mb-20">
                             Les participants d’une tontine définissent
@@ -93,28 +103,27 @@
                         <p>
                             Ensuite chaque période, toutes les personnes paient le montant prédéfini et la somme est reversée à chacun d’eux à tour de rôle.
                         </p>
-                        <br/>
-                        Quand un client souhaite contracter un crédit classique, il doit disposer de :
-                        <br/>
-                        <ul style="padding-left: 15px">
-                            <li><i class="fas fa-angle-right"></i> Un dossier extrêmement solide</li>
-                            <li><i class="fas fa-angle-right"></i> Justifier de ses revenus</li>
-                            <li><i class="fas fa-angle-right"></i> Avoir un emploi stable</li>
-                            <li><i class="fas fa-angle-right"></i> Ne pas avoir de charges élevées, etc…</li>
-                        </ul>
-                        <br/>
-                        Et même avec tous ces justificatifs, l’obtention du crédit n’est pas garantie. Donc au mieux, il faut un dossier très lourd à monter, au pire, le dossier est monté et le crédit refusé.
-                        <br/><br/>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 col-md-10">
-                    <div class="about-img mb-md-70">
-                        <img src="template/assets/img/about/about-three.jpg" alt="Image">
                     </div>
                 </div>
             </div>
                 <div class="col-12">
+                  
+                    <br/>
+                    <hr/>
+                        <h4 class="text-center"> Avantages </h4>
+                    <hr/>
+                    <br/>
+                    Quand un client souhaite contracter un crédit classique, il doit disposer de :
+                    <br/>
+                    <ul style="padding-left: 15px">
+                        <li><i class="fas fa-angle-right"></i> Un dossier extrêmement solide</li>
+                        <li><i class="fas fa-angle-right"></i> Justifier de ses revenus</li>
+                        <li><i class="fas fa-angle-right"></i> Avoir un emploi stable</li>
+                        <li><i class="fas fa-angle-right"></i> Ne pas avoir de charges élevées, etc…</li>
+                    </ul>
+                    <br/>
+                    Et même avec tous ces justificatifs, l’obtention du crédit n’est pas garantie. Donc au mieux, il faut un dossier très lourd à monter, au pire, le dossier est monté et le crédit refusé.
+                    <br/><br/>
                     <br/>
                     Les avantages donc des tontines sont donc :
                 </div>
