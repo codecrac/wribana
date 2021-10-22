@@ -83,7 +83,9 @@ class EspaceMenbreWaricrowdController extends Controller
             $la_caisse_de_crowd->save();
 
             $route = route('espace_menbre.details_waricrowd',[$le_crowd->id]);
-            $notification = "<div class='alert alert-success text-center'> Operation effectuée avec succes <a href='$route'>Voir le waricrowd</a> </div>";
+            $notification = "<div class='alert alert-success text-center'> 
+                                L’étude de votre projet est en cours de validation et Vous recevrez une notification lorsque votre projet est validé
+                            <a href='$route'>Voir le waricrowd</a> </div>";
         }else{
             $notification = "<div class='alert alert-danger text-center'> Quelquechose s'est mal passée, veuillez rééssayer </div>";
         }

@@ -11,8 +11,8 @@
                     <h1 class="title wow fadeInUp" data-wow-delay="0.4s">
                         Waribana,<br/> on s’arrange
                     </h1>
-                    <a href="#avantages" class="main-btn wow fadeInUp" data-wow-delay="0.5s">
-                        Decouvrir <i class="far fa-arrow-right"></i>
+                    <a href="{{route('connexion_menbre')}}" class="main-btn wow fadeInUp" data-wow-delay="0.5s">
+                        s’identifier  <i class="far fa-arrow-right"></i>
                     </a>
                 </div>
             </div>
@@ -104,7 +104,7 @@
             </div>
         </div>
         <div class="row justify-content-center fancy-icon-boxes">
-            <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0s">
+            {{-- <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0s">
                 <div class="fancy-box-item mt-30">
                     <div class="icon">
                         <i class="flaticon-badges"></i>
@@ -114,7 +114,7 @@
                         <p>Une organisation certifiée</p>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="fancy-box-item mt-30">
                     <div class="icon">
@@ -123,28 +123,6 @@
                     <div class="content">
                         <h4 class="title"><a href="project-details.html">Flexible</a></h4>
                         <p>faire la tontine avec des personnes de confiance sans être à proximité</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0.2s">
-                <div class="fancy-box-item mt-30">
-                    <div class="icon">
-                        <i class="flaticon-"></i>
-                    </div>
-                    <div class="content">
-                        <h4 class="title"><a href="project-details.html">Securisée</a></h4>
-                        <p>une organisation certifiée avec toutes les transactions sécurisées </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0.3s">
-                <div class="fancy-box-item mt-30">
-                    <div class="icon">
-                        <i class="flaticon-video-camera"></i>
-                    </div>
-                    <div class="content">
-                        <h4 class="title"><a href="project-details.html">Service Client</a></h4>
-                        <p>Un service client très réactif et disponible 7jours/7</p>
                     </div>
                 </div>
             </div>
@@ -159,7 +137,30 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0.5s">
+            <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0.2s">
+                <div class="fancy-box-item mt-30">
+                    <div class="icon">
+                        <i class="fa fa-lock"></i>
+                    </div>
+                    <div class="content">
+                        <h4 class="title"><a href="project-details.html">Securisée</a></h4>
+                        <p>une organisation certifiée avec toutes les transactions sécurisées </p>
+                    </div>
+                </div>
+            </div>
+            {{-- <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="fancy-box-item mt-30">
+                    <div class="icon">
+                        <i class="flaticon-video-camera"></i>
+                    </div>
+                    <div class="content">
+                        <h4 class="title"><a href="project-details.html">Service Client</a></h4>
+                        <p>Un service client très réactif et disponible 7jours/7</p>
+                    </div>
+                </div>
+            </div> --}}
+            
+            {{-- <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0.5s">
                 <div class="fancy-box-item mt-30">
                     <div class="icon">
                         <i class="flaticon-salad"></i>
@@ -169,7 +170,7 @@
                         <p>Faites un pas vers une épargne plus sûre</p>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </section>
@@ -228,7 +229,7 @@
 
 
 
-<!--====== About Section Start ======--
+<!--====== About Section Start ======-->
 <section class="about-section-one">
     <div class="container">
         <div class="row align-items-center justify-content-lg-start justify-content-center">
@@ -241,37 +242,24 @@
                 <div class="about-text mt-md-70 mb-md-50">
                     <div class="common-heading mb-30">
 							<span class="tagline">
-            {{--								<i class="fas fa-plus"></i> Qui Sommes Nous--}}
 								<span class="heading-shadow-text">{{--Nous--}}</span>
 							</span>
                         <h2 class="title">Waribana</h2>
                     </div>
                     <p>
-                        Une solution d’entraide, d’où, une plateforme destinée à toutes personnes souhaitant épargner ou collecter des fonds.
+                        Une solution d’entraide, d’où, une plateforme destinée à toutes personnes souhaitant épargner 
+                        ou collecter des fonds.
                     </p>
 
-                    <a href="#avantages" class="main-btn wow fadeInUp" data-wow-delay="0.5s">
+                    <a href="{{route('comment_ca_marche')}}" class="main-btn wow fadeInUp" data-wow-delay="0.5s">
                         En savoir plus <i class="far fa-arrow-right"></i>
                     </a>
-                    {{--<div class="author-note wow fadeInUp">
-                        <ul>
-                            <li><i class="far fa-check"></i> Non-Profite Crowdfunding Agency</li>
-                            <li><i class="far fa-check"></i> We're Successful Institute </li>
-                        </ul>
-                        <div class="author-info">
-                            <div class="author-img">
-                                <img src="assets/img/author-thumbs/01.jpg" alt="Image">
-                            </div>
-                            <h5 class="name">Michel H. Heart</h5>
-                            <span class="title">CEO & Founder</span>
-                        </div>
-                    </div>--}}
                 </div>
             </div>
         </div>
     </div>
 </section>
---====== About Section End ======-->
+<!--====== About Section End ======-->
 
 <!--====== Counter Area Start ======-->
 <section class="counter-section-one mt-negative">
@@ -357,7 +345,7 @@
         <div class="row partners-logos-one">
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="logo mt-30">
-                    <a href="#"><img src="/template/assets/img/partners/01.png" alt="Image"></a>
+                    <a href="#"><img src="/assets/partenaires/bgfi.jpg" alt="Image"></a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-6">

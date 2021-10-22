@@ -96,61 +96,69 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
-                       aria-controls="ui-basic">
+                       aria-controls="ui-basic"
+                       id="close_on_dashboard_1" 
+                       >
                         <i class="mdi mdi-stack-exchange menu-icon"></i>
                         <span class="menu-title">Tontines</span>
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="collapse" id="ui-basic">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.liste_tontine')}}"> Mes Tontines  </a> </li>
                             <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.ajouter_tontine')}}">Creer une Tontine</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.liste_tontine')}}"> Mes Tontines  </a> </li>
                             <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.invitations')}}">Invitations</a></li>
                         </ul>
                     </div>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+                    <a class="nav-link" data-toggle="collapse" href="#auth"
+                     aria-expanded="false" aria-controls="auth"
+                      id="close_on_dashboard_2"
+                     >
                         <i class="mdi mdi-account-multiple menu-icon"></i>
                             <span class="menu-title">Waricrowd</span>
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="collapse" id="auth">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.liste_waricrowd')}}"> Mes Waricrowd  </a> </li>
                             <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.creer_un_waricrowd')}}">Creer un Waricrowd</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.liste_waricrowd')}}"> Mes Waricrowds  </a> </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('espace_menbre.projets_soutenus')}}">
+                                    <span class="menu-title">Projets Soutenus</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('decouvrir_projets')}}">
+                                    <span class="menu-title">Decouvrir les projets</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>
 
-
                 <li class="nav-item">
-                    <a class="nav-link" href="{{route('espace_menbre.projets_soutenus')}}">
-                        <i class="mdi mdi-heart menu-icon"></i>
-                        <span class="menu-title">Projets Soutenus</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('decouvrir_projets')}}">
-                        <i class="mdi mdi-eye-plus menu-icon"></i>
-                        <span class="menu-title">Decouvrir les projets</span>
+                    <a class="nav-link" href="{{route('espace_menbre.profil',[$la_session['id']] ) }}">
+                        <i class="mdi mdi-account menu-icon"></i>
+                        <span class="menu-title">Mon Profil</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('espace_menbre.profil',[$la_session['id']] ) }}">
                         <i class="mdi mdi-account menu-icon"></i>
-                        <span class="menu-title">Mon compte</span>
+                        <span class="menu-title">Waribank </span>
                     </a>
                 </li>
-                <li class="nav-item">
+
+                {{-- <li class="nav-item">
                     <a class="nav-link" href="{{route('espace_menbre.deconnexion') }}">
                         <i class="mdi mdi-logout menu-icon"></i>
                         <span class="menu-title">Deconnexion</span>
                     </a>
-                </li>
+                </li> --}}
 
             </ul>
         </nav>

@@ -45,14 +45,14 @@
                             <div class="row">
                                 <div class="col-md-6 text-center">
                                     @if($le_crowd->createur->id == $la_session['id'])
-                                        <a href="{{route('espace_menbre.editer_crowd',[$le_crowd['id']])}}" class="btn btn-warning">Editer le waricrowd</a>
+                                        <a href="{{route('espace_menbre.editer_crowd',[$le_crowd['id']])}}" class="btn btn-success">Editer le waricrowd</a>
                                     @endif
                                 </div>
                                 @if($le_crowd->createur->id == $la_session['id'])
                                     @if(sizeof($le_crowd->transactions)==0)
                                             <div class="col-md-6 text-center">
                                                 <a href="{{route('espace_menbre.supprimer_waricrowd',[$le_crowd['id']])}}"
-                                                   class="btn btn-danger">Supprimer le waricrowd</a>
+                                                   class="btn btn-info">Supprimer le waricrowd</a>
                                             </div>
                                         @endif
                                 @endif
@@ -76,18 +76,9 @@
 
                         @php
                             $pourcentage = round($le_crowd->caisse->montant *100 / $le_crowd->caisse->montant_objectif,2);
-                            if($pourcentage <40){
-                                $couleur= "danger";
-                            }elseif($pourcentage <60){
-                                $couleur = "warning";
-                            }elseif($pourcentage <100){
-                                $couleur = "info";
-                            }else{
-                                $couleur = "success";
-                            }
                         @endphp
 
-                        <li> Montant atteind : <span class="badge badge-{{$couleur}}">{{$pourcentage}} %</span> [ {{number_format($le_crowd->caisse->montant,0,',',' ')}} F ]</li>
+                        <li> Montant atteind : <b>{{$pourcentage}} %</b> [ {{number_format($le_crowd->caisse->montant,0,',',' ')}} F ]</li>
                         <li> Nombre de soutien : {{sizeof($le_crowd->transactions)}}</li>
                         <li> Creer le  : {{ date('d/m/Y',strtotime($le_crowd->created_at)) }}</li>
 

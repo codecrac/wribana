@@ -18,7 +18,7 @@
                 <div class="col-md-8">
                     <div class='row'>
                         <div class="col-md-2 pt-2">
-                            <h4>Categorie</h4>
+                            <h4>Catégorie</h4>
                         </div>
                         <div class='col-md-4'>
                             <select name="id_categorie">
@@ -39,21 +39,10 @@
                     </div>
 
                 </div>
-                {{--<div class="col-md-3">
-                    <h3>date de publication</h3>
-                    <input type="date" name="date_publication" value="{{$date_publication}}" />
-                </div>
-                <div class="col-md-3">
-                    <h3>Nom du projet</h3>
-                    <input type="text" name="mot_cle" value="{{$mot_cle}}" />
-                </div>
-                <div class="col-md-1">
-                    <button type="submit" class="btn btn-dark">Trier</button>
-                </div>
-                    --}}
             </div>
         </form>
     </div>
+    <br/><br/>
     <!--====== Project Area Start ======-->
     <section class="project-section section-gap-extra-bottom primary-soft-bg">
         <div class="container">
@@ -95,6 +84,8 @@
                                         </div>
                                     @endif
                                 </div>
+                                <span> auteur : {{$item_crowd->createur->nom_complet}} </span>
+                                <br/>
                                 <span class="date"><i class="far fa-calendar-alt"></i> {{date('d-m-Y',strtotime($item_crowd['created_at']))}}</span>
 
                                 <h3 class="text-center">

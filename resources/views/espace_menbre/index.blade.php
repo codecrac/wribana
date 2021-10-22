@@ -1,43 +1,24 @@
 <?php
 
-/*
- function convertCurrency($amount,$from_currency,$to_currency){
-    $apikey = '6441d9b217f8a6674225';
-
-    $from_Currency = urlencode($from_currency);
-    $to_Currency = urlencode($to_currency);
-    $query =  "{$from_Currency}_{$to_Currency}";
-
-    // change to the free URL if you're using the free version
-    $query = urlencode($query);
-    $apikey = urlencode($apikey);
-    $url = "https://free.currconv.com/api/v7/convert?q=$query&compact=ultra&apiKey=$apikey";
-
-    try{
-        $json = file_get_contents($url);
-        $obj = json_decode($json, true);
-        $val = floatval($obj["$query"]);
-        $total = $val * $amount;
-        return number_format($total, 0, ',', ' ');
-    }catch(Exception $e){
-        return 'erreur';
-    }
-
-}
-*/
 function convertCurrency($amount,$from_currency,$to_currency){
     $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($from_currency,$to_currency);
     return $quotient_de_conversion * $amount;
 }
 
-//uncomment to test
-//echo convertCurrency(10, 'USD', 'PHP');
 ?>
 @php
     $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
 @endphp
 
 @extends('espace_menbre.base_espace_menbre')
+
+@section('style_completmentaire')
+    <style>
+        li,.nav-link{
+            color : black !important;
+        }
+    </style>
+@endsection
 
 @section('content')
 
@@ -47,7 +28,7 @@ function convertCurrency($amount,$from_currency,$to_currency){
                 <div class="d-flex align-items-end flex-wrap">
                     <div class="mr-md-3 mr-xl-5">
                         <h2>Bienvenue <small>{{$le_menbre['nom_complet']}}.</small></h2>
-                        <h4>1 {{$la_session['code_devise']}} = <?php  echo convertCurrency(1, $la_session['code_devise'], 'XOF'); ?> XOF</h4>
+                        {{-- <h4>1 {{$la_session['code_devise']}} = <?php  echo convertCurrency(1, $la_session['code_devise'], 'XOF'); ?> XOF</h4> --}}
 {{--                        <p class="mb-md-0">Your analytics dashboard template.</p>--}}
                     </div>
                     <div class="d-flex">
@@ -74,7 +55,7 @@ function convertCurrency($amount,$from_currency,$to_currency){
                     <ul class="nav nav-tabs px-4" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#"
-                               role="tab" aria-controls="overview" aria-selected="true">#</a>
+                               role="tab" aria-controls="overview" aria-selected="true"></a>
                         </li>
                     </ul>
                     <div class="tab-content py-0 px-0">
@@ -99,12 +80,11 @@ function convertCurrency($amount,$from_currency,$to_currency){
                                 <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
 {{--                                    <i class="mdi mdi-eye mr-3 icon-lg text-success"></i>--}}
                                     <div class="d-flex flex-column justify-content-around">
-                                        <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.invitations')}}">Invitations reçues</a></small>
+                                        <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.invitations')}}">Invitations</a></small>
                                         <h5 class="mr-2 mb-0">{{$nombre_invitation_recues}}</h5>
                                     </div>
                                 </div>
-                                <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
-{{--                                    <i class="mdi mdi-download mr-3 icon-lg text-warning"></i>--}}
+                                {{-- <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
                                     <div class="d-flex flex-column justify-content-around">
                                         <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.projets_soutenus')}}"> Projets Soutenus </a> </small>
                                         <h5 class="mr-2 mb-0">{{sizeof($le_menbre->projets_soutenus)}}</h5>
@@ -115,7 +95,7 @@ function convertCurrency($amount,$from_currency,$to_currency){
                                         <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.profil',[$le_menbre->id])}}"> Solde </a> </small>
                                         <h5 class="mr-2 mb-0">{{number_format($le_menbre->compte->solde,0,',',' ')}} {{$la_session['devise']}}</h5>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -124,14 +104,8 @@ function convertCurrency($amount,$from_currency,$to_currency){
         </div>
     </div>
     <div class="row">
-        <div class="col-md-9 grid-margin stretch-card">
+        <div class="col-md-8 grid-margin stretch-card">
             <div class="card">
-                <div class="card-header">
-                    <hr/>
-                        <h4 class="text-center card-title">Invitations reçues</h4>
-                    {!! Session::get('notification','') !!}
-                    <hr/>
-                </div>
                 <div class="card-body">
                     <p class="card-title">Adherer a une tontine via le code d'invitation</p>
                     <form method="post" action="{{route('espace_menbre.adhesion_via_code_invitation')}}">
@@ -145,51 +119,9 @@ function convertCurrency($amount,$from_currency,$to_currency){
                             </div>
                         </div>
                     </form>
-                    <div class="table-responsive">
-                        <table id="recent-purchases-listing" class="table">
-                            <thead>
-                            <tr>
-                                <th class="tr_bordered">Envoyée par</th>
-                                <th class="tr_bordered">Tontine</th>
-                                <th class="tr_bordered">Montant a cotiser</th>
-                                <th class="tr_bordered">Frequence de depot</th>
-                                <th class="tr_bordered">Statut</th>
-                                <th class="tr_bordered">#</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($invitation_recues as $item_iv_recue)
-
-                                <tr>
-                                    <td class="tr_bordered">{{$item_iv_recue->menbre_inviteur->nom_complet}}</td>
-                                    <td class="tr_bordered">{{$item_iv_recue->tontine->titre}}</td>
-                                    <td class="tr_bordered">{{number_format($item_iv_recue->tontine->montant,0,',',' ')}}</td>
-                                    <td class="tr_bordered">{{formater_frequence($item_iv_recue->tontine->frequence_depot_en_jours)}} F</td>
-                                    <td class="tr_bordered"><label class="badge badge-danger">{{$item_iv_recue['etat']}}</label></td>
-                                    <td class="tr_bordered">
-                                        <a href="#" onclick="deplier_garde_fou('garde_fou_recues_{{$item_iv_recue['id']}}')">Repondre</a>
-                                        <div class="col-12 garde_fou" id="garde_fou_recues_{{$item_iv_recue['id']}}">
-                                            <form method="post" action="{{route('espace_menbre.reponse_invitation',[$item_iv_recue['id']])}}">
-                                                <select class="form-control" name="reponse" required>
-                                                    <option value>(choisissez)</option>
-                                                    <option value="acceptee">Accepter</option>
-                                                    <option value="refusee">Refuser</option>
-                                                </select>
-                                                <br/>
-                                                @csrf
-                                                <input type="submit" value="valider" class="btn btn-warning">
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
         </div>
-        <div class="col-md-3 grid-margin stretch-card">
+        <div class="col-md-4 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <p class="card-title"><a href="{{route('espace_menbre.profil',[$le_menbre->id])}}"> Solde </a></p>
@@ -205,6 +137,12 @@ function convertCurrency($amount,$from_currency,$to_currency){
     <script>
         window.onload = function() {
             fermer_tous_les_garde_fou();
+            // alert("ks--s");
+            setTimeout(() => {
+                document.getElementById("close_on_dashboard_1").click();
+                document.getElementById("close_on_dashboard_2").click();    
+            }, 500);
+            
         };
 
         function deplier_garde_fou(id){

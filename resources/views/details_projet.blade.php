@@ -67,13 +67,15 @@
                                 <span class="info-title">Objectif</span>
                             </div>
                             <div class="info-box" style="width: 185px">
-                                <span>{{sizeof($le_crowd->transactions)}}</span>
-                                <span class="info-title">Soutien(s)</span>
+                                <span>{{number_format($le_crowd->caisse->montant,0,',',' ')}}  {{$le_crowd->createur->devise_choisie->symbole}}</span>
+                                <span class="info-title">Montant atteinds</span>
                             </div>
                         </div>
                         <div class="project-raised clearfix">
                             <div class="d-flex align-items-center justify-content-between">
-                                <div class="raised-label">Montant atteinds : {{number_format($le_crowd->caisse->montant,0,',',' ')}}  {{$le_crowd->createur->devise_choisie->monaie}}</div>
+                                <div class="raised-label">
+                                    {{-- Montant atteinds : {{number_format($le_crowd->caisse->montant,0,',',' ')}}  {{$le_crowd->createur->devise_choisie->monaie}} --}}
+                                </div>
                                 @php
                                     $pourcentage = round($le_crowd->caisse->montant *100 / $le_crowd->caisse->montant_objectif,2);
                                 @endphp

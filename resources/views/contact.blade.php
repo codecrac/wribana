@@ -85,7 +85,7 @@
                 </div>
             </div>
             <!-- Contact Info End -->
-            <div class="contact-from-area">
+            {{-- <div class="contact-from-area">
                 <div class="row no-gutters">
                     <div class="col-12">
                         <div class="contact-maps">
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </section>
     <!--====== Contact Section End ======-->

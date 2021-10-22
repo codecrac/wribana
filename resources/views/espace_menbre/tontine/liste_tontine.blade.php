@@ -84,7 +84,7 @@
                                     <br/>
                                     {{formater_frequence($ma_tontine['frequence_depot_en_jours'])}}
                                 </td>
-                                <td class="tr_bordered text-danger">
+                                <td class="tr_bordered">
                                     @php
                                       if($ma_tontine->etat == 'ouverte'){
                                             $couleur = 'success';
@@ -94,7 +94,7 @@
                                         $couleur = 'danger';
                                     }
                                     @endphp
-                                    <b class="badge badge-{{$couleur}}">
+                                    <b class="text-uppercase text-{{$couleur}}">
                                         {{$ma_tontine->etat}}
                                     </b>
                                 </td>
@@ -123,11 +123,13 @@
                                                 Cotisation en retard
                                             </span>
                                             @else
-                                                <b class="badge badge-warning">
+                                                <b class="badge">
                                                     Date limite dans {{$intervals}} jours
                                                 </b>
-                                                <br/><br/>
-                                                <b class="badge badge-info">
+                                                <br/>
+                                                <hr/>
+                                                <br/>
+                                                <b class="badge">
                                                     Tour de : {{$ma_tontine->caisse->menbre_qui_prend->nom_complet}}
                                                 </b>
                                             @endif

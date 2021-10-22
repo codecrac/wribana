@@ -90,11 +90,11 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                             <div class="row">
                                 <div class="col-md-6 text-center">
                                     <a href="{{route('espace_menbre.editer_tontine',[$la_tontine['id']])}}"
-                                       class="btn btn-warning">Editer la tontine</a>
+                                       class="btn btn-success">Editer la tontine</a>
                                 </div>
                                 <div class="col-md-6 text-center">
                                     <a href="{{route('espace_menbre.supprimer_tontine',[$la_tontine['id']])}}"
-                                       class="btn btn-danger">Supprimer la tontine</a>
+                                       class="btn btn-info">Supprimer la tontine</a>
                                 </div>
                             </div>
                         @endif

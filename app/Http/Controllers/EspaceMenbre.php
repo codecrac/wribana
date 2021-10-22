@@ -30,12 +30,11 @@ class EspaceMenbre extends Controller
         $le_menbre = Menbre::find($id_menbre_connecter);
 
         $email_inviter = $le_menbre->email;
-        $invitation_recues = [];
+        $nombre_invitation_recues = 0;
         if($email_inviter!=null){
-            $invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->where('etat','=','attente')->get();
+            $nombre_invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->where('etat','=','attente')->count();
         }
-        $nombre_invitation_recues = sizeof($invitation_recues);
-        return view('espace_menbre/index',compact('le_menbre','nombre_invitation_recues','invitation_recues'));
+        return view('espace_menbre/index',compact('le_menbre','nombre_invitation_recues'));
     }
 
     public function deconnexion(){

@@ -9,7 +9,7 @@
 					<!--<i class="fas fa-plus"></i> FAQ-->
 					<span class="heading-shadow-text"><!--FAQ--></span>
 				</span>
-				<h2 class="title">Questions reccurentes</h2>
+				<h2 class="title">Foire Aux Questions</h2>
 			</div>
 
             <div class="row justify-content-center">
@@ -18,621 +18,133 @@
                                 <div class="accordion" id="accordionFaqOne">
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="true" data-target="#accordion-1-1">
-                                            Better Research, Better Design, Better Results
+                                            Peut-on faire confiance à La Tontine En Ligne ?
                                         </h5>
                                         <div id="accordion-1-1" class="collapse show" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                Oui ! La Tontine En Ligne est un site géré par la société …,
+                                                 une société régie par la loi ivoirienne et enregistrée auprès du tribunal de commerce sous le numéro de SIREN : ……….. Elle est domiciliée en Côte d’Ivoire.
                                             </div>
                                         </div>
                                     </div>
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-2">
-                                            Smashing Book Excerpt Bringing Personality Back Web
+                                            Combien de temps dure une tontine ?
                                         </h5>
                                         <div id="accordion-1-2" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                La durée d'une tontine dépend du nombre de participants et de la période choisie.
+                                                 Par exemple une tontine mensuelle de 5 participants va durer 5 mois.
+                                                 Une tontine hebdomadaire de 6 participants va durer 6 semaines par exemple.
                                             </div>
                                         </div>
                                     </div>
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-3">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
+                                            La Tontine est-elle interdite en Côte d’Ivoire ?
                                         </h5>
                                         <div id="accordion-1-3" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                La tontine est parfaitement légale.
                                             </div>
                                         </div>
                                     </div>
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-4">
-                                            How To Improve Your Design Process With Data-Based Personas
+                                            Quels sont les moyens utilisés pour le transfert d'argent ?
                                         </h5>
                                         <div id="accordion-1-4" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                Le paiement des cotisations régulières des tontines se fait par carte.
+                                                 Le reversement se fait par paiement mobile, par carte de crédit et par virement bancaire.
                                             </div>
                                         </div>
                                     </div>
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-5">
-                                            Better Research, Better Design, Better Results
+                                            Puis-changer de carte bancaire au cours d'une tontine ?
                                         </h5>
                                         <div id="accordion-1-5" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                Absolument. Vous avez la possibilité de changer de carte à n'importe quel moment.
+                                                 Les prélèvements se feront ainsi sur la nouvelle carte que vous aurez choisie.
                                             </div>
                                         </div>
                                     </div>
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-6">
-                                            Smashing Book Excerpt Bringing Personality Back Web
+                                            Où je peux recevoir l'argent collecté des tontines ?
                                         </h5>
                                         <div id="accordion-1-6" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                L'argent collecté par les tontines est envoyé par virement bancaire sur votre compte.
                                             </div>
                                         </div>
                                     </div>
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-7">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
+                                            Comment je peux ajouter des participants à ma tontine ?
                                         </h5>
                                         <div id="accordion-1-7" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                Vous pouvez ajouter des participants à des tontines soit en leur envoyant un lien soit par email à partir de votre espace personnel.
                                             </div>
                                         </div>
                                     </div>
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-8">
-                                            How To Improve Your Design Process With Data-Based Personas
+                                            Est-ce qu'une personne anonyme peut créer des tontines sur La Tontine En Ligne ?
                                         </h5>
                                         <div id="accordion-1-8" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                Non malheureusement. Toute personne souhaitant créer des tontines sur La Tontine En Ligne doit fournir une pièce d'identité valable.
                                             </div>
                                         </div>
                                     </div>
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-9">
-                                            Smashing Book Excerpt Bringing Personality Back Web
+                                            Pourquoi des pièces personnelles me sont demandées après l'ouverture d'un compte ?
                                         </h5>
                                         <div id="accordion-1-9" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                Les pièces personnelles sont demandées pour des raisons de sécurité usurpation d'identité,
+                                                 lutte anti-blanchiment, lutte contre le financement terroriste. 
+                                                Cela permettra de sécuriser vos fonds et être en légalité vis-à-vis de la législation ivoirienne.
                                             </div>
                                         </div>
                                     </div>
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-10">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
+                                            Les tontines sont-elles garanties en cas d'impayé par un membre de la tontine ?
                                         </h5>
                                         <div id="accordion-1-10" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="speakers" role="tabpanel">
-                                <div class="accordion" id="accordionFaqTwo">
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="true" data-target="#accordion-2-1">
-                                            Better Research, Better Design, Better Results
-                                        </h5>
-                                        <div id="accordion-2-1" class="collapse show" data-parent="#accordionFaqTwo">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                L'objectif de La Tontine En Ligne est de proposer des tontines entre des proches.
+                                                 Des personnes qui se connaissent entre elles et qui se font confiance. Cependant, La Tontine En Ligne, ne peut donc pas se porter garante en cas d'impayé.
+                                                 C'est à l'utilisateur que revient la responsabilité de choisir les personnes avec qui il souhaite lancer des tontines.
                                             </div>
                                         </div>
                                     </div>
                                     <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-2-2">
-                                            Smashing Book Excerpt Bringing Personality Back Web
+                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-11">
+                                            Qu'est ce qui se passe en cas d'impayé de la part d'un membre ?
                                         </h5>
-                                        <div id="accordion-2-2" class="collapse" data-parent="#accordionFaqTwo">
+                                        <div id="accordion-1-11" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                En cas d'impayé, le site fournit une attestation de situation financière de la personne qui n'a pas payé et les autres membres. 
+                                                L'attestation spécifie le montant dû pour chaque personne, la date de paiement, l'identité de la personne n'ayant pas pu payer.
                                             </div>
                                         </div>
                                     </div>
                                     <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-2-3">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
+                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-12">
+                                            Qu'est-ce que l'indice La Tontine En Ligne ?
                                         </h5>
-                                        <div id="accordion-2-3" class="collapse" data-parent="#accordionFaqTwo">
+                                        <div id="accordion-1-12" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-2-4">
-                                            How To Improve Your Design Process With Data-Based Personas
-                                        </h5>
-                                        <div id="accordion-2-4" class="collapse" data-parent="#accordionFaqTwo">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-2-5">
-                                            Better Research, Better Design, Better Results
-                                        </h5>
-                                        <div id="accordion-2-5" class="collapse" data-parent="#accordionFaqTwo">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-2-6">
-                                            Smashing Book Excerpt Bringing Personality Back Web
-                                        </h5>
-                                        <div id="accordion-2-6" class="collapse" data-parent="#accordionFaqTwo">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-2-7">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
-                                        </h5>
-                                        <div id="accordion-2-7" class="collapse" data-parent="#accordionFaqTwo">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-2-8">
-                                            How To Improve Your Design Process With Data-Based Personas
-                                        </h5>
-                                        <div id="accordion-2-8" class="collapse" data-parent="#accordionFaqTwo">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-2-9">
-                                            Smashing Book Excerpt Bringing Personality Back Web
-                                        </h5>
-                                        <div id="accordion-2-9" class="collapse" data-parent="#accordionFaqTwo">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-2-10">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
-                                        </h5>
-                                        <div id="accordion-2-10" class="collapse" data-parent="#accordionFaqTwo">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="pricing" role="tabpanel">
-                                <div class="accordion" id="accordionFaqThree">
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="true" data-target="#accordion-3-1">
-                                            Better Research, Better Design, Better Results
-                                        </h5>
-                                        <div id="accordion-3-1" class="collapse show" data-parent="#accordionFaqThree">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-3-2">
-                                            Smashing Book Excerpt Bringing Personality Back Web
-                                        </h5>
-                                        <div id="accordion-3-2" class="collapse" data-parent="#accordionFaqThree">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-3-3">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
-                                        </h5>
-                                        <div id="accordion-3-3" class="collapse" data-parent="#accordionFaqThree">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-3-4">
-                                            How To Improve Your Design Process With Data-Based Personas
-                                        </h5>
-                                        <div id="accordion-3-4" class="collapse" data-parent="#accordionFaqThree">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-3-5">
-                                            Better Research, Better Design, Better Results
-                                        </h5>
-                                        <div id="accordion-3-5" class="collapse" data-parent="#accordionFaqThree">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-3-6">
-                                            Smashing Book Excerpt Bringing Personality Back Web
-                                        </h5>
-                                        <div id="accordion-3-6" class="collapse" data-parent="#accordionFaqThree">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="support" role="tabpanel">
-                                <div class="accordion" id="accordionFaqFour">
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="true" data-target="#accordion-4-1">
-                                            Better Research, Better Design, Better Results
-                                        </h5>
-                                        <div id="accordion-4-1" class="collapse show" data-parent="#accordionFaqFour">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-4-2">
-                                            Smashing Book Excerpt Bringing Personality Back Web
-                                        </h5>
-                                        <div id="accordion-4-2" class="collapse" data-parent="#accordionFaqFour">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-4-3">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
-                                        </h5>
-                                        <div id="accordion-4-3" class="collapse" data-parent="#accordionFaqFour">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-4-4">
-                                            How To Improve Your Design Process With Data-Based Personas
-                                        </h5>
-                                        <div id="accordion-4-4" class="collapse" data-parent="#accordionFaqFour">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-4-5">
-                                            Better Research, Better Design, Better Results
-                                        </h5>
-                                        <div id="accordion-4-5" class="collapse" data-parent="#accordionFaqFour">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-4-6">
-                                            Smashing Book Excerpt Bringing Personality Back Web
-                                        </h5>
-                                        <div id="accordion-4-6" class="collapse" data-parent="#accordionFaqFour">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-4-7">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
-                                        </h5>
-                                        <div id="accordion-4-7" class="collapse" data-parent="#accordionFaqFour">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-4-8">
-                                            How To Improve Your Design Process With Data-Based Personas
-                                        </h5>
-                                        <div id="accordion-4-8" class="collapse" data-parent="#accordionFaqFour">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-4-9">
-                                            Smashing Book Excerpt Bringing Personality Back Web
-                                        </h5>
-                                        <div id="accordion-4-9" class="collapse" data-parent="#accordionFaqFour">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-4-10">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
-                                        </h5>
-                                        <div id="accordion-4-10" class="collapse" data-parent="#accordionFaqFour">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="history" role="tabpanel">
-                                <div class="accordion" id="accordionFaqFive">
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="true" data-target="#accordion-5-1">
-                                            Better Research, Better Design, Better Results
-                                        </h5>
-                                        <div id="accordion-5-1" class="collapse show" data-parent="#accordionFaqFive">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-5-2">
-                                            Smashing Book Excerpt Bringing Personality Back Web
-                                        </h5>
-                                        <div id="accordion-5-2" class="collapse" data-parent="#accordionFaqFive">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-5-3">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
-                                        </h5>
-                                        <div id="accordion-5-3" class="collapse" data-parent="#accordionFaqFive">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-5-4">
-                                            How To Improve Your Design Process With Data-Based Personas
-                                        </h5>
-                                        <div id="accordion-5-4" class="collapse" data-parent="#accordionFaqFive">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-5-5">
-                                            Better Research, Better Design, Better Results
-                                        </h5>
-                                        <div id="accordion-5-5" class="collapse" data-parent="#accordionFaqFive">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-5-6">
-                                            Smashing Book Excerpt Bringing Personality Back Web
-                                        </h5>
-                                        <div id="accordion-5-6" class="collapse" data-parent="#accordionFaqFive">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-5-7">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
-                                        </h5>
-                                        <div id="accordion-5-7" class="collapse" data-parent="#accordionFaqFive">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="customers" role="tabpanel">
-                                <div class="accordion" id="accordionFaqSix">
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="true" data-target="#accordion-6-1">
-                                            Better Research, Better Design, Better Results
-                                        </h5>
-                                        <div id="accordion-6-1" class="collapse show" data-parent="#accordionFaqSix">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-6-2">
-                                            Smashing Book Excerpt Bringing Personality Back Web
-                                        </h5>
-                                        <div id="accordion-6-2" class="collapse" data-parent="#accordionFaqSix">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-6-3">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
-                                        </h5>
-                                        <div id="accordion-6-3" class="collapse" data-parent="#accordionFaqSix">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-6-4">
-                                            How To Improve Your Design Process With Data-Based Personas
-                                        </h5>
-                                        <div id="accordion-6-4" class="collapse" data-parent="#accordionFaqSix">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-6-5">
-                                            Better Research, Better Design, Better Results
-                                        </h5>
-                                        <div id="accordion-6-5" class="collapse" data-parent="#accordionFaqSix">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-6-6">
-                                            Smashing Book Excerpt Bringing Personality Back Web
-                                        </h5>
-                                        <div id="accordion-6-6" class="collapse" data-parent="#accordionFaqSix">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-6-7">
-                                            Using Low Vision As My Tool To Help Me Teach WordPress
-                                        </h5>
-                                        <div id="accordion-6-7" class="collapse" data-parent="#accordionFaqSix">
-                                            <div class="accordion-content">
-                                                Sed ut perspiciatis unde omnis iste natus error voluptatem accusantium dolore seyse
-                                                mque laudantium totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-                                                quasi architecto beatae vitae dicta sunt explicabo.
+                                                L'indice de confiance est un indice attestant de la capacité historique d'un individu à rembourser sa tontine. 
+                                                Il varie entre 0 et 10. Une personne qui vient de créer son compte aura un score de 5. 
+                                                Si l'indice de confiance est élevé, cela veut dire que la personne n'a pas eu de difficultés à rembourser sa tontine.
                                             </div>
                                         </div>
                                     </div>

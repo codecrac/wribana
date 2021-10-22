@@ -25,7 +25,7 @@
 		<div class="col-12 " style="padding:10px 30px">
 			<div class="common-heading mb-30">
 				<span class="tagline">
-					<i class="fas fa-plus"></i> Qui Sommes Nous
+					{{-- <i class="fas fa-plus"></i> Qui Sommes Nous --}}
 					<span class="heading-shadow-text">?</span>
 				</span>
 				<h4 class="title">Une solution web <br/> et mobile d’épargnes collaboratives</h2>
