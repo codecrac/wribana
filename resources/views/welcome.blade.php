@@ -20,13 +20,13 @@
     </div>
     <div class="hero-images">
             <div class="hero-img image-small fancy-bottom wow fadeInLeft" data-wow-delay="0.6s">
-                <img src="/template/assets/img/hero/hero-one-small.jpg" alt="Image">
+                <img src="/template/assets/img/hero/hero-one-small.jpg" width="400px" alt="Image">
             </div>
             <div class="hero-img main-img wow fadeInUp" data-wow-delay="0.5s">
                 <img src="/template/assets/img/hero/hero-one-big.jpg" alt="Image">
             </div>
             <div class="hero-img image-small fancy-top wow fadeInRight" data-wow-delay="0.7s">
-                <img src="/template/assets/img/hero/hero-one-small-2.jpg" alt="Image">
+                <img src="/template/assets/img/hero/hero-one-small-2.jpg" width="400px" alt="Image">
             </div>
     </div>
 </section>
