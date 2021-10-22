@@ -111,9 +111,9 @@
                             <a href="{{route("decouvrir_projets")}}">Decouvrir les projets</a>
                         </li>
 
-                        <li class="{{isset($is_apropos) ? "current" : "" }}">
+                        {{-- <li class="{{isset($is_apropos) ? "current" : "" }}">
                             <a href="{{route("apropos")}}">Qui sommes nous</a>
-                        </li>
+                        </li> --}}
                         @if(!$est_connecter)
                             <li>
                                 <a href="{{route("inscription_menbre")}}">S'inscrire</a>

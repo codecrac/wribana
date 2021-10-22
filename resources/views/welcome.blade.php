@@ -37,10 +37,10 @@
 	<section class="popular-categories section-gap" id="avantages">
 		<div class="container">
 			<div class="row align-items-center justify-content-lg-start justify-content-center">
-				<div class="col-xl-6 col-lg-7 col-md-8">
+				<div class="col-12">
 					<div class="about-text mt-md-70 mb-md-50">
 						<div class="common-heading mb-30">
-							<h2 class="title">Qui sommes nous </h2>
+							<h2 class="title text-center">Waribana qu’est-ce que c’est ? </h2>
 						</div>
 						<p>
 							Waribana est une solution de gestion des tontines destinée à toutes personnes souhaitant épargner ou collecter des fonds. 
@@ -48,8 +48,13 @@
                             des proches mettent de l'argent sur la table et la collecte est reversée à chacun d'entre eux à tour de rôle
 						</p>
 					</div>
-				</div>
-                <div class="col-md-5">
+				</div>  
+			</div>     
+            <div class="row">
+                <div class="col-md-6 text-center">
+                    <img src="http://imaginationforpeople.org/site_media/uploads/projects/1785/pictures/93a3b99a-2937-4c60-9213-4ded92ffc6c7.jpg.620x300_q85_crop-50%2C50_upscale-1.jpg" />
+                </div>
+                <div class="col-md-6">
 						<div class="author-note wow fadeInUp">
 
 							<ul>
@@ -77,15 +82,30 @@
 							</ul>
 						</div>
                 </div>
-			</div>
+            </div>
 		</div>
 	</section>
 	<!--====== About Section End ======-->
 
+        <!--====== En savoir plus ======-->
+        <section class="counter-section-one mt-negative">
+            <div class="container primary-bg" style="padding-bottom:50px">
+                <div class="row counter-boxes justify-content-xl-between justify-content-center">
+                        <div class="col-md-6">
+                            <h3 class="title text-white"> Waribana, on s’arrange. </h3> 
+                        </div>
+                        <div class="col-md-5">
+                                <a class="btn btn-info" href='{{route('comment_ca_marche')}}'> En savoir plus </a>
+                                <a class="btn btn-dark" href='{{route('inscription_menbre')}}'> S'inscrire </a>
+                        </div>
+                </div>
+            </div>
+        </section>
+        <!--====== Counter Area End ======-->
 
 
 <!--====== Section Avantages ======-->
-<section class="popular-categories section-gap" id="avantages">
+<section class="popular-categories" id="avantages">
     <div class="container">
         <div class="categories-header">
             <div class="row align-items-center justify-content-between">
@@ -179,13 +199,13 @@
 
 
 <!--====== Section Comment ça marche ======-->
-	<section class="popular-categories section-gap" id="avantages">
+	<section class="popular-categories" id="avantages">
 		<div class="container">
             <div class="col-12">
-                <h2 class="title text-center">Comment ça marche </h2>
+                <h2 class="title text-center">Comment ça marche ? </h2>
             </div>
 			<div class="row align-items-center justify-content-lg-start justify-content-center">
-                <div class="col-md-6">
+                <div class="col-12">
                     <div class="about-text mt-md-70 mb-md-50">
                         <div class="common-heading mb-30">
                             <br/><br/>
@@ -196,16 +216,29 @@
                             en fonction de l'ordre que vous avez défini.
                         </p>
                         <br/>
-                        <ul>
-                            <li> <b> &gt; Créer une tontine :</b> Définissez le nombre de personnes, le montant régulier et la fréquence et le tour est joué </li>
-                            <li> <b> &gt;  Invitez vos amis :</b> C'est avec vos proches que vous pouvez désormais effectuer vos opérations de crédit ou d'épargne. </li>
-                            <li> <b> &gt;  Collecter à tour de rôle :</b> Chaque période, vous mettez une somme prédéfinie. La totalité sera reversée à chacun d'entre vous à tour de rôle. </li>
-                        </ul>
+                        <div class="col-12 text-center">
+                            <img src="http://www.talenbiz.com/wp-content/uploads/2016/06/mobile_afrique_1_stocklib_1-1014x487.jpg" />
+                        </div>
+                        <br/>
+                        <div class='row'>
+                            <div class="col-md-4"> 
+                                <b> <i class="fa fa-check-circle"></i> Créer une tontine</b>
+                                 Définissez le nombre de personnes, le montant régulier et la fréquence et le tour est joué 
+                            </div>
+                            <div class="col-md-4"> 
+                                <b> <i class="fa fa-check-circle"></i> Invitez vos amis</b>
+                                C'est avec vos proches que vous pouvez désormais effectuer vos opérations de crédit ou d'épargne.
+                            </div>
+                            <div class="col-md-4"> 
+                                <b> <i class="fa fa-check-circle"></i>  Collecter à tour de rôle</b>
+                                Chaque période, vous mettez une somme prédéfinie. La totalité sera reversée à chacun d'entre vous à tour de rôle
+                            </div>
+                        </div>
 
                     </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-12 section-gap">
                     <div class="about-text mt-md-70 mb-md-50">
                         <div class="common-heading mb-30">
                             <h5 class="text-uppercase text-center"> Waricrowd  </h5>
@@ -215,10 +248,14 @@
                                 afin de financer vos projets. Vous pouvez également soutenir des projets.
                         </p>
                         <br/>
-                        <ul>
-                            <li> <b> &gt; Soumettre son projet</b> </li>
-                            <li> <b> &gt; Soutenir un projet</b> </li>
-                        </ul>
+                        <div class="col-12 text-center">
+                            <img src="https://businesspress.net/wp-content/uploads/2021/04/Crowdfunding-696x464.jpg" />
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-md-6 text-center"> <b> <i class="fa fa-check-circle"></i> Soumettre son projet</b> </div>
+                            <div class="col-md-6 text-center"> <b> <i class="fa fa-check-circle"></i> Soutenir un projet</b> </div>
+                        </div>
 
                     </div>
                 </div>
@@ -228,9 +265,18 @@
 	<!--====== About Section End ======-->
 
 
+        <!--====== En savoir plus ======-->
+        <section class="counter-section-one mt-negative">
+            <div class="container" style="padding-bottom:50px">
+                <div class="col-12 text-center">
+                    <a class="main-btn" style="background-color:#fff;color:#22f" href='{{route('inscription_menbre')}}'>S'inscrire </a>
+                </div>
+            </div>
+        </section>
+        <!--====== Counter Area End ======-->
 
 <!--====== About Section Start ======-->
-<section class="about-section-one">
+<section class="about-section-one section-gap">
     <div class="container">
         <div class="row align-items-center justify-content-lg-start justify-content-center">
             <div class="col-xl-6 col-lg-7 col-md-9">
@@ -268,7 +314,7 @@
             <div class="col-12 text-center">
 
                 <div class="icon white-color">
-                    <i style="font-size:150px" class="flaticon-solidarity"></i>
+                    {{-- <i style="font-size:150px" class="flaticon-solidarity"></i> --}}
                 </div>
                 <div class="counter-box mb-40 ">
                     <div class="content white-color text-center">
@@ -285,48 +331,6 @@
                     </div>
                 </div>
             </div>
-          {{--  <div class="col-xl-auto col-lg-5 col-md-5 col-sm-6">
-                <div class="counter-box mb-40 icon-left">
-                    <div class="icon white-color">
---}}{{--                        <i class="flaticon-crowdfunding"></i>--}}{{--
-                    </div>
-                    <div class="content white-color">
-                        <div class="count-wrap">
-                            <span class="count">1</span>
-                            <span class="suffix">%</span>
-                        </div>
---}}{{--                        <h6 class="title">Global Partners</h6>--}}{{--
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-auto col-lg-5 col-md-5 col-sm-6">
-                <div class="counter-box mb-40 icon-left">
-                    <div class="icon white-color">
-                        <i class="flaticon-crowdfunding"></i>
-                    </div>
-                    <div class="content white-color">
-                        <div class="count-wrap">
-                            <span class="count">8565</span>
-                            <span class="suffix">+</span>
-                        </div>
-                        <h6 class="title">Awards Winning</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-auto col-lg-5 col-md-5 col-sm-6">
-                <div class="counter-box mb-40 icon-left">
-                    <div class="icon white-color">
-                        <i class="flaticon-crowdfunding"></i>
-                    </div>
-                    <div class="content white-color">
-                        <div class="count-wrap">
-                            <span class="count">4756</span>
-                            <span class="suffix">+</span>
-                        </div>
-                        <h6 class="title">Active Volunteer</h6>
-                    </div>
-                </div>
-            </div>--}}
         </div>
     </div>
 </section>
@@ -361,26 +365,6 @@
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="logo mt-30">
                     <a href="#"><img src="/template/assets/img/partners/04.png" alt="Image"></a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="logo mt-30">
-                    <a href="#"><img src="/template/assets/img/partners/05.png" alt="Image"></a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="logo mt-30">
-                    <a href="#"><img src="/template/assets/img/partners/06.png" alt="Image"></a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="logo mt-30">
-                    <a href="#"><img src="/template/assets/img/partners/07.png" alt="Image"></a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="logo mt-30">
-                    <a href="#"><img src="/template/assets/img/partners/08.png" alt="Image"></a>
                 </div>
             </div>
         </div>
