@@ -20,18 +20,10 @@ class WaribankController extends Controller
             $id_menbre_connecter = $la_session['id'];
 
             $donnees_formulaire = $request->all();
-
-            // CONVERSION EN CFA AVANT PAIEMENT
-            $le_menbre = Menbre::find($id_menbre_connecter);
             $le_montant = $donnees_formulaire['montant_recharge'];
 
-            $wallet_menbre =  $le_menbre->compte;
-            $wallet_menbre->solde = $wallet_menbre->solde + $le_montant;
-            if($wallet_menbre->save()){
-                $notification = "<div class='alert alert-success text-center'> votre compte a bien ete rechargé </div>";
-                return redirect()->back()->with('notification',$notification);
-            }
-
+            $le_menbre = Menbre::find($id_menbre_connecter);
+            // CONVERSION EN CFA AVANT PAIEMENT
             if($le_menbre->devise_choisie->code != "XOF"){
                 $monaie_createur_tontine = $le_menbre->devise_choisie->code;
                 $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion(
@@ -41,10 +33,8 @@ class WaribankController extends Controller
                 $le_montant_en_xof = $le_montant;
             }
             // CONVERSION EN CFA AVANT PAIEMENT
-
-            
-            $route_back_en_cas_derreur = route('details_projet',[1]);
-            $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,1,$le_montant_en_xof,$le_montant,'waricrowd',$route_back_en_cas_derreur);
+            $route_back_en_cas_derreur = route('api.index_waribank',[$id_menbre_connecter]);
+            $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$le_montant_en_xof,$le_montant,$route_back_en_cas_derreur);
             return redirect($payment_url);
             //================SIMULATION LOCALE===================
     }

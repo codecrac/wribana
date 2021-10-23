@@ -267,35 +267,21 @@ class EspaceMenbre extends Controller
 //    ===================Cotisation======================
     public function paiement_cotisation($id_tontine){
 
-//===================POUR PAIEMENT AVEC CINETPAY================================
-        $la_tontine = Tontine::find($id_tontine);
-
-        // CONVERSION EN CFA AVANT PAIEMENT
-            $le_montant = $la_tontine->montant;
-            if($la_tontine->createur->devise_choisie->code != "XOF"){
-                $monaie_createur_tontine = $la_tontine->createur->devise_choisie->code;
-                $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_createur_tontine,"XOF");
-                $le_montant_en_xof = $quotient_de_conversion * $le_montant;
-            }else{
-                $le_montant_en_xof = $le_montant;
-            }
-        // CONVERSION EN CFA AVANT PAIEMENT
-
-        $la_session = session(MenbreController::$cle_session);
-        $id_menbre_connecter = $la_session['id'];
-        $le_menbre = Menbre::find($id_menbre_connecter);
-        
-        $route_back_en_cas_derreur = route('espace_menbre.details_tontine',[$id_tontine]);
-        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_tontine,$le_montant_en_xof,$le_montant,'tontine',$route_back_en_cas_derreur);
-        return redirect($payment_url);
 //=========================POUR SIMULATION=============================
-/*====================/simulation=============
+//====================/simulation=============
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
         $le_menbre = Menbre::find($id_menbre_connecter);
         $la_tontine = Tontine::find($id_tontine);
         $montant = $la_tontine->montant;
 
+        // verif portefeuille
+        if($le_menbre->compte->solde < $montant){
+            $notification = "<div class='alert alert-danger'> Votre compte est insuffisant. </div>";
+            return redirect()->back()->with('notification',$notification);
+        }
+
+        
         $la_transaction = new Transaction();
         $la_transaction->id_tontine = $id_tontine;
         $la_transaction->id_menbre = $id_menbre_connecter;
@@ -314,6 +300,11 @@ class EspaceMenbre extends Controller
 
             if($la_caisse_de_la_tontine->save()){
                 $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
+
+                //retirer le montant de la cotisation
+                $le_portfeuille = $le_menbre->compte;
+                $le_portfeuille->solde = $le_portfeuille->solde  -$montant;
+                $le_portfeuille->save();
             }
 
             $maintenant = date('d/m/Y H:i', strtotime(now()));
@@ -405,7 +396,7 @@ class EspaceMenbre extends Controller
 
         }
         return redirect()->back()->with('notification',$notification);
-====================/simulation=============*/
+//====================/simulation=============/
     }
 
     public function recu_de_paiement_tontine($infos_pour_recu=null){

@@ -186,7 +186,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
 							<img src="template/assets/img/about/about-gallery-1.jpg" alt="Image">
 						</div>
 						<div class="img-two wow fadeInUp">
-							<img src="template/assets/img/about/about-gallery-2.jpg" alt="Image">
+							<img src="template/assets/img/about/about-gallery-2.jpg" width="400px" alt="Image">
 						</div>
 						<div class="pattern">
 							<img src="template/assets/img/about/about-gallery-pattern.png" alt="Pattern">

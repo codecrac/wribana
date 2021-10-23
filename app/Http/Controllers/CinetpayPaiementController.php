@@ -3,19 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menbre;
-use App\Models\Tontine;
-use App\Models\Transaction;
-use App\Models\TransactionWaricrowd;
-use App\Models\CahierCompteTontine;
-use App\Models\Waricrowd;
+use App\Models\TransactionRechargementWaribank;
 use App\Models\CompteMenbre;
-use App\Models\CaisseTontine;
 use App\Models\SmsContenuNotification;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\EspaceMenbreWaricrowdController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
 
 class CinetpayPaiementController extends Controller
 {
@@ -24,39 +18,26 @@ class CinetpayPaiementController extends Controller
     public static $cpm_site_id = '750304';
     public static $mdp_api_transfert = 'Succes$$2039';
 
-    public static function generer_lien_paiement($le_menbre,$id,$montant_convertit_en_fcfa,
-    $montant,$section="tontine",$route_back_en_cas_derreur,$from_mobile=false)
+    public static function generer_lien_paiement($le_menbre,$montant_convertit_en_fcfa,
+             $montant,$route_back_en_cas_derreur,$from_mobile=false)
     {
         $apikey = CinetpayPaiementController::$apikey ;
         $site_id = CinetpayPaiementController::$cpm_site_id ;
-        $transaction_id = 'waribana-'.$section.'-'.time();
+        $transaction_id = 'waribana-rechargement-'.time();
         $currency = 'XOF';
-        $description = 'PAIEMENT WARIBANA';
+        $description = 'RECHARGEMENT WARIBANA';
         $return_url = "";
         $notify_url = "";
 
 
-        if($section=="tontine"){
-            $notify_url = route('notification_paiement_cotisation_tontine');
-            $return_url = route('api.details_tontine',[$id]).'?trans_id='.$transaction_id;
+        $notify_url = route('api.notification_paiement_rechargement');
+        $return_url = route('api.index_waribank',[$le_menbre->id]).'?trans_id='.$transaction_id;
 
-            
-            if($from_mobile){
-                $return_url = route('api.mobile.statut_transaction').'?trans_id='.$transaction_id;
-            }
-        //            $notify_url = "https://waribana.jeberge.xyz/api/notification_paiement_cotisation_tontine";
-        }else{
-            //dans ce cas c'est un crowd
-            $notify_url = route('notification_paiement_cotisation_crowd');
-            $return_url = route('api.details_waricrowd',[$id]).'?trans_id='.$transaction_id;
-
-             
-            if($from_mobile){
-                $return_url = route('api.mobile.statut_transaction').'?trans_id='.$transaction_id;
-            }
-        //            $notify_url = "https://waribana.jeberge.xyz/api/notification_paiement_cotisation_crowd";
+        
+        if($from_mobile){
+            $return_url = route('api.mobile.statut_transaction').'?trans_id='.$transaction_id;
         }
-        //        dd($notify_url);
+        
 
         $nom_complet_eclater = explode(' ',$le_menbre->nom_complet);
         $nom = $nom_complet_eclater[0];
@@ -123,36 +104,32 @@ class CinetpayPaiementController extends Controller
 
        if(!isset($la_reponse_en_objet->data)){ //on a un probleme
             $notification = "Erreur : $la_reponse_en_objet->description;  (FCFA, XOF)";
-            // dd($route_back_en_cas_derreur);
+            // on renvoi lurl de l'erreur
             return "$route_back_en_cas_derreur?probleme_lien_paiement=$notification";
        }
         $la_reponse_en_objet = $la_reponse_en_objet->data;
         $payement_token = $la_reponse_en_objet->payment_token;
         $payment_url = $la_reponse_en_objet->payment_url;
 
-        if($section=="tontine"){ //creer la transaction
-            CinetpayPaiementController::preparer_paiement_cotisation($le_menbre->id,$id,$payement_token,$transaction_id);
-        }else{
-            CinetpayPaiementController::preparer_soutien_waricrowd($le_menbre->id,$id,$montant,$transaction_id);
-        }
-
+        CinetpayPaiementController::preparer_paiement_rechargement($le_menbre,$montant,$transaction_id);
+       
         return $payment_url;
 
     }
 
-    public function notification_paiement_cotisation_tontine(Request $request){
+    public function notification_paiement_rechargement(Request $request){
         $cpm_trans_id = $request->input('cpm_trans_id');
         if($cpm_trans_id == null){
-            $cpm_trans_id = "waribana-tontine-1633710459";
+            $cpm_trans_id = "waribana-rechargement1634987572";
         }
         $code_reponse_etat_paiement = $this->recup_statut_paiement_cinetpay($cpm_trans_id); // 00 pour succes, le reste pour probleme
 
-        $la_transaction = Transaction::where('trans_id',$cpm_trans_id)->first();
+        $la_transaction = TransactionRechargementWaribank::where('trans_id',$cpm_trans_id)->first();
 
         if($la_transaction->statut == "PENDING"){ //l'api peut etre appeler plusieur fois par cinetpay eviter d'enregistrer le paiement plusieurs fois
-            if($code_reponse_etat_paiement != 0){
+            if($code_reponse_etat_paiement == 0){
                 $la_transaction->statut = 'ACCEPTED';
-                CinetpayPaiementController::paiement_cotisation_reussie($la_transaction);
+                CinetpayPaiementController::paiement_rechargement_reussie($la_transaction);
             }else{
                 $la_transaction->statut = 'REFUSED';
             }
@@ -162,34 +139,12 @@ class CinetpayPaiementController extends Controller
         
     }
 
-    public function notification_paiement_cotisation_crowd(Request $request){
-        $cpm_trans_id = $request->input('cpm_trans_id');
-        $code_reponse_etat_paiement = $this->recup_statut_paiement_cinetpay($cpm_trans_id); // 00 pour succes, le reste pour probleme
 
-        $la_transaction = TransactionWaricrowd::where('trans_id',$cpm_trans_id)->first();
-
-        if($la_transaction->statut == "PENDING"){ //l'api peut etre appeler plusieur fois par cinetpay eviter d'enregistrer le paiement plusieurs fois
-            if($code_reponse_etat_paiement == 0){
-                $la_transaction->statut = 'ACCEPTED';
-            }else{
-                $la_transaction->statut = 'REFUSED';
-            }
-            $la_transaction->save();
-            return true;
-        }
-    }
-
-
-    public function recup_statut_paiement_cinetpay($cpm_trans_id='waribana-1633451811',$section="tontine")
+    public function recup_statut_paiement_cinetpay($cpm_trans_id='waribana-rechargement1634987572',$section="tontine")
     {
         $apikey = CinetpayPaiementController::$apikey ;
         $site_id = CinetpayPaiementController::$cpm_site_id ;
         $transaction_id = $cpm_trans_id;
-
-        if($section=="tontine"){
-            $notify_url = route('notification_paiement_cotisation_tontine');
-        }
-        //        dd($notify_url);
 
         $url_pour_recuperer = "https://api-checkout.cinetpay.com/v2/payment/check";
         $data = array(
@@ -223,168 +178,25 @@ class CinetpayPaiementController extends Controller
 
     }
 
-    private static function preparer_paiement_cotisation($id_menbre_connecter,$id_tontine,$token,$trans_id){
-        $la_tontine = Tontine::find($id_tontine);
-        $montant = $la_tontine->montant;
-
-        $la_transaction = new Transaction();
-        $la_transaction->id_tontine = $id_tontine;
-        $la_transaction->id_menbre = $id_menbre_connecter;
+    private static function preparer_paiement_rechargement($le_menbre,$montant,$trans_id){
+        $la_transaction = new TransactionRechargementWaribank();
+        $la_transaction->id_menbre = $le_menbre->id;
+        $la_transaction->solde_avant = $le_menbre->compte->solde;
         $la_transaction->montant = $montant;
+        $la_transaction->solde_apres = $le_menbre->compte->solde + $montant;
         $la_transaction->statut = "PENDING";
         $la_transaction->trans_id = $trans_id;
-        $la_transaction->token = $token;
-        $la_transaction->id_menbre_qui_prend = $la_tontine->caisse->menbre_qui_prend->id;
-        $la_transaction->index_ouverture = $la_tontine->caisse->index_ouverture;
         $la_transaction->save();
     }
     
-    private static function paiement_cotisation_reussie($la_transaction){
+    private static function paiement_rechargement_reussie($la_transaction){
         
-        $id_tontine = $la_transaction->id_tontine;
-        $montant = $la_transaction->montant;
-        
-        $la_tontine = Tontine::find($id_tontine);
         $le_menbre = Menbre::find($la_transaction->id_menbre);
-        
-         $la_caisse_de_la_tontine = CaisseTontine::findOrNew($id_tontine);
-            $la_caisse_de_la_tontine->id_tontine= $id_tontine;
-            $nouveau_montant = $la_caisse_de_la_tontine->montant;
-            $nouveau_montant += $la_tontine->montant;
-            $la_caisse_de_la_tontine->montant = $nouveau_montant;
+        $le_montant = $la_transaction->montant;
 
-            $la_caisse_de_la_tontine->save();
- 
-            $maintenant = date('d/m/Y H:i', strtotime(now()));
-        //            dd($maintenant);
-            $liste_participants = $la_tontine->participants;
-        //            dd($liste_participants);
-            CinetpayPaiementController::notifier_paiement_cotisation($liste_participants,$le_menbre->nom_complet,$montant,$la_tontine->createur->devise_choisie->monaie,$la_tontine->titre,$maintenant);
-
-            if($le_menbre->email !=null){
-                $infos_pour_recu = ['nom_complet'=>$le_menbre->nom_complet,
-                    "email_destinataire"=>$le_menbre->email,
-                    'type_section'=>'tontine',
-                    'montant'=>$la_tontine->montant,
-                    'titre_tontine'=>$la_tontine->titre,
-                    'nom_menbre_qui_prend'=>$la_tontine->caisse->menbre_qui_prend->nom_complet];
-
-                CinetpayPaiementController::recu_de_paiement_tontine($infos_pour_recu);
-            }
-
-        //===================Montant atteinds
-            if($nouveau_montant == $la_caisse_de_la_tontine->montant_objectif){
-                $index_menbre_qui_prend = $la_caisse_de_la_tontine->index_menbre_qui_prend;
-                $nouvel_index = $index_menbre_qui_prend + 1;
-
-
-                $montant_a_verser = $la_caisse_de_la_tontine->montant_a_verser;
-
-        //===================Virer l'argent sur son compte et le noter dans le cahier
-                $id_menbre_qui_prend = $la_caisse_de_la_tontine->id_menbre_qui_prend;
-                $le_compte = CompteMenbre::findOrNew($id_menbre_qui_prend);
-                $le_compte->id_menbre = $id_menbre_qui_prend;
-                $le_solde = $le_compte->solde;
-                $nouveau_solde = $le_solde + $montant_a_verser;
-                $le_compte->solde = $nouveau_solde;
-                //noter le virement dans le cahier comptable
-                if($le_compte->save()){
-                    $nouvelle_note = new CahierCompteTontine();
-                    $nouvelle_note->id_menbre = $id_menbre_qui_prend;
-                    $nouvelle_note->id_tontine = $id_tontine;
-                    $nouvelle_note->montant = $montant_a_verser;
-                    $nouvelle_note->index_ouverture = $la_tontine->caisse->index_ouverture;
-                    $nouvelle_note->save();
-                }
-
-                $les_participants = $la_tontine->participants;
-                foreach ($les_participants as $item_participant){
-
-                    $titre_tontine = $la_tontine->titre;
-                    $base_message = SmsContenuNotification::first();
-                    $message = $base_message['virement_compte_menbre_qui_prend'];
-                    $message = str_replace('$nom_menbre_qui_prend$',$la_tontine->caisse->menbre_qui_prend->nom_complet,$message);
-                    $message = str_replace('$titre_tontine$',$titre_tontine,$message);
-
-                    $numero = $item_participant->telephone;
-                    SmsController::sms_info_bip($numero,$message);
-                     $headers = 'From: no-reply@waribana.net' . "\r\n" .
-                     'Reply-To: no-reply@waribana.net' . "\r\n" .
-                     'X-Mailer: PHP/' . phpversion();
-                    mail($item_participant->email,"$titre_tontine : MONTANT OBJECTIF DE COTISATION ATTEINDS",$message,$headers);
-
-                }
-        //====================Rotation
-                //SI ON EST PAS AU DERNIER PARTICIPANTS
-                if($nouvel_index < sizeof($la_tontine->participants)){
-                    $liste_participant = $la_tontine->participants->toArray();
-                    $nouvel_id_menbre_qui_prend = $liste_participant[$nouvel_index]['id'];
-
-                    $date_encaissement = $la_caisse_de_la_tontine->prochaine_date_encaissement;
-                    $nombre_de_jours_en_plus = $la_tontine->frequence_depot_en_jours;
-                    $prochaine_date_encaissement = date('d-m-Y', strtotime($date_encaissement. " + $nombre_de_jours_en_plus days"));
-
-                    $la_caisse_de_la_tontine->index_menbre_qui_prend = $nouvel_index;
-                    $la_caisse_de_la_tontine->id_menbre_qui_prend = $nouvel_id_menbre_qui_prend;
-                    $la_caisse_de_la_tontine->prochaine_date_encaissement = $prochaine_date_encaissement;
-                    $la_caisse_de_la_tontine->montant = 0;
-                    $la_caisse_de_la_tontine->save();
-                }
-                else{
-                    $la_caisse_de_la_tontine->montant = 0;
-                    $la_caisse_de_la_tontine->save();
-
-                    $la_tontine->etat = 'terminer';
-                    $la_tontine->save();
-                    $notification = " <div class='alert alert-warning text-center'> Operation bien effectuée, La tontine est complete (Terminer) </div>";
-                }
-
-            }
-
-    }
-
-    private static function preparer_soutien_waricrowd($id_menbre_connecter,$id_crowd,$montant_soutien,$trans_id){
-        $la_transaction = new TransactionWaricrowd();
-        $la_transaction->id_waricrowd = $id_crowd;
-        $la_transaction->id_menbre = $id_menbre_connecter;
-        $la_transaction->montant = $montant_soutien;
-        $la_transaction->statut = "PENDING";
-        $la_transaction->trans_id = $trans_id;
-        $la_transaction->save();
-    }
-    
-    
-
-//=========================FONCTION UTILITAIRE
-     private static function notifier_paiement_cotisation($liste_participants,$nom_cotiseur,$montant_cotisation,$devise,$titre_de_la_tontine,$date_paiement){
-        foreach($liste_participants as $item_participant){
-            $numero = "$item_participant->telephone";
-//            dd($montant_cotisation);
-//            $montant_cotisation = number_format($montant_cotisation,0,',',' ');
-            $message_sms = "Paiement de $montant_cotisation $devise par $nom_cotiseur sur la totine <<$titre_de_la_tontine>> le $date_paiement ";
-//            dd($message_sms);
-            SmsController::sms_info_bip("$numero",$message_sms);
-        }
-//        die();
-    }
-
-     public static function recu_de_paiement_tontine($infos_pour_recu){
-        if($infos_pour_recu==null){
-            $infos_pour_recu = ['email_destinataire'=>'yvessantoz@gmail.com','nom_complet'=>'sh sdfds','montant'=>'232343','titre_tontine'=>'tontine ice','nom_menbre_qui_prend'=>'djsdh dskhdsjk'];
-        }
-
-        $pdf = PDF::loadView('espace_menbre/recu_paiement_tontine',compact('infos_pour_recu'));
-        $nom_fichier = time().'.pdf';
-        Storage::put("public/recu/tontines/$nom_fichier", $pdf->output());
-
-        $email = $infos_pour_recu['email_destinataire'];
-        $message = "Felicitations, votre paiement a bien ete effectue, ci-joint votre recu de paiement.";
-        // $chemin_fichier = route('get_recu',[$nom_fichier]);
-        $chemin_fichier = Storage::disk('public')->path("recu/tontines/".$nom_fichier);
-
-        $rep = EspaceMenbreWaricrowdController::envoyer_email_avec_fichier($email,"RECU DE PAIEMENT WARICROWD",$message,$chemin_fichier,$nom_fichier);
-//        dd($chemin_fichier,$nom_fichier,$rep);
-//        return $pdf->stream();
+        $wallet_menbre =  $le_menbre->compte;
+        $wallet_menbre->solde = $wallet_menbre->solde + $le_montant;
+        $wallet_menbre->save();
     }
 
 }

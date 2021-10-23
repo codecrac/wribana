@@ -230,28 +230,21 @@ class EspaceMenbreWaricrowdController extends Controller
 
         $donnees_formulaire = $request->all();
 
-        // CONVERSION EN CFA AVANT PAIEMENT
-        $le_crowd = Waricrowd::find($id_crowd);
-        $le_montant = $donnees_formulaire['montant_soutien'];
-        if($le_crowd->createur->devise_choisie->code != "XOF"){
-            $monaie_createur_tontine = $le_crowd->createur->devise_choisie->code;
-            $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_createur_tontine,"XOF");
-            $le_montant_en_xof = $quotient_de_conversion * $le_montant;
-        }else{
-            $le_montant_en_xof = $le_montant;
-        }
-    // CONVERSION EN CFA AVANT PAIEMENT
-
-        $le_menbre = Menbre::find($id_menbre_connecter);
-        $route_back_en_cas_derreur = route('details_projet',[$id_crowd]);
-        $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_crowd,$le_montant_en_xof,$le_montant,'waricrowd',$route_back_en_cas_derreur);
-        return redirect($payment_url);
 //================SIMULATION LOCALE===================
-    /*    $la_session = session(MenbreController::$cle_session);
+        $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
 
         $donnees_formulaire = $request->all();
         $montant_soutien = $donnees_formulaire['montant_soutien'];
+
+        // verif portefeuille
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        if($le_menbre->compte->solde < $montant_soutien){
+            $notification = "<div class='alert alert-danger'> Votre compte est insuffisant. </div>";
+            return redirect()->back()->with('notification',$notification);
+        }
+
+        
 
         $la_transaction = new TransactionWaricrowd();
         $la_transaction->id_menbre = $id_menbre_connecter;
@@ -275,6 +268,12 @@ class EspaceMenbreWaricrowdController extends Controller
 
             $notification = "<div class='alert alert-success text-center'> Votre paiement a bien effectué, soutien enregistré. </div>";
 
+            
+            //retirer le montant de la cotisation
+            $le_portfeuille = $le_menbre->compte;
+            $le_portfeuille->solde = $le_portfeuille->solde  -$montant_soutien;
+            $le_portfeuille->save();
+
             $le_menbre = Menbre::find($id_menbre_connecter);
             $le_crowd = Waricrowd::find($id_crowd);
             $infos_pour_recu = [
@@ -292,7 +291,7 @@ class EspaceMenbreWaricrowdController extends Controller
         }else{
             $notification = "<div class='alert alert-danger text-center'> Quelque chose s'est mal passé </div>";
         }
-        return redirect()->route('espace_menbre.details_waricrowd',[$le_crowd->id])->with('notification',$notification);*/
+        return redirect()->route('espace_menbre.details_waricrowd',[$le_crowd->id])->with('notification',$notification);
 
     }
 

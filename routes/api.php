@@ -7,6 +7,7 @@ use App\Http\Controllers\CinetpayPaiementController;
 use App\Http\Controllers\CinetpayApiTransfertController;
 use App\Http\Controllers\EspaceMenbre;
 use App\Http\Controllers\EspaceMenbreWaricrowdController;
+use App\Http\Controllers\WaribankController;
 use App\Models\Transaction;
 use App\Models\TransactionWaricrowd;
 
@@ -25,10 +26,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+///#==============RECHARGEMENT=====================================================================
+Route::get("/index_waribank/{id_menbre}",[WaribankController::class,'index']);
+Route::post("/index_waribank/{id_menbre}",[WaribankController::class,'index'])->name('api.index_waribank');
+
+Route::get("/notification_paiement_rechargement",[CinetpayPaiementController::class,'notification_paiement_rechargement']);
+Route::post("/notification_paiement_rechargement",[CinetpayPaiementController::class,'notification_paiement_rechargement'])->name('api.notification_paiement_rechargement');
 ///#==============TONTINE=====================================================================
-Route::get("/notification_paiement_cotisation_tontine",[CinetpayPaiementController::class,'notification_paiement_cotisation_tontine'])->name('notification_paiement_cotisation_tontine');
-Route::post("/notification_paiement_cotisation_tontine",[CinetpayPaiementController::class,'notification_paiement_cotisation_tontine'])->name('notification_paiement_cotisation_tontine');
-Route::post("/notification_paiement_cotisation_crowd",[CinetpayPaiementController::class,'notification_paiement_cotisation_crowd'])->name('notification_paiement_cotisation_crowd');
+
+Route::post("/notification_paiement_cotisation_tontine",[CinetpayPaiementController::class,'notification_paiement_cotisation_tontine'])->name('api.notification_paiement_cotisation_tontine');
+Route::post("/notification_paiement_cotisation_crowd",[CinetpayPaiementController::class,'notification_paiement_cotisation_crowd'])->name('api.notification_paiement_cotisation_crowd');
 
 /*pour url retour de paiement */
 Route::post("/details-tontines/{id_tontine}", function($id_tontine){
