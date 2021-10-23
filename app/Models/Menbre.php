@@ -33,28 +33,28 @@ class Menbre extends Model
     
     public function historique_transfert_entrant()
     {
-        return $this->hasMany(TransactionTransfertWaribank::class,'id_destinataire')->orderBy('id','desc')->limit(25);
+        return $this->hasMany(TransactionTransfertWaribank::class,'id_destinataire')->orderBy('id','desc');
     }
     
     
     public function historique_tranfert_sortant()
     {
-        return $this->hasMany(TransactionTransfertWaribank::class,'id_menbre')->orderBy('id','desc')->limit(25);
+        return $this->hasMany(TransactionTransfertWaribank::class,'id_menbre')->orderBy('id','desc');
     }
     
     public function historique_rechargement()
     {
-        return $this->hasMany(TransactionRechargementWaribank::class,'id_menbre')->orderBy('id','desc')->limit(25);
+        return $this->hasMany(TransactionRechargementWaribank::class,'id_menbre')->orderBy('id','desc');
     }
     
     public function historique_retraits()
     {
-        return $this->hasMany(CahierRetraitSoldeMenbre::class,'id_menbre')->orderBy('id','desc')->limit(25);
+        return $this->hasMany(CahierRetraitSoldeMenbre::class,'id_menbre')->orderBy('id','desc');
     }
 
 
     public function historique_virement_tontine(){
-        return $this->hasMany(CahierCompteTontine::class,'id_menbre')->limit(25);
+        return $this->hasMany(CahierCompteTontine::class,'id_menbre');
     }
 
     public function  mes_waricrowd(){

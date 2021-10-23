@@ -210,7 +210,11 @@
 <script src="/template_menbre/js/jquery.cookie.js" type="text/javascript"></script>
 
 
-
+<script>
+    $(document).ready( function () {
+        $('.datatable').DataTable();
+    } );
+</script>
 
 {{--<script src="./js/app.js"></script>--}}
 @yield('script_completmentaire')

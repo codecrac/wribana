@@ -131,11 +131,11 @@
             <div class="card">
                 <div class="card-header">
                     <hr/>
-                    <h4 class="card-title text-center text-uppercase"> Historique des rechargements ( 25 derniers ) </h4>
+                    <h4 class="card-title text-center text-uppercase"> Historique des rechargements  </h4>
                     <hr/>
                 </div>
                 <div class="card-body text-center">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped datatable">
                         <thead>
                             <th>Date</th>
                             <th>Solde avant</th>
@@ -161,11 +161,11 @@
             <div class="card">
                 <div class="card-header">
                     <hr/>
-                    <h4 class="card-title text-center text-uppercase"> Historique des virements de tontine ( 25 derniers )  </h4>
+                    <h4 class="card-title text-center text-uppercase"> Historique des virements de tontine   </h4>
                     <hr/>
                 </div>
                 <div class="card-body text-center">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped datatable">
                         <thead>
                             <th>Date</th>
                             <th>Tontine</th>
@@ -191,11 +191,11 @@
             <div class="card">
                 <div class="card-header">
                     <hr/>
-                    <h4 class="card-title text-center text-uppercase"> Historique transfert recus ( 25 derniers )  </h4>
+                    <h4 class="card-title text-center text-uppercase"> Historique transfert recus   </h4>
                     <hr/>
                 </div>
                 <div class="card-body text-center">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped datatable">
                         <thead>
                             <th>Date</th>
                             <th>Expediteur</th>
@@ -226,11 +226,11 @@
             <div class="card">
                 <div class="card-header">
                     <hr/>
-                    <h4 class="card-title text-center text-uppercase"> Historique transfert effectués ( 25 derniers )  </h4>
+                    <h4 class="card-title text-center text-uppercase"> Historique transfert effectués </h4>
                     <hr/>
                 </div>
                 <div class="card-body text-center">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped datatable">
                         <thead>
                             <th>Date</th>
                             <th>Expediteur</th>
@@ -262,11 +262,11 @@
             <div class="card">
                 <div class="card-header">
                     <hr/>
-                    <h4 class="card-title text-center text-uppercase"> Historique des mes retraits ( 25 derniers )  </h4>
+                    <h4 class="card-title text-center text-uppercase"> Historique des mes retraits </h4>
                     <hr/>
                 </div>
                 <div class="card-body text-center">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped datatable">
                         <thead>
                             <th>Date</th>
                             <th>Solde Avant</th>
