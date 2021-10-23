@@ -44,7 +44,8 @@ class EspaceMenbre extends Controller
 
 
 //    ===================Tontines======================
-    public function editer_tontine($id_tontine){
+    public function editer_tontine($id_tontine)
+    {
 
         $la_session = session(MenbreController::$cle_session);
 
@@ -60,7 +61,8 @@ class EspaceMenbre extends Controller
         return view('espace_menbre/tontine/creer_tontine');
     }
 
-    public function enregistrer_tontine(Request $request){
+    public function enregistrer_tontine(Request $request)
+    {
         $donnees_formulaire = $request->all();
         //        dd($donnees_formulaire);
 
@@ -100,7 +102,8 @@ class EspaceMenbre extends Controller
         }
     }
 
-    public function modifier_tontine(Request $request,$id_tontine){
+    public function modifier_tontine(Request $request,$id_tontine)
+    {
         $donnees_formulaire = $request->all();
 
         $titre = $donnees_formulaire['titre'];
@@ -170,7 +173,8 @@ class EspaceMenbre extends Controller
         return view('espace_menbre/tontine/liste_tontine',compact('mes_tontines'));
     }
 
-    public function details_tontine($id_tontine){
+    public function details_tontine($id_tontine)
+    {
 
 
         $la_tontine = Tontine::find($id_tontine);
@@ -216,15 +220,16 @@ class EspaceMenbre extends Controller
             $a_deja_cotiser = false;
         }
 
-//a decoder a la notication;utiliser pour recuperer la trasaction sans l'id
+        //a decoder a la notication;utiliser pour recuperer la trasaction sans l'id
         $notre_custom_field = "id_menbre=$id_menbre_connecter&id_tontine=$id_tontine&id_menbre_qui_prend=$id_menbre_qui_prend";
-//        parse_str($a, $output);
+        //        parse_str($a, $output);
         return view("espace_menbre.tontine.details_tontine",compact('la_tontine','invitations_envoyees',
                             'pret','a_deja_cotiser','liste_ayant_cotiser',
                             'notre_custom_field'));
     }
 
-    public function ouvrir_tontine($id_tontine){
+    public function ouvrir_tontine($id_tontine)
+    {
         $la_tontine = Tontine::find($id_tontine);
         $la_tontine->etat = 'ouverte';
         $la_tontine->save();
@@ -252,7 +257,7 @@ class EspaceMenbre extends Controller
         $la_caisse_de_la_tontine->montant_objectif= $montant_objectif;
         $la_caisse_de_la_tontine->frais_de_gestion= $frais_de_gestion;
         $la_caisse_de_la_tontine->montant_a_verser= $montant_moins_frais;
-//        $la_caisse_de_la_tontine->montant= 0;
+        //        $la_caisse_de_la_tontine->montant= 0;
         $la_caisse_de_la_tontine->id_menbre_qui_prend= $la_tontine->id_menbre;
         $la_caisse_de_la_tontine->prochaine_date_encaissement= $prochaine_date_encaissement;
         $la_caisse_de_la_tontine->save();
@@ -265,10 +270,9 @@ class EspaceMenbre extends Controller
 //    =============================INVITATIONS==============================
 
 //    ===================Cotisation======================
-    public function paiement_cotisation($id_tontine){
+    public function paiement_cotisation($id_tontine)
+    {
 
-//=========================POUR SIMULATION=============================
-//====================/simulation=============
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
         $le_menbre = Menbre::find($id_menbre_connecter);
@@ -308,9 +312,9 @@ class EspaceMenbre extends Controller
             }
 
             $maintenant = date('d/m/Y H:i', strtotime(now()));
-//            dd($maintenant);
+        //            dd($maintenant);
             $liste_participants = $la_tontine->participants;
-//            dd($liste_participants);
+        //            dd($liste_participants);
             $this->notifier_paiement_cotisation($liste_participants,$le_menbre->nom_complet,$montant,$la_tontine->createur->devise_choisie->monaie,$la_tontine->titre,$maintenant);
 
             if($le_menbre->email !=null){
@@ -324,7 +328,7 @@ class EspaceMenbre extends Controller
                 $this->recu_de_paiement_tontine($infos_pour_recu);
             }
 
-//===================Montant atteinds
+            //===================Montant atteinds
             if($nouveau_montant == $la_caisse_de_la_tontine->montant_objectif){
                 $index_menbre_qui_prend = $la_caisse_de_la_tontine->index_menbre_qui_prend;
                 $nouvel_index = $index_menbre_qui_prend + 1;
@@ -332,7 +336,7 @@ class EspaceMenbre extends Controller
 
                 $montant_a_verser = $la_caisse_de_la_tontine->montant_a_verser;
 
-//===================Virer l'argent sur son compte et le noter dans le cahier
+        //===================Virer l'argent sur son compte et le noter dans le cahier
                 $id_menbre_qui_prend = $la_caisse_de_la_tontine->id_menbre_qui_prend;
                 $le_compte = CompteMenbre::findOrNew($id_menbre_qui_prend);
                 $le_compte->id_menbre = $id_menbre_qui_prend;
@@ -367,7 +371,7 @@ class EspaceMenbre extends Controller
                     mail($item_participant->email,"$titre_tontine : MONTANT OBJECTIF DE COTISATION ATTEINDS",$message,$headers);
 
                 }
-//====================Rotation
+        //====================Rotation
                 //SI ON EST PAS AU DERNIER PARTICIPANTS
                 if($nouvel_index < sizeof($la_tontine->participants)){
                     $liste_participant = $la_tontine->participants->toArray();
@@ -396,7 +400,6 @@ class EspaceMenbre extends Controller
 
         }
         return redirect()->back()->with('notification',$notification);
-//====================/simulation=============/
     }
 
     public function recu_de_paiement_tontine($infos_pour_recu=null){
@@ -488,12 +491,12 @@ class EspaceMenbre extends Controller
 
         if($bon_mot_de_passe){
             $nom_complet = $donnee_formulaire['nom_complet'];
-        //            $telephone = $donnee_formulaire['telephone'];
+           //            $telephone = $donnee_formulaire['telephone'];
             $email = $donnee_formulaire['email'];
             $mot_de_passe = $donnee_formulaire['mot_de_passe'];
             $confirmer_mot_de_passe = $donnee_formulaire['confirmer_mot_de_passe'];
 
-        //        ---------------Verifie existence des identifiant
+           //        ---------------Verifie existence des identifiant
             if($email !=null){
                 $route_connexion = route('connexion_menbre');
                 $email_existe_deja = $this->checkExistenceEmailPourAutrePersonne($email,$id_menbre);
@@ -504,11 +507,11 @@ class EspaceMenbre extends Controller
                 }
             }
 
-        //        ---------------Verifie mot de passe et enregistrement
+             //        ---------------Verifie mot de passe et enregistrement
 
             $le_menbre = Menbre::find($id_menbre);
             $le_menbre->nom_complet = $nom_complet;
-        //            $le_menbre->telephone = $telephone;
+              //            $le_menbre->telephone = $telephone;
             $le_menbre->email = $email;
 
             if(!empty($mot_de_passe) && !empty($confirmer_mot_de_passe) ){
