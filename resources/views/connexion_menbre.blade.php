@@ -86,7 +86,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
 	<section class="about-section-three section-gap">
 		<div class="container">
 			<div class="row align-items-center justify-content-center">
-				<div class="col-xl-5 col-lg-7 col-md-9 col-sm-10">
+				<div class="col-md-6">
 
                     {!! Session::get('notification','') !!}
 
@@ -106,11 +106,14 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                                     -->
                                     
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-5">
                                             <label class="text-danger"><small>prefixe</small></label>
-                                            <input required class="text-danger form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code_prefixe}}" required />
+                                            {{-- <input required class="text-danger form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code_prefixe}}" required /> --}}
+                                            <select required class="form-control" name="prefixe">
+                                                {!! App\Http\Controllers\CountryPrefixController::listOptionChoisirPays() !!}
+                                            </select>
                                         </div>
-                                        <div class="col-md-8">
+                                        <div class="col-md-7">
                                             <label><small>Telephone</small></label>
                                             <input required class="form-control" placeholder="Entrez votre telephone" type="number" name="telephone" />
                                         </div>
@@ -137,7 +140,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                         </div>
 					</div>
 				</div>
-				<div class="col-xl-7 col-lg-8 col-md-10">
+				<div class="col-md-6">
 					<div class="about-gallery wow fadeInRight">
 						<div class="img-one">
 							<img src="template/assets/img/about/about-gallery-1.jpg" width="500px" alt="Image">

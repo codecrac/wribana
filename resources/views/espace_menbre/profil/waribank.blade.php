@@ -61,16 +61,22 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <input type="number" name="prefixe" required class="form-control" min="1" type="form-control" style="border: 1px solid black" placeholder="prefixe" value="225" />
+                                    <div class="col-md-6">
+                                        <label><small>prefixe</small></label>
+                                        {{-- <input required class="text-danger form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code_prefixe}}" required /> --}}
+                                        <select required class="form-control" name="prefixe">
+                                            {!! App\Http\Controllers\CountryPrefixController::listOptionChoisirPays() !!}
+                                        </select>
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
+                                        <label>telephone</label>
                                         <input type="number" name="telephone" required class="form-control" min="1" type="form-control" style="border: 1px solid black" placeholder="telephone" />
                                     </div>
                                 </div>
 
                                 <div class="col-12">
                                     <br/><br/>
+                                    <label>Montant</label>
                                     <input type="number" name="montant" required class="form-control" min="1" type="form-control" style="border: 1px solid black" placeholder="montant" />
                                 </div>
                                  
