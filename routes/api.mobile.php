@@ -60,10 +60,21 @@ Route::post("/creer_waricrowd/{id_menbre}",[MobileApiController::class,'enregist
 Route::post("/modifier_un_waricrowd/{id_crowd}/{id_menbre}",[MobileApiController::class,'modifier_un_waricrowd']);
 Route::post("/supprimer_waricrowd/{id_crowd}/{id_menbre}",[MobileApiController::class,'supprimer_waricrowd']);
 
-
+//waribank
+Route::post("/initier_paiement_rechargement/{id_menbre}",[MobileApiController::class,'initier_paiement_rechargement']);
+Route::post("/effectuer_tranfert_waribank/{id_menbre}",[MobileApiController::class,'effectuer_tranfert_waribank']);
+Route::post("/retirer_de_largent_waribank/{id_menbre}",[MobileApiController::class,'retirer_de_largent_waribank']);
 
 //===========================
     Route::get("/statut-transaction/",function(){
+        if($_GET['trans_id']){
+            $trans_id = $_GET['trans_id'];
+            $la_transaction = \App\Models\Transaction::where('trans_id','=',$trans_id)->first();
+            $statut_transaction = $la_transaction->statut;
+            $route = route('api.mobile.statut_transaction')."?statut_transaction=$statut_transaction";
+            return redirect($route); 
+        }
+        
         return view("api/statut_transaction");
     })->name("api.mobile.statut_transaction");
 

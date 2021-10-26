@@ -218,8 +218,9 @@ class MenbreController extends Controller
         $notification = "<div class='alert alert-danger'>Numero Invalide</div>";
         $donnees_formulaire = $request->all();
         $telephone = $donnees_formulaire['telephone'];
-        $existe_pour_quelqun_dautre =  $this->checkExistenceNumeroPourAutrePersonne($numero,$id_menbre);
-        if ($existe_pour_quelqun_dautre) {
+        $existe_pour_quelqun_dautre =  $this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre_connecter);
+        
+        if (!$existe_pour_quelqun_dautre) {
             if (strlen($telephone) >= 10) {
                 $le_menbre->telephone = $telephone;
                 $le_menbre->save();
@@ -362,6 +363,7 @@ class MenbreController extends Controller
 
     private function checkExistenceNumeroPourAutrePersonne($numero,$id_menbre){
         $menbre_existant = Menbre::where('telephone','=',$numero)->where('id','!=',$id_menbre)->first();
+        
         if($menbre_existant != null){
             return true;
         }else{

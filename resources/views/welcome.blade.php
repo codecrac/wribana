@@ -52,7 +52,7 @@
 			</div>     
             <div class="row">
                 <div class="col-md-6 text-center">
-                    <img src="http://imaginationforpeople.org/site_media/uploads/projects/1785/pictures/93a3b99a-2937-4c60-9213-4ded92ffc6c7.jpg.620x300_q85_crop-50%2C50_upscale-1.jpg" />
+                    <img src="/template/assets/img/main-qui-se-soutiennent.jpg" />
                 </div>
                 <div class="col-md-6">
 						<div class="author-note wow fadeInUp">
@@ -217,7 +217,7 @@
                         </p>
                         <br/>
                         <div class="col-12 text-center">
-                            <img src="http://www.talenbiz.com/wp-content/uploads/2016/06/mobile_afrique_1_stocklib_1-1014x487.jpg" />
+                            <img src="/template/assets/img/tontine-telephone.jpg" />
                         </div>
                         <br/>
                         <div class='row'>
@@ -309,19 +309,19 @@
 
 <!--====== Counter Area Start ======-->
 <section class="counter-section-one mt-negative">
-    <div class="container primary-bg">
+    <div class="container-fluid p-5 primary-bg">
         <div class="row counter-boxes justify-content-xl-between justify-content-center">
             <div class="col-12 text-center">
 
                 <div class="icon white-color">
                     {{-- <i style="font-size:150px" class="flaticon-solidarity"></i> --}}
                 </div>
-                <div class="counter-box mb-40 ">
+                <div class="counter-box">
                     <div class="content white-color text-center">
                         <div class="count-wrap" style="display:block">
-                            <h3 class="title">
+                            <h1 class="text-white">
                                 Des frais de gestion inédit,
-                            
+                                <br/>
                                 <span class="count">1</span>
                                 <span class="suffix">%</span>
                                 seulement
@@ -347,22 +347,22 @@
             <h2 class="title">Nos partenaires</h2>
         </div>
         <div class="row partners-logos-one">
-            <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="col-lg-3 col-md-4 col-sm-6" style="padding: 25px;">
                 <div class="logo mt-30">
-                    <a href="#"><img src="/assets/partenaires/bgfi.jpg" alt="Image"></a>
+                    <a href="#"><img src="https://sonecafrica.com/sites/default/files/clients/logo_bridge_bank.jpg" alt="Image"></a>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="col-lg-3 col-md-4 col-sm-6" style="padding: 25px;">
                 <div class="logo mt-30">
                     <a href="#"><img src="/assets/partenaires/moov-africa.jpeg" alt="Image"></a>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="col-lg-3 col-md-4 col-sm-6" style="padding: 25px;">
                 <div class="logo mt-30">
                     <a href="#"><img src="https://www.africaguinee.com/sites/default/files/field/image/orange_40_3.jpg" alt="Image"></a>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="col-lg-3 col-md-4 col-sm-6" style="padding: 25px;">
                 <div class="logo mt-30">
                     <a href="#"><img src="/assets/partenaires/mtn.jpg" alt="Image"></a>
                 </div>

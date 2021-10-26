@@ -10,6 +10,7 @@ use App\Models\MenbreTontine;
 use App\Models\CaisseTontine;
 use App\Models\Transaction;
 use App\Models\TransactionWaricrowd;
+use App\Models\TransactionTransfertWaribank;
 use App\Models\CompteMenbre;
 use App\Models\CategorieWaricrowd;
 use App\Models\CaisseWaricrowd;
@@ -24,7 +25,8 @@ class MobileApiController extends Controller
 {
 
 //===================VITRINE#VITRINE---#----VITRINE#VITRINE--------#----------VITRINE#VITRINE#VITRINE#VITRINE#VITRINE
-    public function liste_crowd($index_pagination=0){
+    public function liste_crowd($index_pagination=0)
+    {
         $les_crowds = Waricrowd::orderBy('id','DESC')->where('etat','=','valider')->with('categorie')->with('createur')
         ->with('caisse')->skip($index_pagination)->limit(25)->get();
         return $les_crowds;
@@ -351,9 +353,21 @@ class MobileApiController extends Controller
 
     public function details_menbre($id_menbre)
     {
+        if(isset($_GET['is_waribank'])){ $is_waribank = true;}else{$is_waribank = false;} ;
+        
         $le_menbre = Menbre::find($id_menbre);
         $le_menbre['devise'] = $le_menbre->devise_choisie->monaie;
         $le_menbre['code_devise'] = $le_menbre->devise_choisie->code;
+        
+        if($is_waribank){
+            $le_menbre->compte;
+            $le_menbre->historique_transfert_entrant;
+            $le_menbre->historique_tranfert_sortant;
+            $le_menbre->historique_rechargement;
+            $le_menbre->historique_retraits;
+            $le_menbre->historique_virement_tontine;
+        }
+        
         return json_encode($le_menbre);
 
     }
@@ -524,7 +538,8 @@ class MobileApiController extends Controller
         return json_encode($infos_pour_tableau_de_bord);
     }
 
-    public function details_profil_utilisateur($id_menbre){
+    public function details_profil_utilisateur($id_menbre)
+    {
         $lutilisateur = Menbre::where('id','=',$id_menbre)->first();
         return json_encode($lutilisateur);
     }
@@ -584,7 +599,8 @@ class MobileApiController extends Controller
         }
     }
 
-    public function liste_tontine($id_menbre){ //les tontines de l'utilisateur connecter
+    public function liste_tontine($id_menbre)
+    { //les tontines de l'utilisateur connecter
         $le_menbre = Menbre::find($id_menbre);
     
         $les_tontines = $le_menbre->mes_tontines_pour_mobile;
@@ -721,7 +737,8 @@ class MobileApiController extends Controller
         );
     }
 
-    public function ouvrir_tontine($id_tontine){
+    public function ouvrir_tontine($id_tontine)
+    {
         
         $la_tontine = Tontine::find($id_tontine);
         if($la_tontine->etat =="prete"){
@@ -783,7 +800,194 @@ class MobileApiController extends Controller
         
     }
 
-    public function paiement_cotisation($id_tontine,$id_menbre_connecter){
+    public function initier_paiement_rechargement(Request $request,$id_menbre_connecter)
+    {
+            //================INTEGRATION CINETPAY===================
+                $donnees_formulaire = $request->all();
+                $le_montant = $donnees_formulaire['montant_recharge'];
+
+                $le_menbre = Menbre::find($id_menbre_connecter);
+          
+            // CONVERSION EN CFA AVANT PAIEMENT
+                if($le_menbre->devise_choisie->code != "XOF"){
+                    $monaie_createur_tontine = $le_menbre->devise_choisie->code;
+                    $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion(
+                        $monaie_createur_tontine,"XOF");
+                    $le_montant_en_xof = $quotient_de_conversion * $le_montant;
+                }else{
+                    $le_montant_en_xof = $le_montant;
+                }
+            // CONVERSION EN CFA AVANT PAIEMENT
+        
+                $route_back_en_cas_derreur = route('api.mobile.statut_transaction');
+                $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$le_montant_en_xof,$le_montant,$route_back_en_cas_derreur,true);
+            
+
+                $reponse = array(
+                    "success" => true,
+                    "url_paiement" => $payment_url,
+                    "message" => $payment_url
+                );
+
+                return $reponse;
+    }
+
+    public function effectuer_tranfert_waribank(Request $request,$id_menbre_connecter)
+    {
+        $success =false;
+        $df = $request->all();
+        $mot_de_passe_actuel = $df['mot_de_passe_actuel'];
+        $montant_en_monaie_expediteur = $df['montant'];
+        $numero_complet = $df['telephone'];
+
+        $notification ="ntohing";
+        if(empty($mot_de_passe_actuel) || empty($montant_en_monaie_expediteur) || empty($numero_complet) ){
+            
+            $reponse = array(
+                "success" => false,
+                "message" => "Tous les champs sont obligatoire"
+            );
+            return json_encode($reponse);
+        }
+
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        $bon_mot_de_passe = $this->VerifieLeMotDePasse($mot_de_passe_actuel,$id_menbre_connecter);
+        if($bon_mot_de_passe){
+            $le_destinataire = Menbre::where('telephone','=',$numero_complet)->first();
+            if($le_destinataire !=null){
+                if( $le_menbre->compte->solde >= $montant_en_monaie_expediteur){
+
+                    // CONVERSION EN CFA AVANT PAIEMENT
+                    if($le_menbre->devise_choisie->code != $le_destinataire->devise_choisie->code){
+                        $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion(
+                            $le_menbre->devise_choisie->code ,$le_destinataire->devise_choisie->code);
+                        
+                            $le_montant_equivalent_pour_destinataire = $quotient_de_conversion * $montant_en_monaie_expediteur;
+                    }else{
+                        $le_montant_equivalent_pour_destinataire = $montant_en_monaie_expediteur;
+                    }
+
+
+                            $nom_complet_exp = strtolower($le_menbre->nom_complet);
+                            $compte_expediteur = $le_menbre->compte;
+                            $compte_expediteur->solde = $compte_expediteur->solde - $montant_en_monaie_expediteur;
+                            $compte_expediteur->save();
+                            $monaie_exp = $le_menbre->devise_choisie->monaie;
+                    
+                            $compte_destinataire = $le_destinataire->compte;
+                            $compte_destinataire->solde = $compte_destinataire->solde + $le_montant_equivalent_pour_destinataire;
+                            $compte_destinataire->save();
+                            $monaie_dest = $le_destinataire->devise_choisie->monaie;
+                            
+                            $numero_destinataire = $le_destinataire->telephone;
+                            $le_message_dest = "Vous avez reçu un tranfert de $montant_en_monaie_expediteur $monaie_exp ($le_montant_equivalent_pour_destinataire $monaie_dest) de $le_menbre->nom_complet avec succes";
+                            $le_message_exp = "Votre transfert de $montant_en_monaie_expediteur $monaie_exp ($le_montant_equivalent_pour_destinataire $monaie_dest) a $le_destinataire->nom_complet ($numero_destinataire) a bien été éffectué";
+                            
+                            SmsController::sms_info_bip($le_menbre->telephone, $le_message_exp);
+                            SmsController::sms_info_bip($le_destinataire->telephone, $le_message_dest);
+                    
+                            $la_transaction = new TransactionTransfertWaribank();
+                            $la_transaction->id_menbre = $le_menbre->id;
+                            $la_transaction->id_destinataire = $le_destinataire->id;
+                            $la_transaction->telephone = $numero_destinataire;
+                            $la_transaction->montant_monaie_expediteur = $montant_en_monaie_expediteur;
+                            $la_transaction->montant_equivalent_destinataire = $le_montant_equivalent_pour_destinataire;
+                            $la_transaction->save();
+                    
+                            $success = true;
+                            $notification = "Transfert au $numero_destinataire [ $le_destinataire->nom_complet  ]  bien effectué.";
+                            
+                   
+                    $id_destinataire = $le_destinataire->id;
+                }else{
+                    $notification = "Votre solde est insuffisant.";    
+                }
+            }else{
+                $notification = "Ce numero ($numero_complet) n'est associé a aucun compte";
+            }
+        }else{
+            $notification = "Mot de passe actuel incorrect";
+        }
+
+        $reponse = array(
+            "success" => $success,
+            "message" => $notification
+        );
+
+        return json_encode($reponse);
+
+    }
+
+    public function retirer_de_largent_waribank(Request $request,$id_menbre_connecter){
+        $success = false;
+        $donnees_formulaire = $request->input();
+        $mdp = $donnees_formulaire['mot_de_passe_actuel'];
+        $montant_retrait = $donnees_formulaire['montant_retrait'];
+        $mdp_md5 = md5($mdp);
+
+        $utlisateur_existe = Menbre::where('id','=',$id_menbre_connecter)->where('mot_de_passe','=',$mdp_md5)->first();
+
+        if($utlisateur_existe){
+            $le_menbre = Menbre::find($id_menbre_connecter);
+
+            //est qu'il dispose de cette somme sur son compte
+            if($le_menbre->compte->solde < $montant_retrait){
+                $notification = "VOUS NE DISPOSEZ PAS DE CE MONTANT.";
+                
+                $reponse = array(
+                    "success" => $success,
+                    "message" => $notification
+                );
+                return json_encode($reponse);
+            }
+            
+        // CONVERSION EN CFA AVANT TRANSFERT
+            $le_montant = $montant_retrait;
+            if($le_menbre->devise_choisie->code != "XOF"){
+                $monaie_utilisateur = $le_menbre->devise_choisie->code;
+                $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_utilisateur,"XOF");
+                $le_montant_en_xof = $quotient_de_conversion * $le_montant;
+            }else{
+                $le_montant_en_xof = $le_montant;
+            }
+        // CONVERSION EN CFA AVANT TRANSFERT
+
+            $response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait($le_menbre,$le_montant_en_xof);
+            $reponse_decoder = json_decode($response);
+            $code = $reponse_decoder->code;
+            $message = $reponse_decoder->message;
+            
+            
+            if($code == 0){ // 0 = succes , les autres = prbleme
+                $success = true;
+                $notification = "Retrait bien effectué";
+                \App\Http\Controllers\CinetpayApiTransfertController::enregistrer_retrait($le_menbre,$montant_retrait);
+                $monaie = $le_menbre->devise_choisie->monaie;
+                
+                
+                $headers = 'From: no-reply@waribana.net' . "\r\n" .
+                     'Reply-To: no-reply@waribana.net' . "\r\n" .
+                     'X-Mailer: PHP/' . phpversion();
+                mail($le_menbre->email,'RETRAIT EFFECTUER',"Bonjour $le_menbre->nom_complet, votre retrait de $montant_retrait $monaie a bien été effectué.",$headers);
+            }else{
+                $notification = "Echec de retrait, motif : $message ";
+            }
+            return redirect()->back()->with('notification',$notification);
+        }else{
+            $notification = " Mot de passe Incorrect";
+        };
+        
+        $reponse = array(
+            "success" => $success,
+            "message" => $notification
+        );
+        return json_encode($reponse);
+
+    }
+
+
+    public function paiement_cotisation($id_tontine,$id_menbre_connecter)
+    {
         //===================POUR PAIEMENT AVEC CINETPAY================================
                 $la_tontine = Tontine::find($id_tontine);
         
@@ -814,7 +1018,8 @@ class MobileApiController extends Controller
     }
     //================INVITATIONS
 
-    public function adhesion_via_code_invitation($code_invitation,$id_menbre){
+    public function adhesion_via_code_invitation($code_invitation,$id_menbre)
+    {
 
 
         $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
@@ -1037,26 +1242,30 @@ class MobileApiController extends Controller
 
 ////===================WARICROWDS=========================
 
-public function liste_waricrowd_dutilisateur($id_menbre){ //les tontines de l'utilisateur connecter
+public function liste_waricrowd_dutilisateur($id_menbre)
+{ //les tontines de l'utilisateur connecter
     $le_menbre = Menbre::find($id_menbre);
 
     $mes_waricrowd = $le_menbre->mes_waricrowd_pour_mobile;
     return json_encode($mes_waricrowd);
 }
 
-public function liste_projet_soutenus($id_menbre){ //les tontines de l'utilisateur connecter
+public function liste_projet_soutenus($id_menbre)
+{ //les tontines de l'utilisateur connecter
     $le_menbre = Menbre::find($id_menbre);
 
     $projets_soutenus_pour_mobile = $le_menbre->projets_soutenus_pour_mobile;
     return json_encode($projets_soutenus_pour_mobile);
 }
 
-public function liste_categorie_crowd(){
+public function liste_categorie_crowd()
+{
     $liste_categorie_crowd = CategorieWaricrowd::all();
     return json_encode($liste_categorie_crowd);
 }
 
-public function details_waricrowd($id_crowd,$id_menbre){
+public function details_waricrowd($id_crowd,$id_menbre)
+{
     if($id_menbre !=null){ //quand c'est un crowd qui appartient au menbre
         $liste_categorie_crowd = Waricrowd::with("categorie")->with("createur")->with("caisse")
         ->where("id","=",$id_crowd)->first();
@@ -1173,7 +1382,8 @@ public function paiement_soutien_waricrowd(Request $request,$id_crowd,$id_menbre
     return $reponse;
 }
 
-public function modifier_un_waricrowd(Request $request,$id_crowd,$id_menbre_connecter){
+public function modifier_un_waricrowd(Request $request,$id_crowd,$id_menbre_connecter)
+{
     $donnees_formulaire = $request->all();
 
     $id_categorie_waricrowd = $donnees_formulaire['id_categorie_waricrowd'];
@@ -1247,9 +1457,10 @@ public function modifier_un_waricrowd(Request $request,$id_crowd,$id_menbre_conn
 
 
 
-public function supprimer_waricrowd(Request $request,$id_crowd,$id_menbre){
+public function supprimer_waricrowd(Request $request,$id_crowd,$id_menbre)
+{
     $le_crowd = Waricrowd::find($id_crowd);
-//        dd($le_crowd->transactions);
+        //        dd($le_crowd->transactions);
     if(sizeof($le_crowd->transactions) == 0 && $le_crowd->id_menbre == $id_menbre ){
         $le_crowd->delete();
         $success = true;
@@ -1307,7 +1518,8 @@ public function supprimer_waricrowd(Request $request,$id_crowd,$id_menbre){
         }
     }
 
-    private function checkExistenceEmailPourAutrePersonne($email,$id_menbre){
+    private function checkExistenceEmailPourAutrePersonne($email,$id_menbre)
+    {
         $menbre_existant = Menbre::where('email','=',$email)->where('id','!=',$id_menbre)->first();
         if($menbre_existant != null){
             return true;
@@ -1327,7 +1539,8 @@ public function supprimer_waricrowd(Request $request,$id_crowd,$id_menbre){
     }
 
 
-    private function checkExistenceNumeroPourAutrePersonne($numero,$id_menbre){
+    private function checkExistenceNumeroPourAutrePersonne($numero,$id_menbre)
+    {
         $menbre_existant = Menbre::where('telephone','=',$numero)->where('id','!=',$id_menbre)->first();
         if($menbre_existant != null){
             return true;
@@ -1336,7 +1549,8 @@ public function supprimer_waricrowd(Request $request,$id_crowd,$id_menbre){
         }
     }
 
-    private function VerifieLeMotDePasse($mdp,$id_menbre){
+    private function VerifieLeMotDePasse($mdp,$id_menbre)
+    {
         $mdp_cacher = md5($mdp);
         $menbre_existant = Menbre::where('mot_de_passe','=',$mdp_cacher)->where('id','=',$id_menbre)->first();
         if($menbre_existant != null){
@@ -1345,7 +1559,9 @@ public function supprimer_waricrowd(Request $request,$id_crowd,$id_menbre){
             return false;
         }
     }
-    public  function formaterLienPitch($lien_pitch){
+
+    public  function formaterLienPitch($lien_pitch)
+    {
         $lien_pour_integration =null;
         // bon format = https://www.youtube.com/embed/bethOeuIkWI
         $tableau = explode('watch?v=',$lien_pitch);
@@ -1353,10 +1569,10 @@ public function supprimer_waricrowd(Request $request,$id_crowd,$id_menbre){
         if($copier_dans_la_barre_dadresse) {
             $lien_pour_integration = str_replace('watch?v=', 'embed/', $lien_pitch);
         }else{
-//            https://youtu.be/DzH5aRoMYLw
+        //            https://youtu.be/DzH5aRoMYLw
             if(str_contains($lien_pitch,'youtu.be')){
                 $tableau = explode('youtu.be/',"$lien_pitch");
-//                dd($tableau);
+        //                dd($tableau);
                 $id_video = $tableau[1];
                 $lien_pour_integration = "https://www.youtube.com/embed/$id_video";
             }

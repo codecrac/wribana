@@ -17,7 +17,7 @@ Route::get("/supprimer-une-waricrowd/{id_tontine}", [EspaceMenbreWaricrowdContro
 Route::delete("/supprimer-une-waricrowd/{id_tontine}", [EspaceMenbreWaricrowdController::class, 'post_supprimer_waricrowd'])->name('espace_menbre.post_supprimer_waricrowd');
 
 Route::get("/details-waricrowd/{id_crowd}",[EspaceMenbreWaricrowdController::class,'details_waricrowd'])->name('espace_menbre.details_waricrowd');
-Route::get("/editer-waricrowd/{id_crowd}",[EspaceMenbreWaricrowdController::class,'editer_crowd'])->name('espace_menbre.editer_crowd');
+
 
 Route::post("/soutenir-projet/{id_crowd}",[EspaceMenbreWaricrowdController::class,'soutenir_projet'])->name('espace_menbre.soutenir_projet');
 Route::post("/confirmation-de-soutien-wricrowd",[EspaceMenbreWaricrowdController::class,'confirmation_soutien_waricrowd'])->name('espace_menbre.confirmation_soutien_waricrowd');

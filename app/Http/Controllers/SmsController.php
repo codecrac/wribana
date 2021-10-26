@@ -134,6 +134,6 @@ class SmsController extends Controller
             }
         }
 
-        echo "$nombre_de_retard_en_tout paiement en retard en tout";
+        echo "$nombre_de_retard_en_tout paiement en retard en tout [ $liste_retardataires ]";
     }
 }

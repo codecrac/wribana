@@ -177,7 +177,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
 
                                     <br/><br/>
                                     <h6>
-                                        <a href="{{route('connexion_menbre')}}">déja menbre ? connectez vous.</a>
+                                        <a href="{{route('connexion_menbre')}}">déja membre ? connectez vous.</a>
                                     </h6>
                                 </div>
                             </form>

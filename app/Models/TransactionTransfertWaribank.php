@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TransactionTransfertWaribank extends Model
 {
     public $guarded = [];
-
+ 
     public function expediteur(){
         return $this->belongsTo(Menbre::class,'id_menbre');
     }

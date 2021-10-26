@@ -40,10 +40,11 @@ Route::get('/reinitialiser-mot-de-passe',  [MenbreController::class,'reinitialis
 Route::post('/reinitialiser-mot-de-passe',  [MenbreController::class,'post_reinitialiser_mot_de_passe'])->name('post_reinitialiser_mot_de_passe');
 
 
-Route::post('/', [FrontController::class,'accueil'])->name('accueil');//pour le retour apres paiement sur cinetpay
-Route::post('/projets-waricrowd', [FrontController::class,'decouvrir_projets'])->name('decouvrir_projets');//pour le retour apres paiement sur cinetpay
+
 Route::get('/linkstorage', function () {
     Artisan::call('storage:link');
+    Artisan::call('route:clear');
+    Artisan::call('optimize');
 });
 
 
@@ -81,10 +82,6 @@ Route::get("/generer-lien-de-paiement",[CinetpayPaiementController::class,'gener
 Route::get("/recup_statut_paiement_cinetpay",[CinetpayPaiementController::class,'recup_statut_paiement_cinetpay'])->name('recup_statut_paiement_cinetpay');
 
 
-Route::post("/payer-ma-cotisation/reponse-tontine",[NotificationPaiementCinetPay::class,'notification_paiement_tontine'])->name('espace_menbre.notification_paiement_tontine');
-Route::post("/retour-paiement-soutenir-waricrowd/reponse-cinietpay",
-                [NotificationPaiementCinetPay::class,'reponse_paiement_soutenir_waricrowd'])
-                ->name('espace_menbre.reponse_paiement_soutien_waricrowd');
 Route::get("/notifier-les-retards-de-paiement-sur-tontine",[\App\Http\Controllers\SmsController::class,'notifier_retard_de_paiement_tontine'])->name('tontine.notifier_retard_de_paiement_tontine');
 
 

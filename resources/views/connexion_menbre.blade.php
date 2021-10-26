@@ -133,7 +133,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
 
                                     <br/><br/>
                                     <h6>
-                                        <a href="{{route('inscription_menbre')}}">Pas encore menbre ? je m'inscris</a>
+                                        <a href="{{route('inscription_menbre')}}">Pas encore membre ? je m'inscris</a>
                                     </h6>
                                 </div>
                             </form>

@@ -31,7 +31,7 @@ class CinetpayPaiementController extends Controller
 
 
         $notify_url = route('api.notification_paiement_rechargement');
-        $return_url = route('api.index_waribank',[$le_menbre->id]).'?trans_id='.$transaction_id;
+        $return_url = route('api.retour_rechargement_waribank',[$le_menbre->id]).'?trans_id='.$transaction_id;
 
         
         if($from_mobile){

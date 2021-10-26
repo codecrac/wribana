@@ -9,7 +9,7 @@
 @section('content')
 
     <div class="row">
-        <div class=" col-md-8 grid-margin stretch-card">
+        <div class=" col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-header">
                     <hr/>
@@ -33,10 +33,10 @@
                         
 
                     <form method="post" action="{{route('espace_menbre.effectuer_tranfert_waribank')}}">
-                        <input type="text" value="{{$numero_complet}}" name="numero_destinataire">
-                        <input type="text" value="{{$le_destinataire->id}}" name="id_destinataire">
-                        <input type="text" value="{{$montant_en_monaie_expediteur}}" name="montant_expediteur">
-                        <input type="text" value="{{$le_montant_equivalent_pour_destinataire}}" name="montant_destinataire">
+                        <input type="hidden" value="{{$numero_complet}}" name="numero_destinataire">
+                        <input type="hidden" value="{{$le_destinataire->id}}" name="id_destinataire">
+                        <input type="hidden" value="{{$montant_en_monaie_expediteur}}" name="montant_expediteur">
+                        <input type="hidden" value="{{$le_montant_equivalent_pour_destinataire}}" name="montant_destinataire">
 
                         <h3 class="text-center">
                             @csrf
@@ -45,16 +45,6 @@
                     </form>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-4 text-center">
-            <hr/>
-            <h4>Comment ça marche</h4>
-            <hr/>
-            <iframe width="100%" src="https://www.youtube.com/embed/DzH5aRoMYLw" title="YouTube video player"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen></iframe>
         </div>
     </div>
 

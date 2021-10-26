@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Menbre;
 use App\Models\TransactionTransfertWaribank;
+use App\Models\TransactionRechargementWaribank;
 use \App\Http\Controllers\CinetpayPaiementController;
 use \App\Http\Controllers\SmsController;
 
@@ -10,15 +11,43 @@ use Illuminate\Http\Request;
 
 class WaribankController extends Controller
 {
-    public function index($id_menbre){
+    public function index(Request $request,$id_menbre){
+        
+        $statut_transaction= '';
+        if(isset($_GET['statut_transaction'])){
+            $statut_transaction = $_GET['statut_transaction'];
+            $statut_transaction = ($statut_transaction == 'ACCEPTED') 
+                                        ? "<div class='alert alert-success text-center'> Votre rechargement a été effectué avec succès </div>" 
+                                        : "<div class='alert alert-danger text-center'> Votre rechargement a échoué </div>" ;
+            
+        }
+        // dd($request->all());
+        
         $le_menbre = Menbre::find($id_menbre);
-        return view('espace_menbre.profil.waribank',compact('le_menbre'));
+        return view('espace_menbre.profil.waribank',compact('le_menbre','statut_transaction'));
+    }
+    
+    public function retour_rechargement_waribank(Request $request,$id_menbre=15){
+        $statut_transaction = 'rien';
+        if(isset($_GET['trans_id'])){
+            $trans_id = $_GET['trans_id'];
+            $transaction = TransactionRechargementWaribank::where('trans_id','=',$trans_id)->first();
+            if($transaction!=null){
+                $statut_transaction = $transaction->statut;
+            }
+        }
+        
+         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randstring = '';
+        for ($i = 0; $i < 40; $i++) {
+            $randstring = $characters[rand(0, strlen($characters))];
+        }
+        $route = route('espace_menbre.index_waribank',[$id_menbre])."?q=$randstring&statut_transaction=$statut_transaction";
+        return redirect($route);
     }
 
     public function rechargement_waribank(Request $request)
     {
-        
-        
             //================INTEGRATION CINETPAY===================
             $la_session = session(MenbreController::$cle_session);
             $id_menbre_connecter = $la_session['id'];
@@ -101,18 +130,22 @@ class WaribankController extends Controller
         $le_menbre = Menbre::find($id_menbre_connecter);
         $le_destinataire = Menbre::find($id_destinataire);
         
+        $nom_complet_exp = strtolower($le_menbre->nom_complet);
         $compte_expediteur = $le_menbre->compte;
         $compte_expediteur->solde = $compte_expediteur->solde - $montant_en_monaie_expediteur;
         $compte_expediteur->save();
         $monaie_exp = $le_menbre->devise_choisie->monaie;
-        $le_message_exp = "Votre transfert de $montant_en_monaie_expediteur $monaie_exp a $le_destinataire->nom_complet ($numero_destinataire) a bien été éffectué";
-        SmsController::sms_info_bip($le_menbre->telephone, $le_message_exp);
 
         $compte_destinataire = $le_destinataire->compte;
         $compte_destinataire->solde = $compte_destinataire->solde + $le_montant_equivalent_pour_destinataire;
         $compte_destinataire->save();
         $monaie_dest = $le_destinataire->devise_choisie->monaie;
-        $le_message_dest = "Vous avez reçu un tranfert de $le_montant_equivalent_pour_destinataire $monaie_dest de $le_menbre->nom_complet";
+        
+        
+        $le_message_dest = "Vous avez reçu un tranfert de $montant_en_monaie_expediteur $monaie_exp ($le_montant_equivalent_pour_destinataire $monaie_dest) de $le_menbre->nom_complet avec succes";
+        $le_message_exp = "Votre transfert de $montant_en_monaie_expediteur $monaie_exp ($le_montant_equivalent_pour_destinataire $monaie_dest) a $le_destinataire->nom_complet ($numero_destinataire) a bien été éffectué";
+        
+        SmsController::sms_info_bip($le_menbre->telephone, $le_message_exp);
         SmsController::sms_info_bip($le_destinataire->telephone, $le_message_dest);
 
         $la_transaction = new TransactionTransfertWaribank();

@@ -128,21 +128,24 @@
                         @endif
                     </ul>
                 </div>
-                {{-- <div class="navbar-extra d-flex align-items-center">
-                    @if($est_connecter)
-                        <a  href="{{route("espace_menbre.accueil")}}" class="main-btn nav-btn d-none d-sm-inline-block"> Mon Compte <i class="far fa-arrow-right"></i>
-                        </a>
-                        <a href="#" class="nav-toggler">
-                            <span></span>
-                        </a>
-                    @else
-                    <a  href="{{route("connexion_menbre")}}" class="main-btn nav-btn d-none d-sm-inline-block">Se Connecter <i class="far fa-arrow-right"></i>
-                    </a>
+                 <div class="navbar-extra d-flex align-items-center">
+                     {{--
+                        @if($est_connecter)
+                            <a  href="{{route("espace_menbre.accueil")}}" class="main-btn nav-btn d-none d-sm-inline-block"> Mon Compte <i class="far fa-arrow-right"></i>
+                            </a>
+                            <a href="#" class="nav-toggler">
+                                <span></span>
+                            </a>
+                        @else
+                            <a  href="{{route("connexion_menbre")}}" class="main-btn nav-btn d-none d-sm-inline-block">Se Connecter <i class="far fa-arrow-right"></i>
+                            </a>
+                        @endif
+                    --}}
                     <a href="#" class="nav-toggler">
                         <span></span>
                     </a>
-                    @endif
-                </div> --}}
+                    
+                </div> 
             </div>
         </div>
     </div>
@@ -166,13 +169,27 @@
             <li class="{{isset($is_contact) ? "current" : "" }}">
                 <a href="{{route("contact")}}">Contact</a>
             </li>
-            <li>
+            
+            <!--<li>
                 @if($est_connecter)
                     <a  href="{{route("espace_menbre.accueil")}}" > Mon Compte </a>
                 @else
                     <a  href="{{route("connexion_menbre")}}" >Se Connecter </a>
                 @endif
-            </li>
+            </li>-->
+            
+            @if(!$est_connecter)
+                <li>
+                    <a href="{{route("inscription_menbre")}}">S'inscrire</a>
+                </li>
+                <li>
+                    <a href="{{route("connexion_menbre")}}">Se connecter</a>
+                </li>
+            @else
+                <li class="{{isset($is_apropos) ? "current" : "" }}">
+                    <a href="{{route("espace_menbre.accueil")}}">Mon compte</a>
+                </li>
+            @endif
         </ul>
         <div class="panel-extra">
             <a href="{{route("connexion_menbre")}}" class="main-btn nav-btn d-none d-sm-inline-block">

@@ -27,6 +27,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 ///#==============RECHARGEMENT=====================================================================
+Route::get("/retour-rechargement-waribank/{id_menbre}",[WaribankController::class,'index']);//retour rechargement
+Route::post("/retour-rechargement-waribank/{id_menbre?}",[WaribankController::class,'retour_rechargement_waribank'])->name('api.retour_rechargement_waribank');//retour rechargement
+
+//utiliser quelque part
 Route::get("/index_waribank/{id_menbre}",[WaribankController::class,'index']);
 Route::post("/index_waribank/{id_menbre}",[WaribankController::class,'index'])->name('api.index_waribank');
 

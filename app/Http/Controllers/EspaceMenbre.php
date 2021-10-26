@@ -656,8 +656,8 @@ class EspaceMenbre extends Controller
             // CONVERSION EN CFA AVANT TRANSFERT
             $le_montant = $montant_retrait;
             if($le_menbre->devise_choisie->code != "XOF"){
-                $monaie_createur_tontine = $le_crowd->createur->devise_choisie->code;
-                $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_createur_tontine,"XOF");
+                $monaie_utilisateur = $le_menbre->devise_choisie->code;
+                $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_utilisateur,"XOF");
                 $le_montant_en_xof = $quotient_de_conversion * $le_montant;
             }else{
                 $le_montant_en_xof = $le_montant;
