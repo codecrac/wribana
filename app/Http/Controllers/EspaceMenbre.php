@@ -722,13 +722,9 @@ class EspaceMenbre extends Controller
     private function notifier_paiement_cotisation($liste_participants,$nom_cotiseur,$montant_cotisation,$devise,$titre_de_la_tontine,$date_paiement){
         foreach($liste_participants as $item_participant){
             $numero = "$item_participant->telephone";
-//            dd($montant_cotisation);
-//            $montant_cotisation = number_format($montant_cotisation,0,',',' ');
             $message_sms = "Paiement de $montant_cotisation $devise par $nom_cotiseur sur la totine <<$titre_de_la_tontine>> le $date_paiement ";
-//            dd($message_sms);
             SmsController::sms_info_bip("$numero",$message_sms);
         }
-//        die();
     }
 
 

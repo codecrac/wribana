@@ -11,6 +11,7 @@ use App\Models\CaisseTontine;
 use App\Models\Transaction;
 use App\Models\TransactionWaricrowd;
 use App\Models\TransactionTransfertWaribank;
+use App\Models\CahierCompteTontine;
 use App\Models\CompteMenbre;
 use App\Models\CategorieWaricrowd;
 use App\Models\CaisseWaricrowd;
@@ -993,30 +994,173 @@ class MobileApiController extends Controller
 
     public function paiement_cotisation($id_tontine,$id_menbre_connecter)
     {
-        //===================POUR PAIEMENT AVEC CINETPAY================================
-                $la_tontine = Tontine::find($id_tontine);
         
-                // CONVERSION EN CFA AVANT PAIEMENT
-                    $le_montant = $la_tontine->montant;
-                    if($la_tontine->createur->devise_choisie->code != "XOF"){
-                        $monaie_createur_tontine = $la_tontine->createur->devise_choisie->code;
-                        $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_createur_tontine,"XOF");
-                        $le_montant_en_xof = $quotient_de_conversion * $le_montant;
-                    }else{
-                        $le_montant_en_xof = $le_montant;
-                    }
-                // CONVERSION EN CFA AVANT PAIEMENT
-        
-                $le_menbre = Menbre::find($id_menbre_connecter);
-                $route_back_en_cas_derreur = route('api.mobile.statut_transaction');
-                $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_tontine,$le_montant_en_xof,
-                $le_montant,'tontine',$route_back_en_cas_derreur);
-            
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        $la_tontine = Tontine::find($id_tontine);
+        $montant = $la_tontine->montant;
 
+        // CONVERSION EN CFA AVANT PAIEMENT
+            if($le_menbre->devise_choisie->code != $la_tontine->createur->devise_choisie->code){
+                $monaie_utilisateur = $le_menbre->devise_choisie->code;
+                $monaie_createur_tontine =  $la_tontine->createur->devise_choisie->code;
+                $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion(
+                    $monaie_createur_tontine,$monaie_utilisateur);
+                $le_montant_en_monaie_utilisateur_connecter = $quotient_de_conversion * $montant;
+            }else{
+                $le_montant_en_monaie_utilisateur_connecter = $montant;
+            }
+        // CONVERSION EN CFA AVANT PAIEMENT
+
+
+        $success = false;
+        // verif portefeuille
+        if($le_menbre->compte->solde < $le_montant_en_monaie_utilisateur_connecter){
+            $notification = "Votre solde est insuffisant.";
+            $reponse = array(
+                "success" => $success,
+                "message" => $notification
+            );
+
+            return $reponse;
+        }
+
+        
+        $la_transaction = new Transaction();
+        $la_transaction->id_tontine = $id_tontine;
+        $la_transaction->id_menbre = $id_menbre_connecter;
+        $la_transaction->montant = $montant;
+        $la_transaction->statut = "ACCEPTED";
+        $la_transaction->id_menbre_qui_prend = $la_tontine->caisse->menbre_qui_prend->id;
+        $la_transaction->index_ouverture = $la_tontine->caisse->index_ouverture;
+
+        $notification = "Quelque chose s'est mal passé, veuillez reessayez";
+        if($la_transaction->save()){
+            $la_caisse_de_la_tontine = CaisseTontine::findOrNew($id_tontine);
+            $la_caisse_de_la_tontine->id_tontine= $id_tontine;
+            $nouveau_montant = $la_caisse_de_la_tontine->montant;
+            $nouveau_montant += $montant;
+            $la_caisse_de_la_tontine->montant = $nouveau_montant;
+
+            if($la_caisse_de_la_tontine->save()){
+                $notification = "le paiement de votre cotisation bien effectuée";
+
+                //retirer le montant de la cotisation
+                $le_portfeuille = $le_menbre->compte;
+                $le_portfeuille->solde = $le_portfeuille->solde - $le_montant_en_monaie_utilisateur_connecter;
+                $le_portfeuille->save();
+            }
+
+            $maintenant = date('d/m/Y H:i', strtotime(now()));
+        //            dd($maintenant);
+            $liste_participants = $la_tontine->participants;
+        //            dd($liste_participants);
+            $this->notifier_paiement_cotisation($liste_participants,$le_menbre->nom_complet,$montant,
+            $la_tontine->createur->devise_choisie->monaie,$la_tontine->titre,$maintenant);
+
+            if($le_menbre->email !=null){
+                $infos_pour_recu = ['nom_complet'=>$le_menbre->nom_complet,
+                    "email_destinataire"=>$le_menbre->email,
+                    'type_section'=>'tontine',
+                    'montant'=>$la_tontine->montant,
+                    'titre_tontine'=>$la_tontine->titre,
+                    'nom_menbre_qui_prend'=>$la_tontine->caisse->menbre_qui_prend->nom_complet];
+
+                $this->recu_de_paiement_tontine($infos_pour_recu);
+            }
+
+            //===================Montant atteinds
+            if($nouveau_montant == $la_caisse_de_la_tontine->montant_objectif){
+                $index_menbre_qui_prend = $la_caisse_de_la_tontine->index_menbre_qui_prend;
+                $nouvel_index = $index_menbre_qui_prend + 1;
+
+
+                $montant_a_verser = $la_caisse_de_la_tontine->montant_a_verser;
+
+        //===================Virer l'argent sur son compte et le noter dans le cahier
+                $id_menbre_qui_prend = $la_caisse_de_la_tontine->id_menbre_qui_prend;
+
+
+                // CONVERSION EN CFA AVANT PAIEMENT
+                $le_menbre_qui_prend = Menbre::find($id_menbre_qui_prend);
+                if($le_menbre_qui_prend->devise_choisie->code != $la_tontine->createur->devise_choisie->code){
+                    $monaie_menbre_qui_prend = $le_menbre_qui_prend->devise_choisie->code;
+                    $monaie_createur_tontine =  $la_tontine->createur->devise_choisie->code;
+                    
+                    $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion(
+                        $monaie_createur_tontine,$monaie_menbre_qui_prend);
+
+                    $montant_a_verser_en_monaie_menbre_qui_prend = $quotient_de_conversion * $montant_a_verser;
+                }else{
+                    $montant_a_verser_en_monaie_menbre_qui_prend = $montant_a_verser;
+                }
+            // CONVERSION EN CFA AVANT PAIEMENT
+                $le_compte = CompteMenbre::findOrNew($id_menbre_qui_prend);
+                $le_compte->id_menbre = $id_menbre_qui_prend;
+                $le_solde = $le_compte->solde;
+                $nouveau_solde = $le_solde + $montant_a_verser_en_monaie_menbre_qui_prend;
+                $le_compte->solde = $nouveau_solde;
+
+                //noter le virement dans le cahier comptable
+                if($le_compte->save()){
+                    $nouvelle_note = new CahierCompteTontine();
+                    $nouvelle_note->id_menbre = $id_menbre_qui_prend;
+                    $nouvelle_note->id_tontine = $id_tontine;
+                    $nouvelle_note->montant = $montant_a_verser;
+                    $nouvelle_note->index_ouverture = $la_tontine->caisse->index_ouverture;
+                    $nouvelle_note->save();
+                }
+
+                $les_participants = $la_tontine->participants;
+                foreach ($les_participants as $item_participant){
+
+                    $titre_tontine = $la_tontine->titre;
+                    $base_message = SmsContenuNotification::first();
+                    $message = $base_message['virement_compte_menbre_qui_prend'];
+                    $message = str_replace('$nom_menbre_qui_prend$',$la_tontine->caisse->menbre_qui_prend->nom_complet,$message);
+                    $message = str_replace('$titre_tontine$',$titre_tontine,$message);
+                    
+                    $headers = 'From: no-reply@waribana.net' . "\r\n" .
+                         'Reply-To: no-reply@waribana.net' . "\r\n" .
+                         'X-Mailer: PHP/' . phpversion();
+
+                    $numero = $item_participant->telephone;
+                    SmsController::sms_info_bip($numero,$message);
+                    mail($item_participant->email,"$titre_tontine : MONTANT OBJECTIF DE COTISATION ATTEINDS",$message,$headers);
+
+                }
+        //====================Rotation
+                //SI ON EST PAS AU DERNIER PARTICIPANTS
+                if($nouvel_index < sizeof($la_tontine->participants)){
+                    $liste_participant = $la_tontine->participants->toArray();
+                    $nouvel_id_menbre_qui_prend = $liste_participant[$nouvel_index]['id'];
+
+                    $date_encaissement = $la_caisse_de_la_tontine->prochaine_date_encaissement;
+                    $nombre_de_jours_en_plus = $la_tontine->frequence_depot_en_jours;
+                    $prochaine_date_encaissement = date('d-m-Y', strtotime($date_encaissement. " + $nombre_de_jours_en_plus days"));
+
+                    $la_caisse_de_la_tontine->index_menbre_qui_prend = $nouvel_index;
+                    $la_caisse_de_la_tontine->id_menbre_qui_prend = $nouvel_id_menbre_qui_prend;
+                    $la_caisse_de_la_tontine->prochaine_date_encaissement = $prochaine_date_encaissement;
+                    $la_caisse_de_la_tontine->montant = 0;
+                    $la_caisse_de_la_tontine->save();
+                }
+                else{
+                    $la_caisse_de_la_tontine->montant = 0;
+                    $la_caisse_de_la_tontine->save();
+
+                    $la_tontine->etat = 'terminer';
+                    $la_tontine->save();
+                    $success = true;
+                    $notification = "Operation bien effectuée, La tontine est complete (Terminer)";
+                }
+
+            }
+
+        }
+            
                 $reponse = array(
-                    "success" => true,
-                    "url_paiement" => $payment_url,
-                    "message" => $payment_url
+                    "success" => $success,
+                    "message" => $notification
                 );
 
                 return $reponse;
@@ -1355,9 +1499,25 @@ public function paiement_soutien_waricrowd(Request $request,$id_crowd,$id_menbre
     $donnees_formulaire = $request->all();
     $montant_soutien = $donnees_formulaire['montant_soutien'];
 
+    $le_menbre = Menbre::find($id_menbre_connecter);
+    $le_crowd = Waricrowd::find($id_crowd);
+
+    // CONVERSION EN CFA AVANT PAIEMENT
+        if($le_menbre->devise_choisie->code != $le_crowd->createur->devise_choisie->code){
+            $monaie_utilisateur = $le_menbre->devise_choisie->code;
+            $monaie_createur_crowd =  $le_crowd->createur->devise_choisie->code;
+            $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion(
+                $monaie_createur_crowd,$monaie_utilisateur);
+            $le_montant_en_monaie_utilisateur_connecter = $quotient_de_conversion * $montant_soutien;
+        }else{
+            $le_montant_en_monaie_utilisateur_connecter = $montant_soutien;
+        }
+    // CONVERSION EN CFA AVANT PAIEMENT
+
+
     // verif portefeuille
     $le_menbre = Menbre::find($id_menbre_connecter);
-    if($le_menbre->compte->solde < $montant_soutien){
+    if($le_menbre->compte->solde < $le_montant_en_monaie_utilisateur_connecter){
         $notification = "Votre solde est insuffisant.";
         
         $reponse = array(
@@ -1394,11 +1554,9 @@ public function paiement_soutien_waricrowd(Request $request,$id_crowd,$id_menbre
         
         //retirer le montant du soutien
         $le_portfeuille = $le_menbre->compte;
-        $le_portfeuille->solde = $le_portfeuille->solde  -$montant_soutien;
+        $le_portfeuille->solde = $le_portfeuille->solde - $le_montant_en_monaie_utilisateur_connecter;
         $le_portfeuille->save();
 
-        $le_menbre = Menbre::find($id_menbre_connecter);
-        $le_crowd = Waricrowd::find($id_crowd);
         $infos_pour_recu = [
             'nom_complet'=>$le_menbre->nom_complet,
             'email_souteneur'=>$le_menbre->email,
@@ -1656,5 +1814,28 @@ public static function envoyer_email_avec_fichier($destinaires,$sujet,$message,$
     return $email->Send();
 }
 
+public function recu_de_paiement_tontine($infos_pour_recu=null){
+    if($infos_pour_recu==null){
+        $infos_pour_recu = ['email_destinataire'=>'yvessantoz@gmail.com','nom_complet'=>'sh sdfds','montant'=>'232343','titre_tontine'=>'tontine ice','nom_menbre_qui_prend'=>'djsdh dskhdsjk'];
+    }
+
+    $pdf = PDF::loadView('espace_menbre/recu_paiement_tontine',compact('infos_pour_recu'));
+    $nom_fichier = time().'.pdf';
+    Storage::put("public/recu/tontines/$nom_fichier", $pdf->output());
+
+    $email = $infos_pour_recu['email_destinataire'];
+    $message = "Felicitations, votre paiement a bien ete effectue, ci-joint votre recu de paiement.";
+    $chemin_fichier = Storage::disk('public')->path("recu/tontines/".$nom_fichier);
+
+    $rep = EspaceMenbreWaricrowdController::envoyer_email_avec_fichier($email,"RECU DE PAIEMENT WARICROWD",$message,$chemin_fichier,$nom_fichier);
+}
+
+private function notifier_paiement_cotisation($liste_participants,$nom_cotiseur,$montant_cotisation,$devise,$titre_de_la_tontine,$date_paiement){
+    foreach($liste_participants as $item_participant){
+        $numero = "$item_participant->telephone";
+        $message_sms = "Paiement de $montant_cotisation $devise par $nom_cotiseur sur la totine <<$titre_de_la_tontine>> le $date_paiement ";
+        SmsController::sms_info_bip("$numero",$message_sms);
+    }
+}
     
 }

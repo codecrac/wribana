@@ -45,7 +45,7 @@ Route::prefix('/mobile')->group(function(){
     Route::get("/details_tontine/{id_tontine}/{id_menbre_connecter}",[MobileApiController::class,'details_tontine']);
     Route::get("/ouvrir_tontine/{id_tontine}",[MobileApiController::class,'ouvrir_tontine']);
 
-    Route::get("/paiement_cotisation/{id_tontine}/{id_menbre}",[MobileApiController::class,'paiement_cotisation']);
+    Route::post("/paiement_cotisation/{id_tontine}/{id_menbre}",[MobileApiController::class,'paiement_cotisation']);
 
 //waricrowd
 Route::get("/mes_waricrowds/{id_menbre}",[MobileApiController::class,'liste_waricrowd_dutilisateur']);
