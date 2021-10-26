@@ -96,9 +96,16 @@
                         <li class="{{isset($is_home) ? "current" : "" }}">
                             <a href="{{route('accueil')}}">Accueil</a>
                         </li>
+                        <li class="{{isset($is_apropos) ? "current" : "" }}">
+                            <a href="{{route("apropos")}}">Qui sommes nous</a>
+                        </li>
                         <li class="{{isset($is_comment_ca_marche) ? "current" : "" }}">
                             <a href="{{route("comment_ca_marche")}}">Comment ça marche</a>
                         </li>
+                        <li class="{{isset($is_decouvrir_projets) ? "current" : "" }}">
+                            <a href="{{route("decouvrir_projets")}}">Decouvrir les projets</a>
+                        </li>
+
                         <li class="{{isset($is_faq) ? "current" : "" }}">
                             <a href="{{route("faq")}}">FAQ</a>
                         </li>
@@ -107,13 +114,6 @@
                             <a href="{{route("contact")}}">Contact</a>
                         </li>
 
-                        <li class="{{isset($is_decouvrir_projets) ? "current" : "" }}">
-                            <a href="{{route("decouvrir_projets")}}">Decouvrir les projets</a>
-                        </li>
-
-                        <li class="{{isset($is_apropos) ? "current" : "" }}">
-                            <a href="{{route("apropos")}}">Qui sommes nous</a>
-                        </li>
                         @if(!$est_connecter)
                             <li>
                                 <a href="{{route("inscription_menbre")}}">S'inscrire</a>

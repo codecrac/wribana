@@ -1,5 +1,15 @@
 @extends('base_front')
 
+@section('style_complementaire')
+    <style>
+        .btn-blanc{
+            background-color:#fff ;
+            color:#22f;
+            border-radius: 5px;
+        }
+    </style>
+@endsection
+
 @section('content')
 <section class="hero-area-one">
     <div class="hero-text">
@@ -40,9 +50,9 @@
 				<div class="col-12">
 					<div class="about-text mt-md-70 mb-md-50">
 						<div class="common-heading mb-30">
-							<h2 class="title text-center">Waribana qu’est-ce que c’est ? </h2>
+							<h2 class="title text-center fadeInRight wow" data-wow-delay="0.5s">Waribana qu’est-ce que c’est ? </h2>
 						</div>
-						<p>
+						<p class=" fadeInUp wow">
 							Waribana est une solution de gestion des tontines destinée à toutes personnes souhaitant épargner ou collecter des fonds. 
                             Toutes les périodes, 
                             des proches mettent de l'argent sur la table et la collecte est reversée à chacun d'entre eux à tour de rôle
@@ -51,7 +61,7 @@
 				</div>  
 			</div>     
             <div class="row">
-                <div class="col-md-6 text-center">
+                <div class="col-md-6 text-center" style="padding-top: 60px">
                     <img src="/template/assets/img/main-qui-se-soutiennent.jpg" />
                 </div>
                 <div class="col-md-6">
@@ -88,15 +98,15 @@
 	<!--====== About Section End ======-->
 
         <!--====== En savoir plus ======-->
-        <section class="counter-section-one mt-negative">
+        <section class="counter-section-one mt-negative section-gap fadeInUp wow">
             <div class="container primary-bg" style="padding-bottom:50px">
                 <div class="row counter-boxes justify-content-xl-between justify-content-center">
                         <div class="col-md-6">
-                            <h3 class="title text-white"> Waribana, on s’arrange. </h3> 
+                            <h3 class="title text-white text-center fadeInUp wow"> Waribana, on s’arrange. </h3> 
                         </div>
                         <div class="col-md-5">
-                                <a class="btn btn-info" href='{{route('comment_ca_marche')}}'> En savoir plus </a>
-                                <a class="btn btn-dark" href='{{route('inscription_menbre')}}'> S'inscrire </a>
+                                <a class="main-btn btn-blanc fadeInLeft wow" href='{{route('comment_ca_marche')}}'> En savoir plus </a>
+                                <a class="main-btn btn-blanc fadeInRight wow" href='{{route('inscription_menbre')}}'>S'inscrire </a>
                         </div>
                 </div>
             </div>
@@ -109,13 +119,13 @@
     <div class="container">
         <div class="categories-header">
             <div class="row align-items-center justify-content-between">
-                <div class="col-auto">
+                <div class="col-12">
                     <div class="common-heading mb-30">
 							<span class="tagline">
     {{--								<i class="fas fa-plus"></i>--}}
 								<span class="heading-shadow-text"></span>
 							</span>
-                        <h2 class="title">Avantages</h2>
+                        <h2 class="title text-center wow fadeInLeft" data-wow-delay="0.5s">Avantages</h2>
                     </div>
                 </div>
                 <div class="col-auto">
@@ -124,17 +134,6 @@
             </div>
         </div>
         <div class="row justify-content-center fancy-icon-boxes">
-            {{-- <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0s">
-                <div class="fancy-box-item mt-30">
-                    <div class="icon">
-                        <i class="flaticon-badges"></i>
-                    </div>
-                    <div class="content">
-                        <h4 class="title"><a href="project-details.html">Confiance</a></h4>
-                        <p>Une organisation certifiée</p>
-                    </div>
-                </div>
-            </div> --}}
             <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="fancy-box-item mt-30">
                     <div class="icon">
@@ -168,29 +167,6 @@
                     </div>
                 </div>
             </div>
-            {{-- <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0.3s">
-                <div class="fancy-box-item mt-30">
-                    <div class="icon">
-                        <i class="flaticon-video-camera"></i>
-                    </div>
-                    <div class="content">
-                        <h4 class="title"><a href="project-details.html">Service Client</a></h4>
-                        <p>Un service client très réactif et disponible 7jours/7</p>
-                    </div>
-                </div>
-            </div> --}}
-            
-            {{-- <div class="col-xl-4 col-md-6 col-sm-10 wow fadeInUp" data-wow-delay="0.5s">
-                <div class="fancy-box-item mt-30">
-                    <div class="icon">
-                        <i class="flaticon-salad"></i>
-                    </div>
-                    <div class="content">
-                        <h4 class="title"><a href="project-details.html">Commençons</a></h4>
-                        <p>Faites un pas vers une épargne plus sûre</p>
-                    </div>
-                </div>
-            </div> --}}
         </div>
     </div>
 </section>
@@ -199,17 +175,24 @@
 
 
 <!--====== Section Comment ça marche ======-->
-	<section class="popular-categories" id="avantages">
-		<div class="container">
+	<section class="popular-categories section-gap" id="avantages">
+		<div class="row">
             <div class="col-12">
-                <h2 class="title text-center">Comment ça marche ? </h2>
+                <section class="counter-section-one mt-negative">
+                    <div class="container primary-bg" style="padding-bottom:50px">
+                        <div class="counter-boxes justify-content-xl-between">
+                            <h2 class="title text-center text-white wow fadeInRight" data-wow-delay="0.5s">Comment ça marche ? </h2>
+                        </div>
+                    </div>
+                </section>
             </div>
-			<div class="row align-items-center justify-content-lg-start justify-content-center">
-                <div class="col-12">
+        </div>
+            <div class="container align-items-center justify-content-lg-start justify-content-center">
+                <div class="col-12 p-4">
                     <div class="about-text mt-md-70 mb-md-50">
                         <div class="common-heading mb-30">
                             <br/><br/>
-                            <h5 class="text-uppercase text-center"> Tontine Waribana  </h5>
+                            <h5 class="text-uppercase text-center fadeInUp wow"> Tontine Waribana  </h5>
                         </div>
                         <p>
                             Avec la tontine Waribana, à chaque période, l'argent constitué est versé automatiquement à l'un de vos proches 
@@ -217,20 +200,20 @@
                         </p>
                         <br/>
                         <div class="col-12 text-center">
-                            <img src="/template/assets/img/tontine-telephone.jpg" />
+                            <img src="/template/assets/img/tontine-telephone.jpg" class="wow fadeInRight" data-wow-delay="0.5s" />
                         </div>
                         <br/>
                         <div class='row'>
-                            <div class="col-md-4"> 
-                                <b> <i class="fa fa-check-circle"></i> Créer une tontine</b>
+                            <div class="col-md-4 wow fadeInLeft" data-wow-delay="0.5s"> 
+                                <b> <i class="fa fa-check-circle"></i> Créer une tontine</b> <br/>
                                  Définissez le nombre de personnes, le montant régulier et la fréquence et le tour est joué 
                             </div>
-                            <div class="col-md-4"> 
-                                <b> <i class="fa fa-check-circle"></i> Invitez vos amis</b>
+                            <div class="col-md-4 wow fadeInDown" data-wow-delay="0.5s"> 
+                                <b> <i class="fa fa-check-circle"></i> Invitez vos amis</b> <br/>
                                 C'est avec vos proches que vous pouvez désormais effectuer vos opérations de crédit ou d'épargne.
                             </div>
-                            <div class="col-md-4"> 
-                                <b> <i class="fa fa-check-circle"></i>  Collecter à tour de rôle</b>
+                            <div class="col-md-4 wow fadeInLeft" data-wow-delay="0.5s"> 
+                                <b> <i class="fa fa-check-circle"></i>  Collecter à tour de rôle</b> <br/>
                                 Chaque période, vous mettez une somme prédéfinie. La totalité sera reversée à chacun d'entre vous à tour de rôle
                             </div>
                         </div>
@@ -241,7 +224,7 @@
                 <div class="col-12 section-gap">
                     <div class="about-text mt-md-70 mb-md-50">
                         <div class="common-heading mb-30">
-                            <h5 class="text-uppercase text-center"> Waricrowd  </h5>
+                            <h5 class="text-uppercase text-center fadeInUp wow"> Waricrowd  </h5>
                         </div>
                         <p>
                             Avec le Waricrowd, vous pouvez collecter une multitude de petits dons
@@ -249,7 +232,7 @@
                         </p>
                         <br/>
                         <div class="col-12 text-center">
-                            <img src="https://businesspress.net/wp-content/uploads/2021/04/Crowdfunding-696x464.jpg" />
+                            <img src="https://businesspress.net/wp-content/uploads/2021/04/Crowdfunding-696x464.jpg"  class="wow fadeInUp" data-wow-delay="0.5s"/>
                         </div>
                         <br/>
                         <div class="row">
@@ -266,10 +249,10 @@
 
 
         <!--====== En savoir plus ======-->
-        <section class="counter-section-one mt-negative">
+        <section class="counter-section-one mt-negative fadeInUp wow">
             <div class="container" style="padding-bottom:50px">
                 <div class="col-12 text-center">
-                    <a class="main-btn" style="background-color:#fff;color:#22f" href='{{route('inscription_menbre')}}'>S'inscrire </a>
+                    <a class="main-btn wow fadeInRight" data-wow-delay="0.5s" style="background-color:#fff;color:#22f" href='{{route('inscription_menbre')}}'>S'inscrire </a>
                 </div>
             </div>
         </section>
@@ -308,7 +291,7 @@
 <!--====== About Section End ======-->
 
 <!--====== Counter Area Start ======-->
-<section class="counter-section-one mt-negative">
+<section class="counter-section-one mt-negative section-gap">
     <div class="container-fluid p-5 primary-bg">
         <div class="row counter-boxes justify-content-xl-between justify-content-center">
             <div class="col-12 text-center">
@@ -319,7 +302,7 @@
                 <div class="counter-box">
                     <div class="content white-color text-center">
                         <div class="count-wrap" style="display:block">
-                            <h1 class="text-white">
+                            <h1 class="text-white fadeInUp wow">
                                 Des frais de gestion inédit,
                                 <br/>
                                 <span class="count">1</span>
@@ -337,7 +320,7 @@
 <!--====== Counter Area End ======-->
 
 <!--====== Partners Section Start ======-->
-<section class="partners-section section-gap section-border-bottom">
+<section class="partners-section section-border-bottom">
     <div class="container">
         <div class="common-heading mb-30">
 				<span class="tagline">
