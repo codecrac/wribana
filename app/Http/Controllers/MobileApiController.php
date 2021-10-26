@@ -14,12 +14,16 @@ use App\Models\TransactionTransfertWaribank;
 use App\Models\CompteMenbre;
 use App\Models\CategorieWaricrowd;
 use App\Models\CaisseWaricrowd;
+use App\Models\WaricrowdMenbre;
 use App\Models\Devise;
 
 use App\Http\Controllers\SmsController;
 use App\Models\SmsContenuNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade as PDF;
+use PHPMailer\PHPMailer\PHPMailer;
+use Illuminate\Support\Facades\Storage;
 
 class MobileApiController extends Controller
 {
@@ -918,7 +922,8 @@ class MobileApiController extends Controller
 
     }
 
-    public function retirer_de_largent_waribank(Request $request,$id_menbre_connecter){
+    public function retirer_de_largent_waribank(Request $request,$id_menbre_connecter)
+    {
         $success = false;
         $donnees_formulaire = $request->input();
         $mdp = $donnees_formulaire['mot_de_passe_actuel'];
@@ -940,7 +945,7 @@ class MobileApiController extends Controller
                 );
                 return json_encode($reponse);
             }
-            
+              
         // CONVERSION EN CFA AVANT TRANSFERT
             $le_montant = $montant_retrait;
             if($le_menbre->devise_choisie->code != "XOF"){
@@ -1170,7 +1175,8 @@ class MobileApiController extends Controller
 
         $invitations_recues = [];
         if($email_inviter!=null){
-            $invitations_recues = Invitation::where('email_inviter','=',$email_inviter)->with('tontine')->with('menbre_inviteur')->where('etat','=','attente')->get();
+            $invitations_recues = Invitation::where('email_inviter','=',$email_inviter)->with('tontine')
+            ->with('menbre_inviteur')->where('etat','=','attente')->orderBy('id','desc')->get();
         }
 
         return json_encode($invitations_recues);
@@ -1342,41 +1348,77 @@ public function enregistrer_un_waricrowd(Request $request,$id_menbre_connecter)
 
 public function paiement_soutien_waricrowd(Request $request,$id_crowd,$id_menbre_connecter)
 {
-   //================INTEGRATION CINETPAY===================
+   
+    $success = false;
     $donnees_formulaire = $request->all();
 
-    // CONVERSION EN CFA AVANT PAIEMENT
-    $le_crowd = Waricrowd::find($id_crowd);
-    $le_montant = $donnees_formulaire['montant_soutien'];
+    $donnees_formulaire = $request->all();
+    $montant_soutien = $donnees_formulaire['montant_soutien'];
 
-
-    if(empty($le_montant) || $le_montant == null ){
+    // verif portefeuille
+    $le_menbre = Menbre::find($id_menbre_connecter);
+    if($le_menbre->compte->solde < $montant_soutien){
+        $notification = "Votre solde est insuffisant.";
+        
         $reponse = array(
-            "success" => false,
-            "url_paiement" => "",
-            "message" => "Veuillez entrer un montant"
+            "success" => $success,
+            "message" => $notification
         );
+
         return $reponse;
     }
 
-    if($le_crowd->createur->devise_choisie->code != "XOF"){
-        $monaie_createur_tontine = $le_crowd->createur->devise_choisie->code;
-        $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_createur_tontine,"XOF");
-        $le_montant_en_xof = $quotient_de_conversion * $le_montant;
-    }else{
-        $le_montant_en_xof = $le_montant;
-    }
-    // CONVERSION EN CFA AVANT PAIEMENT
 
-    $le_menbre = Menbre::find($id_menbre_connecter);
-    $route_back_en_cas_derreur = route('api.mobile.statut_transaction');
-    $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$id_crowd,$le_montant_en_xof,$le_montant
-    ,'waricrowd',$route_back_en_cas_derreur);
+    $la_transaction = new TransactionWaricrowd();
+    $la_transaction->id_menbre = $id_menbre_connecter;
+    $la_transaction->id_waricrowd = $id_crowd;
+    $la_transaction->statut = "ACCEPTED";
+    $la_transaction->montant = $montant_soutien;
+
+    if($la_transaction->save()){
+        $la_caisse = CaisseWaricrowd::findOrNew($id_crowd);
+    //            $la_caisse->id_waricrowd = $id_crowd;
+        $ancien_montant = $la_caisse->montant;
+        $nouveau_montant = $ancien_montant + $montant_soutien;
+        $la_caisse->montant = $nouveau_montant;
+        $la_caisse->save();
+
+        //enregistrer
+        $menbre_souteneur = WaricrowdMenbre::firstOrNew(['menbre_id'=>$id_menbre_connecter,'waricrowd_id'=>$id_crowd]);
+        $menbre_souteneur->menbre_id = $id_menbre_connecter;
+        $menbre_souteneur->waricrowd_id = $id_crowd;
+        $menbre_souteneur->save();
+
+        $notification = "Votre paiement a bien effectué, soutien enregistré.";
+
+        
+        //retirer le montant du soutien
+        $le_portfeuille = $le_menbre->compte;
+        $le_portfeuille->solde = $le_portfeuille->solde  -$montant_soutien;
+        $le_portfeuille->save();
+
+        $le_menbre = Menbre::find($id_menbre_connecter);
+        $le_crowd = Waricrowd::find($id_crowd);
+        $infos_pour_recu = [
+            'nom_complet'=>$le_menbre->nom_complet,
+            'email_souteneur'=>$le_menbre->email,
+            'type_section'=>'tontine',
+            'montant'=>$montant_soutien,
+            'titre_waricrowd'=>$le_crowd->titre,
+            'nom_createur_waricrowd'=>$le_crowd->createur->nom_complet];
+        $this->recu_de_paiement_waricrowd($infos_pour_recu);
+
+        $date_paiement = date('d/m/Y H:i');
+        $this->notifier_paiement_sms($le_menbre->telephone,$le_menbre->nom_complet,$montant_soutien,$le_crowd->createur->devise_choisie->monaie,$le_crowd->titre,$date_paiement);
+        $this->notifier_paiement_sms($le_crowd ->telephone,$le_menbre->nom_complet,$montant_soutien,$le_crowd->createur->devise_choisie->monaie,$le_crowd->titre,$date_paiement);
+        $success = true;
+    }else{
+        $notification = "Quelque chose s'est mal passé ";
+    }
 
     $reponse = array(
-        "success" => true,
-        "url_paiement" => $payment_url,
-        "message" => $payment_url
+        "success" => $success,
+        "message" => $notification
     );
 
     return $reponse;
@@ -1579,5 +1621,40 @@ public function supprimer_waricrowd(Request $request,$id_crowd,$id_menbre)
         }
         return $lien_pour_integration;
     }
+
+    
+    private function notifier_paiement_sms($numeropayeur,$nom_payeur,$montant_soutien,$devise,$titre_du_waricrowd,$date_paiement){
+        $numeropayeur = $numeropayeur;
+           $message_sms = "Soutien a hauteur de $montant_soutien $devise par $nom_payeur sur waricrowd << $titre_du_waricrowd >> le $date_paiement ";
+           SmsController::sms_info_bip("$numeropayeur",$message_sms);
+   }
+
+   
+   public function recu_de_paiement_waricrowd($infos_pour_recu){
+    $pdf = PDF::loadView('espace_menbre/recu_paiement_waricrowd',compact('infos_pour_recu'));
+    $nom_fichier = time().'.pdf';
+    Storage::put("public/recu/waricrowd/$nom_fichier", $pdf->output());
+
+    $email = $infos_pour_recu['email_souteneur'];
+    $message = "Felicitations, votre paiement a bien ete effectue, ci-joint votre recu de paiement.";
+    $chemin_fichier = Storage::disk('public')->path("recu/waricrowd/".$nom_fichier);
+    $this->envoyer_email_avec_fichier($email,"RECU DE PAIEMENT WARICROWD",$message,$chemin_fichier,$nom_fichier);
+
+//        return $pdf->stream();
+}
+
+public static function envoyer_email_avec_fichier($destinaires,$sujet,$message,$chemin_fichier,$nom_fichier){
+    $email = new PHPMailer();
+    $email->SetFrom('no-reply@waribana.com', 'WARIBANA'); //Name is optional
+    $email->Subject   = $sujet;
+    $email->Body      = $message;
+    $email->AddAddress( $destinaires );
+
+    // dd($chemin_fichier);
+    $email->AddAttachment($chemin_fichier, "$nom_fichier");
+
+    return $email->Send();
+}
+
     
 }

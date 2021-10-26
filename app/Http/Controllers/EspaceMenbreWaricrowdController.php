@@ -221,16 +221,13 @@ class EspaceMenbreWaricrowdController extends Controller
         return $lien_pour_integration;
     }
 
-    public function soutenir_projet(Request $request,$id_crowd){
-
-
-//================INTEGRATION CINETPAY===================
+    public function soutenir_projet(Request $request,$id_crowd)
+    {
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
 
         $donnees_formulaire = $request->all();
 
-//================SIMULATION LOCALE===================
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
 
@@ -254,7 +251,7 @@ class EspaceMenbreWaricrowdController extends Controller
 
         if($la_transaction->save()){
             $la_caisse = CaisseWaricrowd::findOrNew($id_crowd);
-//            $la_caisse->id_waricrowd = $id_crowd;
+        //            $la_caisse->id_waricrowd = $id_crowd;
             $ancien_montant = $la_caisse->montant;
             $nouveau_montant = $ancien_montant + $montant_soutien;
             $la_caisse->montant = $nouveau_montant;
