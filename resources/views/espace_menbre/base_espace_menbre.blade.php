@@ -68,7 +68,7 @@
                 @if($nb_invitations_en_attente < 1 )
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('espace_menbre.invitations')}}">
-                            <i class="mdi mdi-notification-clear-all menu-icon"></i>
+                            <i class="mdi mdi- menu-icon"></i>
                         </a>
                     </li>
                 @endif
@@ -108,7 +108,7 @@
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
                        aria-controls="ui-basic"
-                       id="close_on_dashboard_1" 
+                       id="close_on_dashboard_1"
                        >
                         <i class="mdi mdi-stack-exchange menu-icon"></i>
                         <span class="menu-title">Tontines</span>
@@ -225,7 +225,7 @@
     $(document).ready( function () {
         $('.datatable').DataTable(
             {
-                
+
                 language: {
                     url: "https://cdn.datatables.net/plug-ins/1.11.3/i18n/fr_fr.json"
                 },
