@@ -83,7 +83,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
 
 @section('content')
 <!--====== Page Title Start ======-->
-	<section class="about-section-three section-gap">
+	<section class="about-section-three">
 		<div class="container">
 			<div class="row align-items-center justify-content-center">
 				<div class="col-md-6">
@@ -93,7 +93,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                     <div class="about-text mb-lg-50">
 						<div class="common-heading mb-30">
 							<span class="tagline">
-								<i class="fas fa-plus"></i> Se Connecter
+								{{-- <i class="fas fa-plus"></i> Se Connecter --}}
 								<span class="heading-shadow-text"></span>
 							</span>
 							<h2 class="title">Se connecter</h2>
@@ -107,7 +107,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                                     
                                     <div class="row">
                                         <div class="col-md-5">
-                                            <label class="text-danger"><small>prefixe</small></label>
+                                            <label><small>pays</small></label>
                                             {{-- <input required class="text-danger form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code_prefixe}}" required /> --}}
                                             <select required class="form-control" name="prefixe">
                                                 {!! App\Http\Controllers\CountryPrefixController::listOptionChoisirPays() !!}
@@ -143,14 +143,12 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
 				<div class="col-md-6">
 					<div class="about-gallery wow fadeInRight">
 						<div class="img-one">
-							<img src="template/assets/img/about/about-gallery-1.jpg" width="500px" alt="Image">
+							<img src="template/assets/img/about/about-gallery-1.jpg" height="450px" alt="Image">
 						</div>
 						<div class="img-two wow fadeInUp">
-							<img src="template/assets/img/about/about-gallery-2.jpg" width="400px" alt="Image">
+							<img src="template/assets/img/about/about-gallery-2.jpg" height="300px" alt="Image">
 						</div>
-						<div class="pattern">
-							<img src="template/assets/img/about/about-gallery-pattern.png" alt="Pattern">
-						</div>
+						
 					</div>
 				</div>
 			</div>

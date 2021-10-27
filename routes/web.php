@@ -31,11 +31,11 @@ Route::get('/faq', [FrontController::class,'faq'])->name('faq');
 
 Route::get('/contactez-nous', [FrontController::class,'contact'])->name('contact');
 
-Route::get('/connexion-menbre', [MenbreController::class,'connexion_menbre'])->name('connexion_menbre');
-Route::get('/inscription-menbre', [MenbreController::class,'inscription_menbre'])->name('inscription_menbre');
+Route::get('/connexion-membre', [MenbreController::class,'connexion_menbre'])->name('connexion_menbre');
+Route::get('/inscription-membre', [MenbreController::class,'inscription_menbre'])->name('inscription_menbre');
 
-Route::post('/inscription-menbre', [MenbreController::class,'enregistrer_un_menbre'])->name('post_inscription_menbre');
-Route::post('/connexion-menbre',  [MenbreController::class,'connexion'])->name('post_connexion_menbre');
+Route::post('/inscription-membre', [MenbreController::class,'enregistrer_un_menbre'])->name('post_inscription_menbre');
+Route::post('/connexion-membre',  [MenbreController::class,'connexion'])->name('post_connexion_menbre');
 Route::get('/reinitialiser-mot-de-passe',  [MenbreController::class,'reinitialiser_mot_de_passe'])->name('reinitialiser_mot_de_passe');
 Route::post('/reinitialiser-mot-de-passe',  [MenbreController::class,'post_reinitialiser_mot_de_passe'])->name('post_reinitialiser_mot_de_passe');
 
@@ -48,17 +48,17 @@ Route::get('/linkstorage', function () {
 });
 
 
-Route::get('/espace-menbre/confirmation',  [MenbreController::class,'confirmer_compte_menbre'])->name('espace_menbre.confirmer_compte_menbre');
-Route::post('/espace-menbre/confirmation',  [MenbreController::class,'post_confirmer_compte_menbre'])->name('espace_menbre.post_confirmer_compte_menbre');
-Route::post('/espace-menbre/definir-ma-devise',  [MenbreController::class,'post_choisir_devise'])->name('espace_menbre.post_choisir_devise');
+Route::get('/espace-membre/confirmation',  [MenbreController::class,'confirmer_compte_menbre'])->name('espace_menbre.confirmer_compte_menbre');
+Route::post('/espace-membre/confirmation',  [MenbreController::class,'post_confirmer_compte_menbre'])->name('espace_menbre.post_confirmer_compte_menbre');
+Route::post('/espace-membre/definir-ma-devise',  [MenbreController::class,'post_choisir_devise'])->name('espace_menbre.post_choisir_devise');
 
-Route::get('/espace-menbre/entrer-code-de-confirmation',  [MenbreController::class,'entrer_code_confirmation'])->name('espace_menbre.entrer_code_confirmation');
-Route::post('/espace-menbre/entrer-code-de-confirmation',  [MenbreController::class,'post_entrer_code_confirmation'])->name('post_espace_menbre.entrer_code_confirmation');
+Route::get('/espace-membre/entrer-code-de-confirmation',  [MenbreController::class,'entrer_code_confirmation'])->name('espace_menbre.entrer_code_confirmation');
+Route::post('/espace-membre/entrer-code-de-confirmation',  [MenbreController::class,'post_entrer_code_confirmation'])->name('post_espace_menbre.entrer_code_confirmation');
 
 #===================================================================
-                        #espace-menbre
+                        #espace-membre
 #===================================================================
-Route::prefix('/espace-menbre')->middleware('menbre_connecter')->group(function (){
+Route::prefix('/espace-membre')->middleware('menbre_connecter')->group(function (){
 
 //    ===================PROFIL MENBRES======================
     include 'profil_espace_menbre_route.php';

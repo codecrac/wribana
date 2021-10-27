@@ -153,7 +153,7 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                     </ul>
 
 
-                    @if($la_tontine->createur->id == $la_session['id'] && $la_tontine->etat =='constitution' ||  $la_tontine->etat =='prete')
+                    @if($la_tontine->createur->id == $la_session['id'] || $la_tontine->etat =='constitution' ||  $la_tontine->etat =='prete')
                         <p class="badge badge-info">La tontine pourra être ouverte une fois le nombre de participant
                             specifié atteinds.</p>
                         @if($pret)
@@ -168,10 +168,12 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                                 @endif
                             </form>
                         @else
-                            <h3 class="text-center">
-                                <input type="button" class="btn btn-dark" style="cursor: not-allowed"
-                                       value="Ouvrir la tontine"/>
-                            </h3>
+                            @if($la_tontine->createur->id == $la_session['id'])
+                                <h3 class="text-center">
+                                    <input type="button" class="btn btn-dark" style="cursor: not-allowed"
+                                        value="Ouvrir la tontine"/>
+                                </h3>
+                            @endif
                         @endif
                     @elseif($la_tontine->etat =='terminer')
                         <p class="badge badge-success text-center">Votre tontine s'est effectuée avec succes vous(le createur) pouvez

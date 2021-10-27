@@ -28,9 +28,9 @@
 					{{-- <i class="fas fa-plus"></i> Qui Sommes Nous --}}
 					<span class="heading-shadow-text">?</span>
 				</span>
-				<h4 class="title">Une solution web <br/> et mobile d’épargnes collaboratives</h2>
+				<h4 class="title text-center">Une solution web <br/> et mobile d’épargnes collaboratives</h2>
 			</div>
-			<div class="col-md-7">
+			<div class="col-md-12 text-center">
 				<p>
 					L’absence d’accès au système bancaire rend presque vital le système tontinier.
 					 Il agit en tant que micro-crédit, ouvert pour les proches. Chacun des individus peut à son tour 
@@ -41,44 +41,49 @@
 				</p>
 			</div>
 			<div class="row">
-				
-						<div class="col-md-4">	
-							<ul class="check-list mt-30">
-								<li class="wow fadeInUp" data-wow-delay="0s">
-									<h5 class="title">Social</h5>
-									<p>
-										Le rôle de la tontine est avant tout social dans les pays africains. 
-										La tontine privilégie le groupe par rapport à l’individu, et peut dicter les comportements.
-										Elle est souvent utilisée comme une caisse de prévoyance, à laquelle chacun des membres adhère en
-										prévision de risques qui peuvent survenir.
-										La tontine est une couverture sociale qui agit dans le cercle familial et amical.
-									</p>
-								</li>
-							</ul>
-						</div>
-						<div class="col-md-4">
-							<ul class="check-list mt-30">
-								<li class="wow fadeInUp" data-wow-delay="0s">
-									<h5 class="title">Economique</h5>
-									<p>
-										Dans ce cas-ci, l’objectif est d’utiliser les fonds pour des investissements à court terme,
-										pour des évènements prévus ou imprévisibles, de manière collective ou individuelle.
-										En cas d’usage individuel, l’individu qui souhaite emprunter doit d’abord présenter son projet,
-										qui doit être accepté par le reste des participants. L’emploi des fonds est parfois surveillé par un membre
-										désigné de l’association tontinière.</p>
-								</li>
-							</ul>
-						</div>
-						<div class="col-md-4">
-							<ul class="check-list mt-30">
-								<li class="wow fadeInUp" data-wow-delay="0.1s">
-									<h5 class="title">Financier</h5>
-									<p>La tontine peut mobiliser de l’épargne, dans ce cas elle possède un rôle financier. Cette tontine possède la
-										particularité d’impliquer une cotisation périodique. Ces cotisations périodiques peuvent être attribuées au membre
-										qui en a le plus besoin, ou dans le cas d'un ordre préétabli, elles seront attribuées selon cette planification.</p>
-								</li>
-							</ul>
-						</div>
+				<div class="col-md-6" style="padding-top: 15% ">
+                    <img src="/template/assets/img/main-qui-se-soutiennent.jpg" />
+				</div>
+				<div class="col-md-6">
+					<div class="col-12">	
+						<ul class="check-list mt-30">
+							<li class="wow fadeInUp" data-wow-delay="0s">
+								<h5 class="title">Social</h5>
+								<p>
+									Le rôle de la tontine est avant tout social dans les pays africains. 
+									La tontine privilégie le groupe par rapport à l’individu, et peut dicter les comportements.
+									Elle est souvent utilisée comme une caisse de prévoyance, à laquelle chacun des membres adhère en
+									prévision de risques qui peuvent survenir.
+									La tontine est une couverture sociale qui agit dans le cercle familial et amical.
+								</p>
+							</li>
+						</ul>
+					</div>
+					<div class="col-12">
+						<ul class="check-list mt-30">
+							<li class="wow fadeInUp" data-wow-delay="0s">
+								<h5 class="title">Economique</h5>
+								<p>
+									Dans ce cas-ci, l’objectif est d’utiliser les fonds pour des investissements à court terme,
+									pour des évènements prévus ou imprévisibles, de manière collective ou individuelle.
+									En cas d’usage individuel, l’individu qui souhaite emprunter doit d’abord présenter son projet,
+									qui doit être accepté par le reste des participants. L’emploi des fonds est parfois surveillé par un membre
+									désigné de l’association tontinière.</p>
+							</li>
+						</ul>
+					</div>
+					<div class="col-12">
+						<ul class="check-list mt-30">
+							<li class="wow fadeInUp" data-wow-delay="0.1s">
+								<h5 class="title">Financier</h5>
+								<p>La tontine peut mobiliser de l’épargne, dans ce cas elle possède un rôle financier. Cette tontine possède la
+									particularité d’impliquer une cotisation périodique. Ces cotisations périodiques peuvent être attribuées au membre
+									qui en a le plus besoin, ou dans le cas d'un ordre préétabli, elles seront attribuées selon cette planification.</p>
+							</li>
+						</ul>
+					</div>
+				</div>
+						
 			</div>
 		</div>
 
@@ -129,10 +134,10 @@
 				<div class="col-xl-7 col-lg-8 col-md-10">
 					<div class="about-gallery wow fadeInRight">
 						<div class="img-one">
-							<img src="template/assets/img/about/about-gallery-1.jpg" alt="Image">
+							<img src="template/assets/img/about/about-gallery-1.jpg" height="500px" alt="Image">
 						</div>
 						<div class="img-two wow fadeInUp">
-							<img src="template/assets/img/about/about-gallery-2.jpg" width="500px" alt="Image">
+							<img src="template/assets/img/about/about-gallery-2.jpg" height="300px" alt="Image">
 						</div>
 						<div class="pattern">
 							<img src="template/assets/img/about/about-gallery-pattern.png" alt="Pattern">
@@ -190,10 +195,10 @@
 				<div class="col-xl-7 col-lg-8 col-md-10">
 					<div class="about-gallery wow fadeInRight">
 						<div class="img-one">
-							<img src="template/assets/img/about/about-gallery-1.jpg" alt="Image">
+							<img src="template/assets/img/about/about-gallery-1.jpg" height="500px"  alt="Image">
 						</div>
 						<div class="img-two wow fadeInUp">
-							<img src="template/assets/img/about/about-gallery-2.jpg" width="500px" alt="Image">
+							<img src="template/assets/img/about/about-gallery-2.jpg"  height="300px"  alt="Image">
 						</div>
 						<div class="pattern">
 							<img src="template/assets/img/about/about-gallery-pattern.png" alt="Pattern">
@@ -209,10 +214,10 @@
 		<div class="container">
 			<div class="common-heading text-center mb-30">
 				<span class="tagline">
-					<i class="fas fa-plus"></i> Avantages
-					<span class="heading-shadow-text">Avantages</span>
+					{{-- <i class="fas fa-plus"></i> Avantages --}}
+					{{-- <span class="heading-shadow-text">Avantages</span> --}}
 				</span>
-				<h2 class="title">Pourquoi Nous</h2>
+				<h2 class="title">Avantages</h2>
 			</div>
 
 			<div class="row icon-boxes justify-content-center">

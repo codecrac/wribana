@@ -29,7 +29,7 @@ function convertCurrency($amount,$from_currency,$to_currency){
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
                     <a href="{{route('espace_menbre.ajouter_tontine')}}" type="button" class="btn btn-primary mr-3 mt-2 mt-xl-0">
                         <i class="mdi mdi-plus text-muted"></i>
-                        Créer une tontine
+                        Nouvelle Tontine 
                     </a>
 
                     <a href="{{route('espace_menbre.creer_un_waricrowd')}}" class="btn btn-success mt-2 mt-xl-0">
@@ -72,22 +72,11 @@ function convertCurrency($amount,$from_currency,$to_currency){
                                 <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
 {{--                                    <i class="mdi mdi-eye mr-3 icon-lg text-success"></i>--}}
                                     <div class="d-flex flex-column justify-content-around">
-                                        <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.invitations')}}">Invitations</a></small>
+                                        <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.invitations')}}">Mes Invitations</a></small>
                                         <h5 class="mr-2 mb-0">{{$nombre_invitation_recues}}</h5>
                                     </div>
                                 </div>
-                                {{-- <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
-                                    <div class="d-flex flex-column justify-content-around">
-                                        <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.projets_soutenus')}}"> Projets Soutenus </a> </small>
-                                        <h5 class="mr-2 mb-0">{{sizeof($le_menbre->projets_soutenus)}}</h5>
-                                    </div>
-                                </div>
-                                <div class="d-flex py-3 border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
-                                    <div class="d-flex flex-column justify-content-around">
-                                        <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.profil',[$le_menbre->id])}}"> Solde </a> </small>
-                                        <h5 class="mr-2 mb-0">{{number_format($le_menbre->compte->solde,0,',',' ')}} {{$la_session['devise']}}</h5>
-                                    </div>
-                                </div> --}}
+                               
                             </div>
                         </div>
                     </div>
@@ -100,7 +89,9 @@ function convertCurrency($amount,$from_currency,$to_currency){
             <div class="card">
                 <div class="card-body">
                     <p class="card-title">Adherer a une tontine via le code d'invitation</p>
-                    <form method="post" action="{{route('espace_menbre.adhesion_via_code_invitation')}}">
+                    <br/>
+                    {!! Session::get('notification','') !!}
+                    <form method="post" action="{{route('espace_menbre.confirmer_adhesion_tontine')}}">
                         <div class="row">
                             <div class="col-md-4">
                                 <input class="form-control" type="number" name="code_invitation" required placeholder="Entrer le code d'invitation" />

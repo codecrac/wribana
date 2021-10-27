@@ -1,5 +1,9 @@
 @php
     $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+    $nb_invitation_email = \App\Models\Invitation::where('email_inviter','=',$la_session['email'])->where('etat','=','attente')->count();
+    $nb_invitation_telephone = \App\Models\Invitation::where('email_inviter','=',$la_session['telephone'])->where('etat','=','attente')->count();
+
+    $nb_invitations_en_attente = $nb_invitation_email + $nb_invitation_telephone;
 @endphp
 
 
@@ -61,6 +65,13 @@
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
             <ul class="navbar-nav navbar-nav-right">
+                @if($nb_invitations_en_attente < 1 )
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('espace_menbre.invitations')}}">
+                            <i class="mdi mdi-notification-clear-all menu-icon"></i>
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item nav-profile dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
                         <span class="nav-profile-name"> {{$la_session['nom_complet']}} ({{$la_session['devise']}}) </span>
@@ -105,7 +116,7 @@
                     </a>
                     <div class="collapse" id="ui-basic">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.ajouter_tontine')}}">Creer une Tontine</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.ajouter_tontine')}}">Nouvelle Tontine </a></li>
                             <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.liste_tontine')}}"> Mes Tontines  </a> </li>
                             <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.invitations')}}">Invitations</a></li>
                         </ul>
@@ -176,8 +187,8 @@
             <!-- partial:partials/_footer.html -->
             <footer class="footer">
                 <div class="d-sm-flex justify-content-center justify-content-sm-between">
-                    <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Tout droits réservés</span>
-                    <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © akassoh.ci 2021</span>
+                    <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Tous droits réservés</span>
+                    <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © waribana.net 2021</span>
                 </div>
             </footer>
             <!-- partial -->
@@ -212,7 +223,15 @@
 
 <script>
     $(document).ready( function () {
-        $('.datatable').DataTable();
+        $('.datatable').DataTable(
+            {
+                
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.11.3/i18n/fr_fr.json"
+                },
+                responsive: true,
+            }
+        );
     } );
 </script>
 

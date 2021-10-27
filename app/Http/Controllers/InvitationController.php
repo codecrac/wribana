@@ -32,7 +32,8 @@ class InvitationController extends Controller
         return view("espace_menbre/tontine/inviter_des_amis",compact("la_tontine"));
     }
 
-    public function envoyer_invitation_via_sms(Request $request,$id_tontine){
+    public function envoyer_invitation_via_sms(Request $request,$id_tontine)
+    {
         $donnees_formulaire = $request->all();
         $prefixe = $donnees_formulaire['prefixe'];
         $telephone = $donnees_formulaire['telephone'];
@@ -120,11 +121,12 @@ class InvitationController extends Controller
         $id_menbre_connecter =  $la_session['id'];
         $le_menbre = Menbre::find($id_menbre_connecter);
         $email_inviter = $le_menbre['email'];
+        $telephone_inviter = $le_menbre['telephone'];
 
 
         $invitation_recues = [];
         if($email_inviter!=null){
-            $invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->where('etat','=','attente')->get();
+            $invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->orWhere('email_inviter','=',$telephone_inviter)->where('etat','=','attente')->get();
         }
         return view("espace_menbre/tontine/invitations",compact('invitation_recues'));
     }
@@ -183,6 +185,28 @@ class InvitationController extends Controller
                 $notification = " <div class='alert alert-danger text-center'> Le nombre de participant est dejà atteint</div>";
             }else{
                 $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
+            }
+        }
+
+        return redirect()->back()->with('notification',$notification);
+    }
+
+    public function confirmer_adhesion_tontine(Request $request){
+        $donnees_formulaires = $request->all();
+        $code_invitation = $donnees_formulaires['code_invitation'];
+
+        $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
+        $notification = "<div class='alert alert-danger text-center'> Code d'adhesion invalide </div>";
+
+        if($la_tontine != null){
+            
+            $la_session = session(MenbreController::$cle_session);
+            $id_menbre_connecter = $la_session['id'];
+            $deja_menbre = MenbreTontine::where('menbre_id','=',$id_menbre_connecter)->where('tontine_id','=',$la_tontine->id)->first();
+            if($deja_menbre!=null){
+                $notification = " <div class='alert alert-danger text-center'> Vous êtes deja un menbre de cette tontine  </div>";
+            }else{
+                return view('espace_menbre/tontine/confirmer_adhesion_tontine',compact('la_tontine'));
             }
         }
 

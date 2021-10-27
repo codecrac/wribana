@@ -112,6 +112,7 @@
                         <hr/>
                     </div>
                     <p class="card-description">
+                        <br/>
                         Nous allons vous envoyer un code de confirmation par sms, utiliser un numero valide,
                         <span class="text-warning">ajouter le prefixe(225,33...) avant le numero</span>.
                         <br/>Exemple : 225 05 05 05 05 05 ou 33 1 23 45 67 89

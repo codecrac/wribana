@@ -36,31 +36,46 @@
 								<!--<i class="fas fa-plus"></i> ?-->
 								<span class="heading-shadow-text"><!--Comment ça marche--></span>
 							</span>
-                            <h2 class="title">Comment ça marche ?</h2>
+                            <h2 class="title text-center">Comment ça marche ?</h2>
                         </div>
-                        <p class="mb-20">
+                        <p class="mb-20 text-center">
                             Il s’agit d’un concept de financement participatif qui a deux objectifs principaux : 
                         </p>
-                        <ul class="about-list mt-30">
-                            <li><i class="fas fa-check"></i>Aider les utilisateurs à accéder à un crédit plus facilement et moins cher que les solutions actuelles</li>
-                            <li><i class="fas fa-check"></i> la possibilité aux utilisateurs de se constituer une épargne en finançant leurs proches.</li>
-                        </ul>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="check-list mt-30">
+                                        <li>
+                                            Aider les utilisateurs à accéder à un crédit plus facilement et moins cher que les solutions actuelles
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <ul class="check-list mt-30">
+                                        <li>
+                                            la possibilité aux utilisateurs de se constituer une épargne en finançant leurs proches.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         <br/>
-                            <hr/>
-                                <h4 class="text-center"> Tontines << Crédit epargne >> </h4>
-                            <hr/>
+                            <br/><br/>
+                                <h2 class="title text-center"> Tontines << Crédit epargne >> </h2>
+                            <br/><br/>
                         <br/>
-                        <p>
-                            C’est une solution de ce qui s'appelle Tontines (Crédit-Epargne) entre proches.
-                        </p>
-                        <br/><br/>
-                        Concrètement un groupe de personnes, se connaissant entre elles, se mettent ensemble et créent une <b>Tontine</b>. 
-                        <br/><br/>
-                        Sur Waribana, Ils définissent un montant régulier et une fréquence de rotation. Ensuite chaque période toutes les personnes versent le montant prédéfini et la somme est reversée à chacun d’eux à tour de <b>rôle </b>.
-                        <br/><br/>
-                        Ainsi, les premiers à avoir touché le montant total de la tontine font un <b>crédit </b> auprès de leurs proches, et les derniers se constituent une  
-                        <b>épargne</b> en faisant profiter leurs proches de leur argent plutôt que de le mettre dans des comptes bancaires.
-
+                        <div class="container text-center">
+                            <p>
+                                C’est une solution de ce qui s'appelle Tontines (Crédit-Epargne) entre proches.
+                            </p>
+                            <br/>
+                            Concrètement un groupe de personnes, se connaissant entre elles, se mettent ensemble et créent une <b>Tontine</b>. 
+                            <br/><br/>
+                            Sur Waribana, Ils définissent un montant régulier et une fréquence de rotation. Ensuite chaque période toutes les personnes versent le montant prédéfini et la somme est reversée à chacun d’eux à tour de <b>rôle </b>.
+                            <br/><br/>
+                            Ainsi, les premiers à avoir touché le montant total de la tontine font un <b>crédit </b> auprès de leurs proches, et les derniers se constituent une  
+                            <b>épargne</b> en faisant profiter leurs proches de leur argent plutôt que de le mettre dans des comptes bancaires.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,11 +122,10 @@
                 </div>
             </div>
                 <div class="col-12">
-                  
                     <br/>
-                    <hr/>
-                        <h4 class="text-center"> Avantages </h4>
-                    <hr/>
+                    <br/>
+                        <h2 class="text-center"> Avantages </h2>
+                    <br/>
                     <br/>
                     Quand un client souhaite contracter un crédit classique, il doit disposer de :
                     <br/>

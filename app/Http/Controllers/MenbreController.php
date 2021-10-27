@@ -157,7 +157,7 @@ class MenbreController extends Controller
         $mot_de_passe = $donnees_formulaire['mot_de_passe'];
 
         $mot_de_passe_caher = md5($mot_de_passe);
-//        $le_menbre = Menbre::where('email','=',$identifiant)->orWhere('telephone','=',$identifiant)->first();
+        //        $le_menbre = Menbre::where('email','=',$identifiant)->orWhere('telephone','=',$identifiant)->first();
         $le_menbre = Menbre::where('email', '=', $identifiant)
             ->orWhere('telephone', '=', $identifiant) ->first();
 
@@ -221,7 +221,7 @@ class MenbreController extends Controller
         $existe_pour_quelqun_dautre =  $this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre_connecter);
         
         if (!$existe_pour_quelqun_dautre) {
-            if (strlen($telephone) >= 10) {
+            if ($telephone > 0) {
                 $le_menbre->telephone = $telephone;
                 $le_menbre->save();
                 $le_numero = "$telephone";
@@ -349,6 +349,8 @@ class MenbreController extends Controller
     {
         $id_menbre = $le_menbre->id;
         $nom_complet = $le_menbre->nom_complet;
+        $email = $le_menbre->email;
+        $telephone = $le_menbre->telephone;
         if($le_menbre->devise_choisie !=null){
             $devise = $le_menbre->devise_choisie->monaie;
             $code_devise = $le_menbre->devise_choisie->code;
@@ -356,7 +358,15 @@ class MenbreController extends Controller
             $devise ='---';
             $code_devise ='--';
         }
-        session()->put(MenbreController::$cle_session, ['id' => $id_menbre, 'nom_complet' => $nom_complet, 'devise' => $devise,'code_devise'=>$code_devise]);
+        session()->put(MenbreController::$cle_session,
+                                [
+                                    'id' => $id_menbre, 
+                                    'nom_complet' => $nom_complet,
+                                    'devise' => $devise,
+                                    'code_devise'=>$code_devise,
+                                    'email'=>$email,
+                                    'telephone'=>$telephone,
+                                ]);
     }
 
     

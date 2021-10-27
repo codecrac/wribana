@@ -26,14 +26,14 @@
                 <hr/>
                 <h3 class="text-center">
                     Mes Tontines ( {{sizeof($mes_tontines)}} )
-                    <a class="btn btn-primary" href="{{route('espace_menbre.ajouter_tontine')}}">Creer une tontine</a>
+                    <a class="btn btn-primary" href="{{route('espace_menbre.ajouter_tontine')}}">Nouvelle tontine</a>
                 </h3>
                 <hr/>
             </div>
             <div class="row">
                 <p class="card-title col-12">Adherer a une tontine via le code d'invitation</p>
                 <div class="col-12">
-                    <form method="post" action="{{route('espace_menbre.adhesion_via_code_invitation')}}">
+                    <form method="post" action="{{route('espace_menbre.confirmer_adhesion_tontine')}}">
 
                         @isset($_GET['code_invitation'])
 
@@ -67,8 +67,8 @@
                 <div class="table-responsive">
                     <table width="100%" class="table" border="1">
                         <thead class="text-center">
-                        <th class="tr_bordered">Titre</th>
-                        <th class="tr_bordered">Nombres de participants</th>
+                        <th class="tr_bordered">Tontine</th>
+                        <th class="tr_bordered">Nombre de participants </th>
                         <th class="tr_bordered">Montant à cotiser</th>
                         <th class="tr_bordered">Statut</th>
                         <th class="tr_bordered">Prochaine cotisation</th>

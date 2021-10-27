@@ -208,7 +208,7 @@
                                 <b> <i class="fa fa-check-circle"></i> Créer une tontine</b> <br/>
                                  Définissez le nombre de personnes, le montant régulier et la fréquence et le tour est joué 
                             </div>
-                            <div class="col-md-4 wow fadeInDown" data-wow-delay="0.5s"> 
+                            <div class="col-md-4 wow fadeInLeft" data-wow-delay="0.5s"> 
                                 <b> <i class="fa fa-check-circle"></i> Invitez vos amis</b> <br/>
                                 C'est avec vos proches que vous pouvez désormais effectuer vos opérations de crédit ou d'épargne.
                             </div>
@@ -249,17 +249,17 @@
 
 
         <!--====== En savoir plus ======-->
-        <section class="counter-section-one mt-negative fadeInUp wow">
+        {{-- <section class="counter-section-one mt-negative fadeInUp wow">
             <div class="container" style="padding-bottom:50px">
                 <div class="col-12 text-center">
                     <a class="main-btn wow fadeInRight" data-wow-delay="0.5s" style="background-color:#fff;color:#22f" href='{{route('inscription_menbre')}}'>S'inscrire </a>
                 </div>
             </div>
-        </section>
+        </section> --}}
         <!--====== Counter Area End ======-->
 
 <!--====== About Section Start ======-->
-<section class="about-section-one section-gap">
+{{-- <section class="about-section-one section-gap">
     <div class="container">
         <div class="row align-items-center justify-content-lg-start justify-content-center">
             <div class="col-xl-6 col-lg-7 col-md-9">
@@ -271,7 +271,7 @@
                 <div class="about-text mt-md-70 mb-md-50">
                     <div class="common-heading mb-30">
 							<span class="tagline">
-								<span class="heading-shadow-text">{{--Nous--}}</span>
+								<span class="heading-shadow-text"></span>
 							</span>
                         <h2 class="title">Waribana</h2>
                     </div>
@@ -287,11 +287,11 @@
             </div>
         </div>
     </div>
-</section>
+</section> --}}
 <!--====== About Section End ======-->
 
 <!--====== Counter Area Start ======-->
-<section class="counter-section-one mt-negative section-gap">
+<section class="counter-section-one mt-negative ">
     <div class="container-fluid p-5 primary-bg">
         <div class="row counter-boxes justify-content-xl-between justify-content-center">
             <div class="col-12 text-center">
@@ -309,7 +309,7 @@
                                 <span class="suffix">%</span>
                                 seulement
                             </h3>
-
+                            <a class="main-btn wow fadeInRight" data-wow-delay="0.5s" style="background-color:#fff;color:#22f" href='{{route('inscription_menbre')}}'>S'inscrire </a>
                         </div>
                     </div>
                 </div>
@@ -320,14 +320,14 @@
 <!--====== Counter Area End ======-->
 
 <!--====== Partners Section Start ======-->
-<section class="partners-section section-border-bottom">
+{{-- <section class="partners-section section-border-bottom">
     <div class="container">
         <div class="common-heading mb-30">
 				<span class="tagline">
 					<!--<i class="fas fa-plus"></i> Nos partenaires-->
 					<span class="heading-shadow-text"><!--Ils nous font confiance--></span>
 				</span>
-            <h2 class="title">Nos partenaires</h2>
+            <h2 class="title text-center">Nos partenaires</h2>
         </div>
         <div class="row partners-logos-one">
             <div class="col-lg-3 col-md-4 col-sm-6" style="padding: 25px;">
@@ -352,7 +352,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> --}}
 <!--====== Partners Section End ======-->
 
 @endsection

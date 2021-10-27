@@ -91,6 +91,7 @@ class EspaceMenbre extends Controller
                 if($menbre_tontine->save()){
                     $route_details_tontine = route('espace_menbre.details_tontine',[$la_tontine->id]);
                     $notification = "<div class='alert alert-success text-center'> Votre tontine a bien été créé, <a href='$route_details_tontine'>INVITER VOS AMI(E)S</a>  </div>";
+                    return  redirect()->route('espace_menbre.liste_tontine')->with('notification',$notification);
                 }else{
                     $notification = "<div class='alert alert-danger text-center'> Un probleme est survenu </div>";
                 }

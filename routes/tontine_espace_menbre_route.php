@@ -7,6 +7,7 @@ Route::get("/mes-tontines", [EspaceMenbre::class, 'liste_tontine'])->name('espac
 Route::get("/details-tontines/{id_tontine}", [EspaceMenbre::class, 'details_tontine'])->name('espace_menbre.details_tontine');
 Route::post("/details-tontines/{id_tontine}", [EspaceMenbre::class, 'ouvrir_tontine'])->name('espace_menbre.ouvrir_tontine');
 
+Route::post("/confirmer-adhesion-tontine", [InvitationController::class, 'confirmer_adhesion_tontine'])->name('espace_menbre.confirmer_adhesion_tontine');
 Route::get("/inviter-des-amis-dans-la-tontine/{id_tontine}", [InvitationController::class, 'inviter_des_amis'])->name('espace_menbre.inviter_des_amis');
 Route::post("/inviter-des-amis-dans-la-tontine/{id_tontine}", [InvitationController::class, 'envoyer_invitation'])->name('espace_menbre.post_inviter_des_amis');
 Route::post("/inviter-des-amis-dans-la-tontine-via-sms/{id_tontine}", [InvitationController::class, 'envoyer_invitation_via_sms'])->name('espace_menbre.post_envoyer_invitation_via_sms');

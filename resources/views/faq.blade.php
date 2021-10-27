@@ -18,11 +18,11 @@
                                 <div class="accordion" id="accordionFaqOne">
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="true" data-target="#accordion-1-1">
-                                            Peut-on faire confiance à La Tontine En Ligne ?
+                                            Peut-on faire confiance à Waribana ?
                                         </h5>
                                         <div id="accordion-1-1" class="collapse show" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Oui ! La Tontine En Ligne est un site géré par la société …,
+                                                Oui ! Waribana est un site géré par la société …,
                                                  une société régie par la loi ivoirienne et enregistrée auprès du tribunal de commerce sous le numéro de SIREN : ……….. Elle est domiciliée en Côte d’Ivoire.
                                             </div>
                                         </div>
@@ -93,11 +93,11 @@
                                     </div>
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-8">
-                                            Est-ce qu'une personne anonyme peut créer des tontines sur La Tontine En Ligne ?
+                                            Est-ce qu'une personne anonyme peut créer des tontines sur Waribana ?
                                         </h5>
                                         <div id="accordion-1-8" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Non malheureusement. Toute personne souhaitant créer des tontines sur La Tontine En Ligne doit fournir une pièce d'identité valable.
+                                                Non malheureusement. Toute personne souhaitant créer des tontines sur Waribana doit fournir une pièce d'identité valable.
                                             </div>
                                         </div>
                                     </div>
@@ -119,8 +119,8 @@
                                         </h5>
                                         <div id="accordion-1-10" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                L'objectif de La Tontine En Ligne est de proposer des tontines entre des proches.
-                                                 Des personnes qui se connaissent entre elles et qui se font confiance. Cependant, La Tontine En Ligne, ne peut donc pas se porter garante en cas d'impayé.
+                                                L'objectif de Waribana est de proposer des tontines entre des proches.
+                                                 Des personnes qui se connaissent entre elles et qui se font confiance. Cependant, Waribana, ne peut donc pas se porter garante en cas d'impayé.
                                                  C'est à l'utilisateur que revient la responsabilité de choisir les personnes avec qui il souhaite lancer des tontines.
                                             </div>
                                         </div>
@@ -138,7 +138,7 @@
                                     </div>
                                     <div class="accordion-item">
                                         <h5 class="accordion-title" data-toggle="collapse" aria-expanded="false" data-target="#accordion-1-12">
-                                            Qu'est-ce que l'indice La Tontine En Ligne ?
+                                            Qu'est-ce que l'indice Waribana ?
                                         </h5>
                                         <div id="accordion-1-12" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">

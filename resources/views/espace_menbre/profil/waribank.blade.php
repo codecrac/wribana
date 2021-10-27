@@ -140,7 +140,7 @@
                     <h4 class="card-title text-center text-uppercase"> Historique des rechargements  </h4>
                     <hr/>
                 </div>
-                <div class="card-body text-center">
+                <div class="card-body text-center table-responsive">
                     <table class="table table-bordered table-striped datatable">
                         <thead>
                             <th>Date</th>
@@ -170,7 +170,7 @@
                     <h4 class="card-title text-center text-uppercase"> Historique des virements de tontine   </h4>
                     <hr/>
                 </div>
-                <div class="card-body text-center">
+                <div class="card-body text-center table-responsive">
                     <table class="table table-bordered table-striped datatable">
                         <thead>
                             <th>Date</th>
@@ -200,7 +200,7 @@
                     <h4 class="card-title text-center text-uppercase"> Historique transfert recus   </h4>
                     <hr/>
                 </div>
-                <div class="card-body text-center">
+                <div class="card-body text-center table-responsive">
                     <table class="table table-bordered table-striped datatable">
                         <thead>
                             <th>Date</th>
@@ -235,7 +235,7 @@
                     <h4 class="card-title text-center text-uppercase"> Historique transfert effectués </h4>
                     <hr/>
                 </div>
-                <div class="card-body text-center">
+                <div class="card-body text-center table-responsive">
                     <table class="table table-bordered table-striped datatable">
                         <thead>
                             <th>Date</th>
@@ -271,7 +271,7 @@
                     <h4 class="card-title text-center text-uppercase"> Historique des mes retraits </h4>
                     <hr/>
                 </div>
-                <div class="card-body text-center">
+                <div class="card-body text-center table-responsive">
                     <table class="table table-bordered table-striped datatable">
                         <thead>
                             <th>Date</th>
