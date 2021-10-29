@@ -68,7 +68,6 @@ class InvitationController extends Controller
     public function envoyer_invitation(Request $request,$id_tontine){
         $donnees_formulaire = $request->all();
 
-        $adresse =  "https://" . $_SERVER['SERVER_NAME'] .'/espace-menbre/invitations';
 
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
@@ -78,27 +77,27 @@ class InvitationController extends Controller
         $la_tontine = Tontine::find($id_tontine);
         $titre = $la_tontine->titre;
         $liste_emails = explode(',',strtolower($donnees_formulaire['liste_emails']));
-        $emails_to_string = implode(",",$liste_emails);
+        // $emails_to_string = implode(",",$liste_emails);
         $headers = 'From: no-reply@waribana.net' . "\r\n" .
              'Reply-To: no-reply@waribana.net' . "\r\n" .
              'X-Mailer: PHP/' . phpversion();
-        mail($emails_to_string,
+
+        $code_adhesion = $la_tontine->identifiant_adhesion;
+        $adresse =  route('espace_menbre.liste_tontine')."?code_invitation=$code_adhesion";
+
+        dd($adresse);
+        foreach($liste_emails as $mail_item){
+            // echo $mail_item . '<br/>';
+            mail($mail_item,
             "REJOINS LA TONTINE $titre",
             "
                         Bonjour, le menbre $nom_complet de waribana vous invite a rejoindre la tontine <<$titre>>,
                         Connectez vous inscrivez-vous pour repondre a son invitation;
-                        $adresse
+$adresse
             ",$headers
-        );
-
-
-      /*  $telephone = $la_tontine->createur->telephone;
-
-        $contenu_notification = SmsContenuNotification::first();
-        $message_notif = $contenu_notification['invitation_recue'];
-        $le_message = str_replace('$nom_complet$',$nom_complet,$message_notif);
-        $le_message = str_replace('$titre_tontine$',$la_tontine->titre,$message_notif);
-        SmsController::sms_info_bip($telephone,$le_message);*/
+            );
+        }
+        
 
         foreach ($liste_emails as $mail_item){
             $invitation_existante = Invitation::where('email_inviter','=',$mail_item)->where('id_tontine','=',$id_tontine)->first();

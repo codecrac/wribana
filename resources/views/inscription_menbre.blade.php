@@ -124,7 +124,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                                     <div class="row">
                                         
                                         <div class="col-md-6">
-                                            <label class="text-danger"><small>prefixe</small></label>
+                                            <label><small>pays</small></label>
                                             {{-- <input required class="text-danger form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code_prefixe}}" required /> --}}
                                             <select required class="form-control" name="prefixe">
                                                 {!! App\Http\Controllers\CountryPrefixController::listOptionChoisirPays() !!}

@@ -43,7 +43,7 @@
                             </div>
                             <div class="col-md-4">
                                 @csrf
-                                    <button type="submit" class="btn btn-warning">Accepter d'Adherer à la tontine</button>
+                                    <button type="submit" class="btn btn-warning">Voir les details de la tontine</button>
                             </div>
                         </div>
                         @else

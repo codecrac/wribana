@@ -154,8 +154,7 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
 
 
                     @if($la_tontine->createur->id == $la_session['id'] || $la_tontine->etat =='constitution' ||  $la_tontine->etat =='prete')
-                        <p class=" text-center">La tontine pourra être ouverte une fois le nombre de participant
-                            specifié atteinds.</p>
+                       
                         @if($pret)
                             <form method="post" action="{{route('espace_menbre.ouvrir_tontine',[$la_tontine['id']])}}">
                                 @if($la_tontine->createur->id == $la_session['id'])
@@ -168,6 +167,8 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                                 @endif
                             </form>
                         @else
+                        <p class=" text-center">La tontine pourra être ouverte une fois le nombre de participant
+                            specifié atteinds.</p>
                             @if($la_tontine->createur->id == $la_session['id'])
                                 <h3 class="text-center">
                                     <input type="button" class="btn btn-dark" style="cursor: not-allowed"
@@ -196,7 +197,7 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
         </div>
 
         <div class="col-md-6">
-            @if($la_tontine->etat !='fermee' && $la_tontine->etat !='terminer')
+            @if($la_tontine->etat !='fermee' && $la_tontine->etat !='terminer' && !$pret )
                 <div class="card">
                     <div class="card-body">
                         <hr>
@@ -221,7 +222,6 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                          Facebook
                         </a>
 
-                        @if(sizeof($la_tontine->participants) < $la_tontine->nombre_participant)
 
                             <hr/>
                                 <h5 class="text-uppercase text-center"> ou utiliser </h5>
@@ -255,16 +255,17 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                                   action="{{route('espace_menbre.post_envoyer_invitation_via_sms',[$la_tontine['id']])}}">
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <label>Prefixe</label><br/>
-                                            <input required type="number" class="form-control text-lowercase" name="prefixe"
-                                           placeholder="225,33...">
+                                        <div class="col-md-6">
+                                            <label><small>pays</small></label>
+                                            {{-- <input required class="text-danger form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code_prefixe}}" required /> --}}
+                                            <select required class="form-control" name="prefixe">
+                                                {!! App\Http\Controllers\CountryPrefixController::listOptionChoisirPays() !!}
+                                            </select>
                                         </div>
-                                        <div class="col-md-8">
-                                            <label>Telephone</label><br/>
-                                            <input required type="number" class="form-control text-lowercase" name="telephone"
-                                           placeholder="0555005500">
-                                        </div>
+                                        <div class="col-md-6">
+                                            <label><small>Telephone</small></label>
+                                            <input required class="form-control" placeholder="Entrez votre telephone" type="number" name="telephone" min='1' />
+                                        </div>                                      
                                     </div>
                                 </div>
                                 <h3 class="text-center">
@@ -272,9 +273,7 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                                     <button type="submit" class="btn btn-primary mr-2 text-uppercase">Envoyer le SMS</button>
                                 </h3>
                             </form>
-                        @else
-                            <h3 class="text-center"><b class="badge badge-success">Complet !</b></h3>
-                        @endif
+                       
                     </div>
                 </div>
             @endif
