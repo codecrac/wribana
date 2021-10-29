@@ -1212,6 +1212,9 @@ select {
 .mb-4 {
 	margin-bottom: 1rem;
 }
+.mb-20 {
+	margin-bottom: 5rem;
+}
 .-mt-px {
 	margin-top: -1px;
 }
@@ -1223,9 +1226,6 @@ select {
 }
 .mb-0 {
 	margin-bottom: 0px;
-}
-.mb-20 {
-	margin-bottom: 5rem;
 }
 .mt-40 {
 	margin-top: 10rem;
@@ -1595,6 +1595,12 @@ select {
 }
 .p-3 {
 	padding: 0.75rem;
+}
+.p-4 {
+	padding: 1rem;
+}
+.p-5 {
+	padding: 1.25rem;
 }
 .px-4 {
 	padding-left: 1rem;

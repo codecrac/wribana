@@ -185,7 +185,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
 					</div>
 				</div>
 				<div class="col-xl-6 col-lg-8 col-md-10">
-					<div class="about-gallery wow fadeInRight">
+					<div class="about-gallery wow fadeInRight hide_on_mobile">
 						<div class="img-one">
 							<img src="template/assets/img/about/about-gallery-1.jpg" alt="Image">
 						</div>

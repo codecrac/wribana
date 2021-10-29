@@ -28,7 +28,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Montant en <b>{{$la_session['devise']}}</b> (montant à cotiser par personne))  </label>
-                                <input required type="number" id="input_montant" min="{{ ($la_session['code_devise'] == 'XOF') ? '1000' : '5'  }}" class="form-control" name="montant" placeholder="17500">
+                                <input required type="number" id="input_montant" min="{{ ($la_session['code_devise'] == 'XOF') ? '1100' : '5'  }}" class="form-control" name="montant" placeholder="17500">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputConfirmPassword1">Fréquence de cotisation (en jours)</label>
@@ -109,7 +109,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="soumettre_le_formulaire()">Continuer et creer</button>
+              <button type="button"  class="btn btn-success" onclick="soumettre_le_formulaire()">Continuer et creer</button>
             </div>
           </div>
         </div>
@@ -123,15 +123,22 @@
     <script>
         function resumer_modal(){
             let categorie = document.getElementById('input_categorie');
+            let nb_participant = document.getElementById('input_nb_participant').value;
             document.getElementById('modal_titre').innerHTML = document.getElementById('input_titre').value;
-            document.getElementById('modal_nb_participant').innerHTML = document.getElementById('input_nb_participant').value;
+            document.getElementById('modal_nb_participant').innerHTML = nb_participant;
             document.getElementById('modal_montant').innerHTML = document.getElementById('input_montant').value;
             document.getElementById('modal_frequence').innerHTML = document.getElementById('input_frequence').value;
         }
 
         function soumettre_le_formulaire(){
-            document.getElementById("btn_soumettre_creation_tontine").click();
+            
+           $('#exampleModalCenter').modal('toggle');
+           setTimeout(
+               function(){
+                  document.getElementById("btn_soumettre_creation_tontine").click();
+           }, 500);
+            
         }
-        
+      
     </script>
 @endsection

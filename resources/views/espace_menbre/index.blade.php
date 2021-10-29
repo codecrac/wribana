@@ -28,12 +28,12 @@ function convertCurrency($amount,$from_currency,$to_currency){
                 </div>
                 <div class="d-flex justify-content-between align-items-end flex-wrap">
                     <a href="{{route('espace_menbre.ajouter_tontine')}}" type="button" class="btn btn-primary mr-3 mt-2 mt-xl-0">
-                        <i class="mdi mdi-plus text-muted"></i>
+                        <!--<i class="mdi mdi-plus text-muted"></i>-->
                         Nouvelle Tontine 
                     </a>
 
                     <a href="{{route('espace_menbre.creer_un_waricrowd')}}" class="btn btn-success mt-2 mt-xl-0">
-                        <i class="mdi mdi-plus text-muted"></i>
+                        <!--<i class="mdi mdi-plus text-muted"></i>-->
                         Créer un Waricrowd
                     </a>
                 </div>

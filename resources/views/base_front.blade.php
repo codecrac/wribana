@@ -42,6 +42,13 @@
     <!--====== Responsive css ======-->
     <link rel="stylesheet" href="/template/assets/css/responsive.css" />
 
+    <style>
+        @media only screen and (max-width: 600px) {
+          .hide_on_mobile {
+            display :none;
+          }
+        }
+    </style>
     @yield('style_complementaire')
 </head>
 

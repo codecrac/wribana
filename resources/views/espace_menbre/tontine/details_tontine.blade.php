@@ -88,13 +88,13 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                         @if($la_tontine->createur->id == $la_session['id'] && sizeof($la_tontine->transactions)==0)
                             <br/><br/>
                             <div class="row">
-                                <div class="col-md-6 text-center">
+                                <div class="col-md-6 text-center p-2">
                                     <a href="{{route('espace_menbre.editer_tontine',[$la_tontine['id']])}}"
-                                       class="btn btn-success">Editer la tontine</a>
+                                       class="badge badge-success">Editer la tontine</a>
                                 </div>
-                                <div class="col-md-6 text-center">
+                                <div class="col-md-6 text-center p-2">
                                     <a href="{{route('espace_menbre.supprimer_tontine',[$la_tontine['id']])}}"
-                                       class="btn btn-info">Supprimer la tontine</a>
+                                       class="badge badge-info">Supprimer la tontine</a>
                                 </div>
                             </div>
                         @endif
@@ -118,7 +118,7 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                                 <mark class="badge badge-info">{{$la_tontine->motif_intervention_admin}}</mark>
                             </li> @endif
                         <li>Crée par : {{$la_tontine->createur->nom_complet}}</li>
-                        <li>Montant à cotiser : 
+                        <li>Montant à cotiser :
                             {{number_format($la_tontine->montant,0,',',' ')}}
                             <b>{{$la_tontine->createur->devise_choisie->symbole}}</b>
 
@@ -130,7 +130,7 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                             $frais = $montant_total * (1/100);
                         @endphp
                         <li>
-                            Montant Objectif : {{number_format($montant_total,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->symbole}}</b>  
+                            Montant Objectif : {{number_format($montant_total,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->symbole}}</b>
                             {!!convertir($quotient_de_conversion,$montant_total,)!!}
                         </li>
                         <li>Frais de gestion (1%) : {{number_format($frais,2,',',' ')}}
@@ -154,14 +154,14 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
 
 
                     @if($la_tontine->createur->id == $la_session['id'] || $la_tontine->etat =='constitution' ||  $la_tontine->etat =='prete')
-                        <p class="badge badge-info">La tontine pourra être ouverte une fois le nombre de participant
+                        <p class=" text-center">La tontine pourra être ouverte une fois le nombre de participant
                             specifié atteinds.</p>
                         @if($pret)
                             <form method="post" action="{{route('espace_menbre.ouvrir_tontine',[$la_tontine['id']])}}">
                                 @if($la_tontine->createur->id == $la_session['id'])
                                     @csrf
                                     <h3 class="text-center">
-                                        <p class="badge badge-warning">Ouvrez la tontine uniquement si vous êtes pret a
+                                        <p class="badge badge-warning text-center">Ouvrez la tontine uniquement si vous êtes pret a
                                             commencer les cotisations.</p>
                                         <button type="submit" class="btn btn-success">Ouvrir la tontine</button>
                                     </h3>
@@ -182,7 +182,7 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                             @if($la_tontine->createur->id == $la_session['id'])
                                 @csrf
                                 <h3 class="text-center">
-                                    <p class="badge badge-warning">Ouvrez la tontine uniquement si vous êtes pret a
+                                    <p class="badge badge-warning text-center">Ouvrez la tontine uniquement si vous êtes pret a
                                         commencer les cotisations.</p>
                                     <button type="submit" class="btn btn-success">Recommencer les cotisations</button>
                                 </h3>
@@ -203,26 +203,26 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                         <h4 class="text-uppercase text-center"> Inviter des amis </h4>
                         <hr>
                         @php $le_lien = route('espace_menbre.liste_tontine').'?code_invitation='.$la_tontine->identifiant_adhesion @endphp
-                        
+
                         Partager sur :
                         <br/>
-                        
+
                         <a href="whatsapp://send?text=Bonjour je t'invite a rejoindre la tontine <<{{$la_tontine->titre}}>> sur WARIBANA via ce lien :
-                        {{$le_lien}}"  class="btn btn-success show_on_mobile">Whatsapp</a>
-                        
-                        <a  class="btn btn-primary show_on_mobile" href="fb-messenger://share/?link=Bonjour je t'invite a rejoindre la tontine <<{{$la_tontine->titre}}>> sur WARIBANA via ce lien :
+                        {{$le_lien}}"  class="badge badge-success show_on_mobile">Whatsapp</a>
+
+                        <a  class="badge badge-primary show_on_mobile" href="fb-messenger://share/?link=Bonjour je t'invite a rejoindre la tontine <<{{$la_tontine->titre}}>> sur WARIBANA via ce lien :
                         {{$le_lien}}">Messenger</a>
-                        
-                        <a class="btn btn-info" href="https://twitter.com/share?url={{$le_lien}}&text=Bonjour je t'invite a rejoindre la tontine <<{{$la_tontine->titre}}>> sur WARIBANA via ce lien :" 
+
+                        <a class="badge badge-info" href="https://twitter.com/share?url={{$le_lien}}&text=Bonjour je t'invite a rejoindre la tontine <<{{$la_tontine->titre}}>> sur WARIBANA via ce lien :"
                             target="_blank" title="Share on Twitter"> twitter</a>
 
-                        
-                       <a target="_blank" class="btn btn-primary" href="https://www.facebook.com/sharer/sharer.php?u={{$le_lien}}/&display=popup">
+
+                       <a target="_blank" class="badge badge-primary" href="https://www.facebook.com/sharer/sharer.php?u={{$le_lien}}/&display=popup">
                          Facebook
                         </a>
-                        
+
                         @if(sizeof($la_tontine->participants) < $la_tontine->nombre_participant)
-                            
+
                             <hr/>
                                 <h5 class="text-uppercase text-center"> ou utiliser </h5>
                             <hr/>
@@ -250,7 +250,7 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                             <hr/>
                                 <h5 class="text-uppercase text-center"> Inviter via sms </h5>
                             <hr/>
-                            
+
                             <form class="forms-sample" method="post"
                                   action="{{route('espace_menbre.post_envoyer_invitation_via_sms',[$la_tontine['id']])}}">
                                 <div class="form-group">
@@ -319,7 +319,7 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                             Montant en caisse : <span class="marquer_presence text-info">
                                 {{number_format($la_tontine->caisse->montant,0,',',' ')}} {!!convertir($quotient_de_conversion,$la_tontine->caisse->montant,)!!}
                                 / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->monaie}}</b> {!!convertir($quotient_de_conversion,$la_tontine->caisse->montant_objectif,)!!}
-                                 
+
                             </span>
                         </p>
                         <p> de : <small> de {{sizeof($liste_ayant_cotiser)}}

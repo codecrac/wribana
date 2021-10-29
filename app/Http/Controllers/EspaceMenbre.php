@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use \App\Http\Controllers\MenbreController;
 use App\Events\WaribanaChatMessage;
 use App\Models\CahierCompteTontine;
 use App\Models\CaisseTontine;
@@ -128,10 +129,10 @@ class EspaceMenbre extends Controller
                 $la_tontine->montant = $montant;
                 $la_tontine->frequence_depot_en_jours = $frequence_de_depot;
                 $la_tontine->nombre_participant = $nombre_participant;
-                
-                
+
+
                 if($la_tontine->caisse!=null){
-                    
+
                     $la_caisse_tontine = $la_tontine->caisse;
                     $la_caisse_tontine->montant_objectif = $la_tontine->montant * $la_tontine->nombre_participant;
                     $la_caisse_tontine->montant_a_verser = $la_caisse_tontine->montant_objectif - ($la_caisse_tontine->montant_objectif * (1/100) );
@@ -286,7 +287,7 @@ class EspaceMenbre extends Controller
             return redirect()->back()->with('notification',$notification);
         }
 
-        
+
         $la_transaction = new Transaction();
         $la_transaction->id_tontine = $id_tontine;
         $la_transaction->id_menbre = $id_menbre_connecter;
@@ -362,7 +363,7 @@ class EspaceMenbre extends Controller
                     $message = $base_message['virement_compte_menbre_qui_prend'];
                     $message = str_replace('$nom_menbre_qui_prend$',$la_tontine->caisse->menbre_qui_prend->nom_complet,$message);
                     $message = str_replace('$titre_tontine$',$titre_tontine,$message);
-                    
+
                     $headers = 'From: no-reply@waribana.net' . "\r\n" .
                          'Reply-To: no-reply@waribana.net' . "\r\n" .
                          'X-Mailer: PHP/' . phpversion();
@@ -484,18 +485,13 @@ class EspaceMenbre extends Controller
 
     public function modifier_profil(Request $request,$id_menbre){
         $couleur = "danger";
-
         $donnee_formulaire = $request->all();
-        //        dd($donnee_formulaire);
         $mot_de_passe_actuel = $donnee_formulaire['mot_de_passe_actuel'];
         $bon_mot_de_passe = $this->VerifieLeMotDePasse($mot_de_passe_actuel,$id_menbre);
 
         if($bon_mot_de_passe){
             $nom_complet = $donnee_formulaire['nom_complet'];
-           //            $telephone = $donnee_formulaire['telephone'];
             $email = $donnee_formulaire['email'];
-            $mot_de_passe = $donnee_formulaire['mot_de_passe'];
-            $confirmer_mot_de_passe = $donnee_formulaire['confirmer_mot_de_passe'];
 
            //        ---------------Verifie existence des identifiant
             if($email !=null){
@@ -530,6 +526,8 @@ class EspaceMenbre extends Controller
                 $couleur = "success";
                 $message = "Operation bien effectuée";
                 $notification = "<div class='alert alert-$couleur  text-center'> $message  </div>";
+                $this->creer_session_menbre($le_menbre);
+
                 return redirect()->back()->with('notification',$notification);
             }
 
@@ -537,6 +535,7 @@ class EspaceMenbre extends Controller
             $message = "Mot de passe actuel incorrect";
             $notification = "<div class='alert alert-$couleur'> $message  </div>";
         }
+
 
 
         $notification = "<div class='alert alert-$couleur'> $message  </div>";
@@ -634,7 +633,7 @@ class EspaceMenbre extends Controller
         }
     }
 
-  
+
     public function confirmer_retrait_dargent(Request $request){
         $donnees_formulaire = $request->input();
         $la_session = session(MenbreController::$cle_session);
@@ -653,7 +652,7 @@ class EspaceMenbre extends Controller
                 $notification = "<div class='alert alert-danger text-center'> VOUS NE DISPOSEZ PAS DE CE MONTANT. </div>";
                 return redirect()->back()->with('notification',$notification);
             }
-            
+
             // CONVERSION EN CFA AVANT TRANSFERT
             $le_montant = $montant_retrait;
             if($le_menbre->devise_choisie->code != "XOF"){
@@ -669,14 +668,14 @@ class EspaceMenbre extends Controller
             $reponse_decoder = json_decode($response);
             $code = $reponse_decoder->code;
             $message = $reponse_decoder->message;
-            
-            
+
+
             if($code == 0){ // 0 = succes , les autres = prbleme
                 $notification = "<div class='alert alert-success text-center'> Retrait bien effectué </div>";
                 \App\Http\Controllers\CinetpayApiTransfertController::enregistrer_retrait($le_menbre,$montant_retrait);
                 $monaie = $le_menbre->devise_choisie->monaie;
-                
-                
+
+
                 $headers = 'From: no-reply@waribana.net' . "\r\n" .
                      'Reply-To: no-reply@waribana.net' . "\r\n" .
                      'X-Mailer: PHP/' . phpversion();
@@ -728,5 +727,28 @@ class EspaceMenbre extends Controller
         }
     }
 
+    private function creer_session_menbre($le_menbre)
+    {
+        $id_menbre = $le_menbre->id;
+        $nom_complet = $le_menbre->nom_complet;
+        $email = $le_menbre->email;
+        $telephone = $le_menbre->telephone;
+        if($le_menbre->devise_choisie !=null){
+            $devise = $le_menbre->devise_choisie->monaie;
+            $code_devise = $le_menbre->devise_choisie->code;
+        }else{
+            $devise ='---';
+            $code_devise ='--';
+        }
+        session()->put(MenbreController::$cle_session,
+            [
+                'id' => $id_menbre,
+                'nom_complet' => $nom_complet,
+                'devise' => $devise,
+                'code_devise'=>$code_devise,
+                'email'=>$email,
+                'telephone'=>$telephone,
+            ]);
+    }
 
 }

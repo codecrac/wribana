@@ -3,6 +3,7 @@
     $nb_invitation_email = \App\Models\Invitation::where('email_inviter','=',$la_session['email'])->where('etat','=','attente')->count();
     $nb_invitation_telephone = \App\Models\Invitation::where('email_inviter','=',$la_session['telephone'])->where('etat','=','attente')->count();
 
+   // dd($la_session);
     $nb_invitations_en_attente = $nb_invitation_email + $nb_invitation_telephone;
 @endphp
 
@@ -41,6 +42,21 @@
                 opacity: 0;
             }
         }
+        .btn-primary,.badge-primary{
+            background-color: #4c648a !important;
+            border: none;
+        }
+        .btn-success,.badge-success{
+            background-color: #4caacc !important;
+            border: none;
+        }
+        .btn-danger,.badge-danger{
+            background-color: #a8648a !important;
+            border: none;
+        }
+        .menu-title,.menu-icon{
+            color: #4c648a !important;
+        }
     </style>
 
     @yield('style_completmentaire')
@@ -65,10 +81,10 @@
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
             <ul class="navbar-nav navbar-nav-right">
-                @if($nb_invitations_en_attente < 1 )
+                @if($nb_invitations_en_attente > 0 )
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('espace_menbre.invitations')}}">
-                            <i class="mdi mdi- menu-icon"></i>
+                        <a class="nav-link clignote text-info" href="{{route('espace_menbre.invitations')}}">
+                            <i class="mdi mdi-bell-alert menu-icon" style="font-size: 30px"></i>
                         </a>
                     </li>
                 @endif
@@ -164,12 +180,12 @@
                     </a>
                 </li>
 
-                {{-- <li class="nav-item">
-                    <a class="nav-link" href="{{route('espace_menbre.deconnexion') }}">
-                        <i class="mdi mdi-logout menu-icon"></i>
-                        <span class="menu-title">Deconnexion</span>
-                    </a>
-                </li> --}}
+                <!-- <li class="nav-item">-->
+                <!--    <a class="nav-link" href="{{route('espace_menbre.deconnexion') }}">-->
+                <!--        <i class="mdi mdi-logout menu-icon"></i>-->
+                <!--        <span class="menu-title">Deconnexion</span>-->
+                <!--    </a>-->
+                <!--</li>-->
 
             </ul>
         </nav>

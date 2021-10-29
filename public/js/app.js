@@ -5258,7 +5258,7 @@ formulaire_envoi_message.addEventListener('submit', function (e) {
 
   var id_tontine = id_tontine_input.value;
   message_input.value = message_input.value.replaceAll('\n', '<br/>');
-  var url_envoi_message = "/espace-menbre/chat/" + id_tontine;
+  var url_envoi_message = "/espace-membre/chat/" + id_tontine;
   var options = {
     method: 'post',
     url: url_envoi_message,

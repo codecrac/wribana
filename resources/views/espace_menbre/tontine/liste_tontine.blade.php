@@ -91,7 +91,7 @@
                                     }elseif ($ma_tontine->etat == 'prete'){
                                             $couleur = 'warning';
                                     }else{
-                                        $couleur = 'danger';
+                                        $couleur = 'info';
                                     }
                                     @endphp
                                     <b class="text-uppercase text-{{$couleur}}">

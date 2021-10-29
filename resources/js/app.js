@@ -39,7 +39,7 @@ formulaire_envoi_message.addEventListener('submit', function (e) {
 
     let id_tontine = id_tontine_input.value;
     message_input.value = message_input.value.replaceAll('\n', '<br/>');
-    let url_envoi_message = "/espace-menbre/chat/" + id_tontine;
+    let url_envoi_message = "/espace-membre/chat/" + id_tontine;
     const options = {
         method: 'post',
         url: url_envoi_message,

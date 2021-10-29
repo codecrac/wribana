@@ -26,7 +26,7 @@
 			<div class="common-heading mb-30">
 				<span class="tagline">
 					{{-- <i class="fas fa-plus"></i> Qui Sommes Nous --}}
-					<span class="heading-shadow-text">?</span>
+					<span class="heading-shadow-text"></span>
 				</span>
 				<h4 class="title text-center">Une solution web <br/> et mobile d’épargnes collaboratives</h2>
 			</div>
@@ -95,7 +95,7 @@
 	<div class="common-heading mb-30 col-12">
 		<span class="tagline">
 			{{-- <i class="fas fa-plus"></i> Qui Sommes Nous --}}
-			<span class="heading-shadow-text"> Waribana, qu’est-ce que c’est ? </span>
+			<span class="heading-shadow-text"></span>
 		</span>
 		<h4 class="title text-center">Waribana, qu’est-ce que c’est ?</h2>
 	</div>
@@ -155,7 +155,7 @@
 	<div class="common-heading mb-30 col-12">
 		<span class="tagline">
 			{{-- <i class="fas fa-plus"></i> Qui Sommes Nous --}}
-			<span class="heading-shadow-text"> Waricrowd, qu’est-ce que c’est ? </span>
+			<span class="heading-shadow-text"> </span>
 		</span>
 		<h4 class="title text-center">Waricrowd, qu’est-ce que c’est ?</h2>
 	</div>
@@ -229,7 +229,7 @@
 						<h5 class="title">Securisée</h5>
 						<p>une organisation certifiée avec toutes les transactions sécurisées </p>
                         <a href="#" class="link"><i class="far fa-check"></i></a>
-						<span class="box-index">01</span>
+						<span class="box-index"></span>
 
 						<div class="box-img">
 {{--							<img src="template/assets/img/icon-box-bg.jpg" alt="image">--}}
@@ -244,7 +244,7 @@
 						<h5 class="title">Flexible</h5>
 						<p>faire la tontine avec des personnes de confiance sans être à proximité.</p>
 						<a href="#" class="link"><i class="far fa-check"></i></a>
-						<span class="box-index">02</span>
+						<span class="box-index"></span>
 
 						<div class="box-img">
 {{--							<img src="template/assets/img/icon-box-bg.jpg" alt="image">--}}
@@ -259,7 +259,7 @@
 						<h5 class="title">Pratique</h5>
 						<p>retirez votre argent quel que soit l’endroit et avec le moyen de paiement qui vous convient</p>
                         <a href="#" class="link"><i class="far fa-check"></i></a>
-						<span class="box-index">03</span>
+						<span class="box-index"></span>
 
 						<div class="box-img">
 {{--							<img src="template/assets/img/icon-box-bg.jpg" alt="image">--}}
