@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\File;
 |********* |*********|********* Routes  Vitrine |*********|*********|*********
 */
 
-
-
 Route::get('/', [FrontController::class,'accueil'])->name('accueil');
 
 Route::get('/projets-waricrowd', [FrontController::class,'decouvrir_projets'])->name('decouvrir_projets');
@@ -24,6 +22,8 @@ Route::get('/projets-waricrowd', [FrontController::class,'decouvrir_projets'])->
 Route::get('/details-projet/{id_crowd}', [FrontController::class,'details_projet'])->name('details_projet');
 
 Route::get('/comment-ca-marche', [FrontController::class,'comment_ca_marche'])->name('comment_ca_marche');
+
+Route::get('/comment-ca-marche-mobile', [FrontController::class,'comment_ca_marche_mobile'])->name('comment_ca_marche_mobile');
 
 Route::get('/qui-sommes-nous', [FrontController::class,'apropos'])->name('apropos');
 
@@ -38,6 +38,7 @@ Route::post('/inscription-membre', [MenbreController::class,'enregistrer_un_menb
 Route::post('/connexion-membre',  [MenbreController::class,'connexion'])->name('post_connexion_menbre');
 Route::get('/reinitialiser-mot-de-passe',  [MenbreController::class,'reinitialiser_mot_de_passe'])->name('reinitialiser_mot_de_passe');
 Route::post('/reinitialiser-mot-de-passe',  [MenbreController::class,'post_reinitialiser_mot_de_passe'])->name('post_reinitialiser_mot_de_passe');
+
 
 
 
@@ -73,6 +74,9 @@ Route::prefix('/espace-membre')->middleware('menbre_connecter')->group(function 
     include 'waricrowd_route.php';
 });
 
+//paliatif au soucis de chat actuel
+Route::post("/espace-menbre/chat/{id_tontine}", [EspaceMenbre::class, 'chat_tontine_envoyer_message'])->middleware('menbre_connecter');
+
 Route::get("/deconnexion",[EspaceMenbre::class,'deconnexion'])->name('espace_menbre.deconnexion');
 
 
@@ -87,18 +91,19 @@ Route::get("/notifier-les-retards-de-paiement-sur-tontine",[\App\Http\Controller
 
 //    ===================Administrateur======================
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+Route::middleware(['auth:sanctum', 'verified','etat_compte_admin'])->get('/dashboard', function () {
     $nombre_tontine = \App\Models\Tontine::count();
 
     $nombre_waricrowd = \App\Models\Waricrowd::count();
     $nombre_waricrowd_attente = \App\Models\Waricrowd::where('etat','=','attente')->count();
 
     $nombre_menbre= \App\Models\Menbre::count();
-    $nombre_menbre_banni= \App\Models\Menbre::where('etat','=','suspendu')->count();
+    $nombre_menbre_suspendu= \App\Models\Menbre::where('etat','=','suspendu')->count();
+    $nombre_menbre_banni= \App\Models\Menbre::where('etat','=','banni')->count();
 
     $statistique_frequentation = StatistiqueFrequentation::orderBy('id','desc')->limit(5)->get();
     return view('dashboard',compact('nombre_tontine','nombre_waricrowd',
-        'nombre_menbre','nombre_waricrowd_attente','nombre_menbre_banni','statistique_frequentation'));
+        'nombre_menbre','nombre_waricrowd_attente','nombre_menbre_banni','nombre_menbre_suspendu','statistique_frequentation'));
 })->name('dashboard');
 
 Route::prefix('administrateur')->middleware(['auth:sanctum', 'verified'])->group(function (){

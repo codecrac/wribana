@@ -61,7 +61,11 @@
                                 <div class="d-flex py-3 border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
 {{--                                    <i class="mdi mdi-currency-usd mr-3 icon-lg text-danger"></i>--}}
                                     <div class="d-flex flex-column justify-content-around">
-                                        <small class="mb-1 text-muted"> <a href="{{route('admin.liste_menbres_inscrits',['attente'])}}"> Utilisateur Banni.e.s </a> </small>
+                                        <h6>Utilisateurs</h6>
+                                        <small class="mb-1 text-muted"> <a href="{{route('admin.liste_menbres_inscrits',['suspendu'])}}"> Suspendu.e.s </a> </small>
+                                        <h5 class="mr-2 mb-0"> {{$nombre_menbre_suspendu}} </h5>
+                                        
+                                        <small class="mb-1 text-muted"> <a href="{{route('admin.liste_menbres_inscrits',['banni'])}}">Banni.e.s </a> </small>
                                         <h5 class="mr-2 mb-0"> {{$nombre_menbre_banni}} </h5>
                                     </div>
                                 </div>
@@ -78,13 +82,13 @@
             <div class="card">
                 <div class="card-header">
                     <hr/>
-                        <h4>STATISTIQUE DE FREQUENTATION</h4>
+                        <h4>Statistiques de frequentation </h4>
                     <hr/>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped table-bordered text-center">
                         <thead>
-                            <th>Periode</th>
+                            <th>Période</th>
                             <th>Visite(s)</th>
                         </thead>
                         <tbody>

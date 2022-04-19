@@ -36,7 +36,7 @@
 
                         <div class="form-group">
                             <label for="exampleInputUsername1">Objectif de financement (Montant)  en <b>{{$la_session['devise']}}</b> *</label>
-                            <input required type="number" id="input_objectif" class="form-control" name="montant_objectif" placeholder="1500000">
+                            <input required type="number" onkeypress="return onlyNumberKey(event)" id="input_objectif" class="form-control" name="montant_objectif" placeholder="1500000">
                         </div>
 
                         <div class="form-group">

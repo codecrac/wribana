@@ -53,7 +53,7 @@
                     <div class="col-lg-4 col-md-6 col-sm-10">
                         <div class="project-item mb-30">
                             <div class="thumb"
-                                 style="background-image: url({{$item_crowd['image_illustration']}});"></div>
+                                 style="background-image: url('/{{$item_crowd['image_illustration']}}');"></div>
                             <div class="content">
                                 <div class="cats">
                                     <a href="?id_categorie={{$item_crowd->categorie->id}}">{{$item_crowd->categorie->titre}}</a>

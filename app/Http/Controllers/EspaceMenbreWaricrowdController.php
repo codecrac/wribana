@@ -153,7 +153,14 @@ class EspaceMenbreWaricrowdController extends Controller
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
         $mes_transactions_pour_ce_crowd = TransactionWaricrowd::where('id_menbre','=',$id_menbre_connecter)->where('id_waricrowd','=',$id_crowd)->get();
-        return view('espace_menbre/waricrowd/details',compact('le_crowd','mes_transactions_pour_ce_crowd'));
+        $historique_transactions_waricrowd = TransactionWaricrowd::
+                                                where('id_menbre','!=',$id_menbre_connecter)
+                                                ->where('statut','ACCEPTED')
+                                                ->where('id_waricrowd','=',$id_crowd)
+                                                ->orderBy('id','desc')
+                                                ->limit(250)->get();
+                                                
+        return view('espace_menbre/waricrowd/details',compact('le_crowd','mes_transactions_pour_ce_crowd','historique_transactions_waricrowd'));
     }
 
 
@@ -236,9 +243,18 @@ class EspaceMenbreWaricrowdController extends Controller
 
         // verif portefeuille
         $le_menbre = Menbre::find($id_menbre_connecter);
-        if($le_menbre->compte->solde < $montant_soutien){
-            $notification = "<div class='alert alert-danger'> Votre compte est insuffisant. </div>";
-            return redirect()->back()->with('notification',$notification);
+        
+        
+        $le_crowd = Waricrowd::find($id_crowd);
+        $devise_crowd = $le_crowd->createur->devise_choisie->code ;
+        $devise_utilisateur = $le_menbre->devise_choisie->code;
+        $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($devise_crowd,$devise_utilisateur);
+        $montant_soutien_converti = $quotient_de_conversion * $montant_soutien;
+                
+        // dd($le_menbre->compte->solde,$montant_soutien_converti);
+        if($le_menbre->compte->solde < $montant_soutien_converti){
+            $notification = "<div class='alert alert-danger'> Votre solde est insuffisant. </div>";
+            return redirect()->route('details_projet',[$id_crowd])->with('notification',$notification);
         }
 
         
@@ -251,7 +267,7 @@ class EspaceMenbreWaricrowdController extends Controller
 
         if($la_transaction->save()){
             $la_caisse = CaisseWaricrowd::findOrNew($id_crowd);
-        //            $la_caisse->id_waricrowd = $id_crowd;
+        //  $la_caisse->id_waricrowd = $id_crowd;
             $ancien_montant = $la_caisse->montant;
             $nouveau_montant = $ancien_montant + $montant_soutien;
             $la_caisse->montant = $nouveau_montant;
@@ -268,22 +284,25 @@ class EspaceMenbreWaricrowdController extends Controller
             
             //retirer le montant de la cotisation
             $le_portfeuille = $le_menbre->compte;
-            $le_portfeuille->solde = $le_portfeuille->solde  -$montant_soutien;
+            $le_portfeuille->solde = $le_portfeuille->solde  -$montant_soutien_converti;
             $le_portfeuille->save();
 
+            
             $le_menbre = Menbre::find($id_menbre_connecter);
-            $le_crowd = Waricrowd::find($id_crowd);
             $infos_pour_recu = [
                 'nom_complet'=>$le_menbre->nom_complet,
                 'email_souteneur'=>$le_menbre->email,
                 'type_section'=>'tontine',
                 'montant'=>$montant_soutien,
                 'titre_waricrowd'=>$le_crowd->titre,
-                'nom_createur_waricrowd'=>$le_crowd->createur->nom_complet];
+                'nom_createur_waricrowd'=>$le_crowd->createur->nom_complet
+            ];
             $this->recu_de_paiement_waricrowd($infos_pour_recu);
 
             $date_paiement = date('d/m/Y H:i');
-            $this->notifier_paiement_sms($le_menbre->telephone,$le_menbre->nom_complet,$montant_soutien,$le_crowd->createur->devise_choisie->monaie,$le_crowd->titre,$date_paiement);
+            $this->notifier_paiement_sms($le_menbre->telephone,$le_menbre->nom_complet,$montant_soutien,$le_crowd->createur->devise_choisie->monaie,
+                                            $le_crowd->titre,$date_paiement,$le_crowd->createur->telephone,$le_crowd->createur->nom_complet,
+                                            $montant_soutien_converti,$devise_utilisateur);
 
         }else{
             $notification = "<div class='alert alert-danger text-center'> Quelque chose s'est mal passé </div>";
@@ -318,9 +337,22 @@ class EspaceMenbreWaricrowdController extends Controller
         return $email->Send();
     }
 
-     private function notifier_paiement_sms($numeropayeur,$nom_payeur,$montant_soutien,$devise,$titre_du_waricrowd,$date_paiement){
+     private function notifier_paiement_sms($numeropayeur,$nom_payeur,$montant_soutien,$devise,$titre_du_waricrowd,
+                                                $date_paiement,$numero_porteur_du_projet,$nom_porteur_du_projet
+                                                ,$montant_devise_souteneur,$devise_souteneur
+                                            ){
          $numeropayeur = $numeropayeur;
-            $message_sms = "Soutien a hauteur de $montant_soutien $devise par $nom_payeur sur waricrowd << $titre_du_waricrowd >> le $date_paiement ";
-            SmsController::sms_info_bip("$numeropayeur",$message_sms);
+            $message_sms_pour_souteneur = "Bomjour $nom_payeur,
+Votre soutien a hauteur de $montant_soutien $devise($montant_devise_souteneur $devise_souteneur) sur le waricrowd << $titre_du_waricrowd >> a bien ete effectué.
+Date : $date_paiement 
+                        ";
+            SmsController::sms_info_bip("$numeropayeur",$message_sms_pour_souteneur);
+            
+            
+            $message_sms_pour_porteur = "Bomjour $nom_porteur_du_projet,
+Votre waricrowd << $titre_du_waricrowd >> a recu un soutien a hauteur de $montant_soutien $devise du membre $nom_payeur.
+Date : $date_paiement 
+                        ";
+            SmsController::sms_info_bip("$numero_porteur_du_projet",$message_sms_pour_porteur);
     }
 }

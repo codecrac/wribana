@@ -1,7 +1,3 @@
-@php
-    $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
-@endphp
-
 
 @extends('administrateur.base_administrateur')
 
@@ -16,6 +12,25 @@
 
 @section('content')
 
+     @php
+        if($le_crowd->etat=='valider'){
+            $couleur= "success";
+            $etat = "Validé";
+        }elseif($le_crowd->etat=='recaler'){
+            $couleur = "danger";
+            $etat = "Recalé";
+        }elseif($le_crowd->etat=='attente'){
+            $couleur = "dark";
+            $etat = "En attente";
+        }elseif($le_crowd->etat=='terminer'){
+            $couleur = "dark";
+            $etat = "Terminé";
+        }elseif($le_crowd->etat=='annuler'){
+            $couleur = "dark";
+            $etat = "Annulé";
+        }
+    @endphp
+
     {!! Session::get('notification','') !!}
     {{-- SECTION A propos de la crowd et invitaion  --}}
     <div class="row">
@@ -29,16 +44,7 @@
                     </h4>
                     <hr/>
                     <ul>
-                        @php
-                            if($le_crowd->etat=='attente'){
-                                $couleur = "dark";
-                            }elseif($le_crowd->etat=='valider' or $le_crowd->etat =='terminer'){
-                                $couleur = "success";
-                            }else{
-                                $couleur = "danger";
-                            }
-                        @endphp
-                        <li>Statut : <mark class="badge badge-{{$couleur}}">{{$le_crowd->etat}}</mark> </li>
+                        <li>Statut : <mark class="badge badge-{{$couleur}}">{{$etat}}</mark> </li>
                         @if($le_crowd->motif_intervention_admin !=null) <li><b>Motif Intervention d'administrateur</b> : <mark class="badge badge-info">{{$le_crowd->motif_intervention_admin}}</mark> </li> @endif
                         <li>Crée par : {{$le_crowd->createur->nom_complet}}</li>
                         <li>Montant objectif : {{number_format($le_crowd->montant_objectif,0,',',' ')}}  <b>{{$le_crowd->createur->devise_choisie->monaie}}</b> </li>
@@ -62,6 +68,9 @@
                         </li>
                         <li> Nombre de soutien : {{sizeof($le_crowd->transactions)}}</li>
                         <li> Creer le  : {{ date('d/m/Y',strtotime($le_crowd->created_at)) }}</li>
+                        
+                        <br/>
+                        <a href="{{route('admin.editer_crowd',[$le_crowd->id])}}" class='btn btn-warning' > Editer le crowd</a>
 
                     </ul>
                     <br/>
@@ -80,12 +89,14 @@
                         <div class="form-group">
                             <h6 for="exampleInputUsername1">Etat du projet *</h6>
                             <select class="form-control" required name="nouvel_etat">
-                                <option selected value="{{$le_crowd->etat}}" >{{$le_crowd->etat}}</option>
-                                <option>attente</option>
-                                <option>valider</option>
-                                <option>recaler</option>
-                                <option value="annuler">annuler la collecte</option>
-                                <option>terminer</option>
+                                <option selected value="{{$le_crowd->etat}}" >{{$etat}}</option>
+                                
+                                
+                                @if($le_crowd->etat != 'attente' ) <option value='attente'>En attente</option> @endif
+                                @if($le_crowd->etat != 'valider' ) <option value='valider'>validé</option> @endif
+                                @if($le_crowd->etat != 'recaler' ) <option value='recaler' >recalé</option> @endif
+                                @if($le_crowd->etat != 'annuler' ) <option value="annuler">annulé la collecte</option> @endif
+                                @if($le_crowd->etat != 'terminer' ) <option value='terminer'>terminé</option> @endif
                             </select>
                             <br/>
                             <h6>Motif</h6>

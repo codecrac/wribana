@@ -63,17 +63,21 @@
                                         <span class="badge badge-{{$couleur}}">{{$pourcentage}} %</span>
                                     </td>
                                     <td class="tr_bordered text-danger">
+                                        
                                         @php
-                                            if($item->etat == 'valider'){
+                                            if($item->etat=='valider'){
                                                 $couleur= "success";
-                                            }elseif($item->etat == 'recaler'){
+                                                $etat = "Validé";
+                                            }elseif($item->etat=='recaler'){
                                                 $couleur = "danger";
-                                            }else{
+                                                $etat = "Recalé";
+                                            }elseif($item->etat=='attente'){
                                                 $couleur = "dark";
+                                                $etat = "En attente";
                                             }
                                         @endphp
                                         <b class="badge badge-{{$couleur}}">
-                                            {{$item->etat}}
+                                            {{$etat}}
                                         </b>
                                     </td>
 

@@ -33,9 +33,7 @@
                     <hr/>
                         <h4 class="card-title text-center">
                             Tontine : {{$la_tontine->titre}}
-                            @if($la_tontine->createur->id == $la_session['id'])
-                                <a href="{{route('espace_menbre.editer_tontine',[$la_tontine['id']])}}" class="btn btn-warning">Editer la tontine</a>
-                            @endif
+                            
                             <br/>
                             @if($la_tontine->etat !='fermee' && $la_tontine->etat !='suspendue')
                                 @if($en_retard)
@@ -228,7 +226,7 @@
                     <div class="card-body">
                         <table class="table table-bordered table-striped">
                             <thead>
-                                <th>Menbre</th>
+                                <th>Membre</th>
                                 <th>Date paiement</th>
                             </thead>
                             <tbody>
@@ -299,7 +297,7 @@
                 <div class="card-body">
                     <table class="table table-bordered table-striped " id="datatable">
                         <thead>
-                        <th>Menbre</th>
+                        <th>Membre</th>
                         <th>Date paiement</th>
                         <th>Tour de</th>
                         <th>Rotation No</th>

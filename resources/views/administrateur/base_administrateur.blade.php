@@ -94,48 +94,59 @@
                         <span class="menu-title">Tableau de bord</span>
                     </a>
                 </li>
+                @if(auth()->user()->role == 'super_admin' || auth()->user()->role == 'administrateur_general' || auth()->user()->role == 'gestionnaire_de_tontine' )
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('admin.les_tontines')}}">
-                        <i class="mdi mdi-arrow-right-circle menu-icon"></i>
+                        <i class="mdi mdi-stack-exchange menu-icon"></i>
                         <span class="menu-title">Gestion Tontines</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('admin.ajouter_categorie_waricrowd')}}">
-                        <i class="mdi mdi-arrow-right-circle menu-icon"></i>
-                        <span class="menu-title">Categorie Waricrowd</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('admin.les_waricrowds')}}">
-                        <i class="mdi mdi-all-inclusive menu-icon"></i>
-                        <span class="menu-title">Gestion Waricrowd</span>
-                    </a>
-                </li>
+                @endif
+                @if(auth()->user()->role == 'super_admin' || auth()->user()->role == 'administrateur_general' || auth()->user()->role == 'gestionnaire_de_waricrowd' )
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('admin.ajouter_categorie_waricrowd')}}">
+                            <i class="mdi mdi-dns menu-icon"></i>
+                            <span class="menu-title">Categorie Waricrowd</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('admin.les_waricrowds')}}">
+                            <i class="mdi mdi-database menu-icon"></i>
+                            <span class="menu-title">Gestion Waricrowd</span>
+                        </a>
+                    </li>
+                @endif
+                
+                
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
+                   aria-controls="ui-basic">
+                    <i class="mdi mdi-history menu-icon"></i>
+                    <span class="menu-title">Historique Transactions</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="ui-basic">
+                    <ul class="nav flex-column sub-menu">
+                        @if(auth()->user()->role == 'super_admin' || auth()->user()->role == 'administrateur_general' || auth()->user()->role == 'gestionnaire_de_tontine' )
+                            <li class="nav-item"><a class="nav-link" href="{{route('admin.historique_transactions_tontine')}}"> Tontines  </a> </li>
+                        @endif
+                        @if(auth()->user()->role == 'super_admin' || auth()->user()->role == 'administrateur_general' || auth()->user()->role == 'gestionnaire_de_waricrowd' )
+                            <li class="nav-item"><a class="nav-link" href="{{route('admin.historique_transactions_waricrowd')}}"> Waricrowd </a></li>
+                        @endif    
+                    </ul>
+                </div>
+            </li>
+             @if(auth()->user()->role == 'super_admin' || auth()->user()->role == 'administrateur_general' )
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('admin.liste_menbres_inscrits')}}">
-                        <i class="mdi mdi-all-inclusive menu-icon"></i>
-                        <span class="menu-title">Menbres Inscrits</span>
+                        <i class="mdi mdi-account-multiple-outline menu-icon"></i>
+                        <span class="menu-title">Membres Inscrits</span>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
-                       aria-controls="ui-basic">
-                        <i class="mdi mdi-account-multiple menu-icon"></i>
-                        <span class="menu-title">Historique Transactions</span>
-                        <i class="menu-arrow"></i>
-                    </a>
-                    <div class="collapse" id="ui-basic">
-                        <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="{{route('admin.historique_transactions_tontine')}}"> Tontines  </a> </li>
-                            <li class="nav-item"><a class="nav-link" href="{{route('admin.historique_transactions_waricrowd')}}"> Waricrowd </a></li>
-                        </ul>
-                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="collapse" href="#ui-basic-2" aria-expanded="false"
                        aria-controls="ui-basic">
-                        <i class="mdi mdi-account-multiple menu-icon"></i>
+                        <i class="mdi mdi-swap-horizontal menu-icon"></i>
                         <span class="menu-title">Versement et retraits</span>
                         <i class="menu-arrow"></i>
                     </a>
@@ -148,10 +159,31 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('admin.definir_contenu_notifications')}}">
-                        <i class="mdi mdi-home-outline menu-icon"></i>
+                        <i class="mdi mdi-bell-ring-outline menu-icon"></i>
                         <span class="menu-title">Contenu Notifications</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('admin.parametre')}}">
+                        <i class="mdi mdi-settings menu-icon"></i>
+                        <span class="menu-title">Frais de gestion</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('admin.gestionnaire')}}">
+                        <i class="mdi mdi-account-star menu-icon"></i>
+                        <span class="menu-title">Gestionnaires</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('admin.historique_profil')}}">
+                        <i class="mdi mdi-history menu-icon"></i>
+                        <span class="menu-title">Historique Profil Utilisateur</span>
+                    </a>
+                </li>
+            @endif
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('accueil')}}">
                         <i class="mdi mdi-home-outline menu-icon"></i>
@@ -175,7 +207,7 @@
             <footer class="footer">
                 <div class="d-sm-flex justify-content-center justify-content-sm-between">
                     <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Tout droits réservés</span>
-                    <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © akassoh.ci 2021</span>
+                    <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © WARIBANA 2021</span>
                 </div>
             </footer>
             <!-- partial -->
@@ -209,7 +241,11 @@
 
 <script>
     $(document).ready( function () {
-        $('#datatable').DataTable();
+        $('#datatable').DataTable({
+              language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.11.4/i18n/fr_fr.json"
+                }
+        });
     } );
 </script>
 

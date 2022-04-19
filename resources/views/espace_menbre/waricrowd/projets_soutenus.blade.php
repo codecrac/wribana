@@ -28,7 +28,7 @@
                             <thead class="text-center">
                             <th class="tr_bordered">Titre</th>
                             <th class="tr_bordered">Montant Objectif</th>
-                            <th class="tr_bordered">Progression Financement</th>
+                            <th class="tr_bordered">Progression de financement</th>
                             <th class="tr_bordered">Statut</th>
                             <th class="tr_bordered">#</th>
                             </thead>
@@ -55,16 +55,23 @@
                                     <td class="tr_bordered text-danger">
 
                                         @php
+                                        
                                             if($item->etat=='valider'){
                                                 $couleur= "success";
+                                                $etat = "Validé";
                                             }elseif($item->etat=='recaler'){
                                                 $couleur = "danger";
+                                                $etat = "Recalé";
                                             }elseif($item->etat=='attente'){
                                                 $couleur = "dark";
+                                                $etat = "En attente";
+                                            }else{
+                                                $couleur= "success";
+                                                $etat = "terminé";
                                             }
                                         @endphp
                                         <b class="badge badge-{{$couleur}}">
-                                            {{$item->etat}}
+                                            {{$etat}}
                                         </b>
                                     </td>
 

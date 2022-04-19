@@ -13,6 +13,8 @@ use App\Models\Tontine;
 use App\Models\Transaction;
 use App\Models\TransactionWaricrowd;
 use App\Models\Waricrowd;
+use App\Models\Parametre;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdministrateurController extends Controller
@@ -47,16 +49,38 @@ class AdministrateurController extends Controller
             $date_debut = $_GET['date_debut'];
             $date_fin = $_GET['date_fin'];
 
-            $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_debut']."- 1 days"));
-            $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_fin']."+ 1 days"));
+            
+            $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d H:i:s',strtotime($_GET['date_debut']));
+            $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d H:i:s',strtotime($_GET['date_fin']));
             $historique_transactions_tontine = Transaction::where('created_at','>=',$date_debut_pour_esquiver_probleme_avec_timestamps)
                                                 ->where('created_at','<=',$date_fin_pour_esquiver_probleme_avec_timestamps)->orderBy('id','desc')->get();
         }else{
-            $historique_transactions_tontine = Transaction::orderBy('id','desc')->limit(25)->get();
+            $historique_transactions_tontine = Transaction::orderBy('id','desc')->limit(250)->get();
         }
         //        dd($historique_transactions_waricrowd);
         return view('administrateur/tontines/historique_transactions_tontine',compact('historique_transactions_tontine','date_debut','date_fin'));
     }
+    
+    
+    public function historique_profil(){
+        $date_fin =null;
+        $date_debut =null;
+        if(isset($_GET['date_debut']) && $_GET['date_fin']){
+            $date_debut = $_GET['date_debut'];
+            $date_fin = $_GET['date_fin'];
+
+            
+            $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d H:i:s',strtotime($_GET['date_debut']));
+            $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d H:i:s',strtotime($_GET['date_fin']));
+            $historique_profil = \App\Models\HistoriqueModifProfilMembre::where('created_at','>=',$date_debut_pour_esquiver_probleme_avec_timestamps)
+                                                ->where('created_at','<=',$date_fin_pour_esquiver_probleme_avec_timestamps)->orderBy('id','desc')->get();
+        }else{
+            $historique_profil = \App\Models\HistoriqueModifProfilMembre::orderBy('id','desc')->get();
+        }
+        //        dd($historique_transactions_waricrowd);
+        return view('administrateur/historique_profil',compact('historique_profil','date_debut','date_fin'));
+    }
+    
     public function changer_etat_tontine(Request $request,$id_tontine){
 
         $donnees_formulaire = $request->all();
@@ -123,12 +147,12 @@ class AdministrateurController extends Controller
             $date_debut = $_GET['date_debut'];
             $date_fin = $_GET['date_fin'];
 
-            $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_debut']."- 1 days"));
-            $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_fin']."+ 1 days"));
+            $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d H:i:s',strtotime($_GET['date_debut']));
+            $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d H:i:s',strtotime($_GET['date_fin']));
             $historique_versements = CahierCompteTontine::where('created_at','>=',$date_debut_pour_esquiver_probleme_avec_timestamps)
                                                 ->where('created_at','<=',$date_fin_pour_esquiver_probleme_avec_timestamps)->orderBy('id','desc')->get();
         }else{
-            $historique_versements = CahierCompteTontine::orderBy('id','desc')->limit(125)->get();
+            $historique_versements = CahierCompteTontine::orderBy('id','desc')->limit(250)->get();
         }
         //        dd($historique_transactions_waricrowd);
         return view('administrateur/tontines/historique_versements',compact('historique_versements','date_debut','date_fin'));
@@ -188,6 +212,66 @@ class AdministrateurController extends Controller
         return view("administrateur/waricrowds/details_waricrowd",compact('le_crowd','transactions_du_waricrowd'));
     }
 
+
+    public function editer_crowd($id_crowd){
+        $le_crowd = Waricrowd::find($id_crowd);
+        $liste_categorie_waricrowd = CategorieWaricrowd::all();
+        return view('administrateur/waricrowds/editer_waricrowd',compact('le_crowd','liste_categorie_waricrowd'));
+    }
+
+       public function modifier_un_waricrowd(Request $request,$id_crowd)
+    {
+        $donnees_formulaire = $request->all();
+
+        $id_categorie_waricrowd = $donnees_formulaire['id_categorie_waricrowd'];
+        $titre = $donnees_formulaire['titre'];
+        $description_courte = $donnees_formulaire['description_courte'];
+        $description_complete = $donnees_formulaire['description_complete'];
+        $montant_objectif = $donnees_formulaire['montant_objectif'];
+        $pitch_video = $this->formaterLienPitch($donnees_formulaire['lien_pitch_video']);
+
+        $le_crowd = Waricrowd::find($id_crowd);
+
+        if(sizeof($le_crowd->transactions) > 0 ){
+            $notification = "<div class='alert alert-danger text-center'> Vous ne pouvez pas modifier un crowd apres que des transactions ai été effectuées </div>";
+            return redirect()->back()->with("notification",$notification);
+        }
+    
+        $le_crowd->id_categorie = $id_categorie_waricrowd;
+        $le_crowd->titre = $titre;
+        $le_crowd->description_courte = $description_courte;
+        $le_crowd->description_complete = $description_complete;
+        $le_crowd->montant_objectif = $montant_objectif;
+        if(!empty($pitch_video)){
+            $le_crowd->lien_pitch_video = $pitch_video;
+        }
+
+        $nom_image_illustration=null;
+        if($request->hasFile('image_illustration')){
+            $uploaddir = public_path('images/waricrowd/');
+            $nom_image_illustration = 'images/waricrowd/'. basename($_FILES['image_illustration']['name']);
+            move_uploaded_file($_FILES['image_illustration']['tmp_name'], $nom_image_illustration);
+
+            $le_crowd->image_illustration = $nom_image_illustration;
+        }
+
+        if($le_crowd->save()){
+            //creer la caisse qui va avec
+            $la_caisse_de_crowd = CaisseWaricrowd::findOrNew($le_crowd->id);
+            $la_caisse_de_crowd->id_waricrowd = $le_crowd->id;
+            $la_caisse_de_crowd->montant_objectif = $montant_objectif;
+            $la_caisse_de_crowd->save();
+
+            $notification = "<div class='alert alert-success text-center'> Operation effectuée avec succes </div>";
+        }else{
+            $notification = "<div class='alert alert-danger text-center'> Quelquechose s'est mal passée, veuillez rééssayer </div>";
+        }
+
+        return redirect()->back()->with("notification",$notification);
+    }
+
+
+
     public function changer_etat_crowd(Request $request,$id_crowd){
 
         $donnees_formulaire = $request->all();
@@ -229,12 +313,13 @@ class AdministrateurController extends Controller
 
 //    ===============================GESTION MENBRES EXTERNES
     public function liste_menbres_inscrits($filtre=null){
+        // dd($filtre);
         if($filtre!=null){
-            $liste_menbres_inscrits = Waricrowd::where('etat','=',$filtre)->get();
+            $liste_menbres_inscrits = Menbre::where('etat','=',$filtre)->get();
         }else{
             $liste_menbres_inscrits = Menbre::all();
         }
-        return view('administrateur/liste_menbres_inscrits',compact('liste_menbres_inscrits'));
+        return view('administrateur/liste_menbres_inscrits',compact('liste_menbres_inscrits','filtre'));
     }
 
     public function suspendre_menbre(Request $request,$id_menbre){
@@ -264,13 +349,18 @@ class AdministrateurController extends Controller
             $date_debut = $_GET['date_debut'];
             $date_fin = $_GET['date_fin'];
 
-            $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_debut']."- 1 days"));
-            $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_fin']."+ 1 days"));
-            $historique_transactions_waricrowd = TransactionWaricrowd::orderBy('id','desc')->where('created_at','>=',$date_debut_pour_esquiver_probleme_avec_timestamps)
-                ->where('created_at','<=',$date_fin_pour_esquiver_probleme_avec_timestamps)->get();
-//            dd($historique_transactions_waricrowd);
+            $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d H:i:s',strtotime($_GET['date_debut']."- 1 hours"));
+            $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d H:i:s',strtotime($_GET['date_fin']."+ 1 hours"));
+            
+            // dd(date('H:i:s',strtotime($_GET['date_debut'])));
+            $historique_transactions_waricrowd = TransactionWaricrowd::orderBy('id','desc')
+                ->where('created_at','>=',$date_debut_pour_esquiver_probleme_avec_timestamps)
+                ->where('created_at','<=',$date_fin_pour_esquiver_probleme_avec_timestamps)
+                // ->whereTime('created_at', '>=', date('H:i:s',strtotime($_GET['date_debut'])))
+                ->get();
+            // dd($date_debut_pour_esquiver_probleme_avec_timestamps);
         }else{
-            $historique_transactions_waricrowd = TransactionWaricrowd::orderBy('id','desc')->limit(25)->get();
+            $historique_transactions_waricrowd = TransactionWaricrowd::orderBy('id','desc')->limit(250)->get();
         }
         //        dd($historique_transactions_waricrowd);
         return view('administrateur/waricrowds/historique_transactions_waricrowd',compact('historique_transactions_waricrowd','date_debut','date_fin'));
@@ -283,12 +373,13 @@ class AdministrateurController extends Controller
             $date_debut = $_GET['date_debut'];
             $date_fin = $_GET['date_fin'];
 
-            $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_debut']."- 1 days"));
-            $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d',strtotime($_GET['date_fin']."+ 1 days"));
+            
+            $date_debut_pour_esquiver_probleme_avec_timestamps = date('Y-m-d H:i:s',strtotime($_GET['date_debut']."- 1 hours"));
+            $date_fin_pour_esquiver_probleme_avec_timestamps = date('Y-m-d H:i:s',strtotime($_GET['date_fin']."+ 1 hours"));
             $historique_retraits = CahierRetraitSoldeMenbre::where('created_at','>=',$date_debut_pour_esquiver_probleme_avec_timestamps)
                                                 ->where('created_at','<=',$date_fin_pour_esquiver_probleme_avec_timestamps)->orderBy('id','desc')->get();
         }else{
-            $historique_retraits = CahierRetraitSoldeMenbre::orderBy('id','desc')->limit(125)->get();
+            $historique_retraits = CahierRetraitSoldeMenbre::orderBy('id','desc')->limit(250)->get();
         }
         //        dd($historique_transactions_waricrowd);
         return view('administrateur/historique_retraits',compact('historique_retraits','date_debut','date_fin'));
@@ -322,6 +413,71 @@ class AdministrateurController extends Controller
         $la_ligne_notification->virement_compte_menbre_qui_prend = $request['virement_compte_menbre_qui_prend'];
         $la_ligne_notification->save();
         $notification = "<div class='alert alert-success text-center'> Operation bien effectuée </div>";
+        return redirect()->back()->with('notification',$notification);
+    }
+
+//=====================================GESTIONNAIRES
+    public function les_gestionnaire(){
+        // $liste_gestionnaire = User::where('role','!=','super_admin')->get();
+        $liste_gestionnaire = User::get();
+        return view('administrateur/gestionnaires/index',compact('liste_gestionnaire'));
+    }
+    
+    public function enregistrer_gestionnaire(Request $request){
+        $df = $request->input();
+        
+        $le_gestionnaire = new User();
+        $le_gestionnaire->name = $df['nom_complet'];
+        $le_gestionnaire->email = $df['email'];
+        $le_gestionnaire->role = $df['role'];
+        $le_gestionnaire->password = bcrypt('waribana');
+        $le_gestionnaire->save();
+        
+        $notification = "<div class='alert alert-success text-center'> Operation bien effectuée </div>";
+        return redirect()->back()->with('notification',$notification);
+    }
+    
+    
+    public function modifier_gestionnaire(Request $request,$id_gestionnaire){
+        $df = $request->input();
+        
+        $le_gestionnaire = User::findOrFail($id_gestionnaire);
+        $le_gestionnaire->role = $df['role'];
+        $le_gestionnaire->etat = $df['etat'];
+        $le_gestionnaire->save();
+        
+        $notification = "<div class='alert alert-success text-center'> Operation bien effectuée </div>";
+        return redirect()->back()->with('notification',$notification);
+    }
+    
+//==================================== FRAIS DE GESTION
+    public function parametre(){
+        $les_parametres = Parametre::first();
+        if($les_parametres == null){
+            $les_parametres = new Parametre();
+            $les_parametres->pourcentage_frais =1;
+            $les_parametres->save();
+        }
+        return view('administrateur/frais_de_gestion',compact('les_parametres'));
+    }
+    
+    public function post_parametre(Request $request){
+        try{
+          $pourcentage_frais = $request->input('pourcentage_frais');
+          
+            $les_parametres = Parametre::first();
+            if($les_parametres == null){
+                $les_parametres = new Parametre();
+            }
+            
+            $les_parametres->pourcentage_frais = $pourcentage_frais;
+            $les_parametres->save();
+
+
+            $notification = "<div class='alert alert-success text-center'> Operation bien effectuée </div>";
+        }catch(\Exception $e){
+            $notification = "<div class='alert alert-danger text-center'> Un probleme est survenu. </div>";
+        }
         return redirect()->back()->with('notification',$notification);
     }
 }

@@ -27,7 +27,10 @@ class MenbreConnecter
             if($le_menbre->etat=='actif' && $le_menbre->devise!=null){
                 return $next($request);
             }elseif($le_menbre->etat=='suspendu'){
-                $notification =  "<div class='alert alert-danger'> Votre compte a été suspendu, Motif : $le_menbre->motif_intervention_admin </div>";
+                $notification =  "<div class='alert alert-danger'> Votre compte a été SUSPENDU, Motif : $le_menbre->motif_intervention_admin </div>";
+                return  redirect()->route('connexion_menbre')->with('notification',$notification);
+            }elseif($le_menbre->etat=='banni'){
+                $notification =  "<div class='alert alert-danger'> Votre compte a été BANNI, Motif : $le_menbre->motif_intervention_admin </div>";
                 return  redirect()->route('connexion_menbre')->with('notification',$notification);
             }elseif($le_menbre->etat=='attente'){
                 return  redirect()->route('espace_menbre.confirmer_compte_menbre');

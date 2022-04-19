@@ -25,7 +25,10 @@
                 <div class="row">
                     <hr/>
                         <h3 class="text-center">
-                            Utilisateurs Inscrits ( {{sizeof($liste_menbres_inscrits)}} )
+                            Utilisateurs Inscrits ( {{sizeof($liste_menbres_inscrits)}}  )
+                            @if($filtre!=null)
+                                <span class='text-uppercase'> [ Filtre : {{$filtre}} ] </span> <small><b><a class='text-danger' href='{{route('admin.liste_menbres_inscrits')}}'>x</a></b> </small> 
+                            @endif
                         </h3>
                     <hr/>
 
@@ -36,7 +39,7 @@
                         <table width="100%" class="table text-left" border="1" id="datatable">
                             <thead class="text-left">
                                 <th>#(ordre inscription)</th>
-                                <th>Menbre</th>
+                                <th>Membre</th>
                                 <th>Contact</th>
                                 <th>Devise</th>
                                 <th>Etat</th>
@@ -67,7 +70,7 @@
                                      </td>
                                     <td>
                                         <h3>
-                                            <span class="badge badge-{{$item_menbre->etat =='suspendu'? 'danger' : 'success'}}">{{$item_menbre->etat}}</span>
+                                            <span class="badge badge-{{$item_menbre->etat =='suspendu' || $item_menbre->etat =='banni' ? 'danger' : 'success'}}">{{$item_menbre->etat}}</span>
                                         </h3>
                                     </td>
                                     <td>
@@ -82,6 +85,7 @@
                                                     <option selected value="{{$item_menbre->etat}}" >{{$item_menbre->etat}}</option>
                                                     <option value="actif">actif</option>
                                                     <option value="suspendu">suspendu</option>
+                                                    <option value="banni">banni</option>
                                                 </select>
                                                 <br/>
                                                 <h6>Motif</h6>

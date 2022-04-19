@@ -46,9 +46,16 @@ class InvitationController extends Controller
 
         $la_tontine = Tontine::find($id_tontine);
         $titre = $la_tontine->titre;
+        $identifiant_adhesion = $la_tontine->identifiant_adhesion;
 
         $adresse =  "https://" . $_SERVER['SERVER_NAME'] .'/espace-menbre/invitations';
-        $message = " Bonjour, le menbre $nom_complet de waribana vous invite a rejoindre la tontine <<$titre>>,Connectez vous inscrivez-vous pour repondre a son invitation; $adresse";
+        $message = "Bonjour,
+        
+le menbre $nom_complet de Waribana vous invite à rejoindre la tontine <<$titre>>,
+
+Utilisez le code d'adhesion : $identifiant_adhesion
+
+ou connectez-vous ou inscrivez-vous pour répondre à son invitation : $adresse";
 
         // dd($le_numero);
         $reponse = SmsController::sms_info_bip($le_numero,$message);
@@ -77,24 +84,31 @@ class InvitationController extends Controller
         $la_tontine = Tontine::find($id_tontine);
         $titre = $la_tontine->titre;
         $liste_emails = explode(',',strtolower($donnees_formulaire['liste_emails']));
+        $identifiant_adhesion = $la_tontine->identifiant_adhesion;
         // $emails_to_string = implode(",",$liste_emails);
-        $headers = 'From: no-reply@waribana.net' . "\r\n" .
+        
+        $headers = 'From: waribana@waribana.net' . "\r\n" .
+             'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
              'Reply-To: no-reply@waribana.net' . "\r\n" .
              'X-Mailer: PHP/' . phpversion();
 
         $code_adhesion = $la_tontine->identifiant_adhesion;
         $adresse =  route('espace_menbre.liste_tontine')."?code_invitation=$code_adhesion";
-
-        dd($adresse);
+        
+        $message = "Bonjour, le menbre $nom_complet de Waribana vous invite à rejoindre la tontine &lt;&lt;$titre&gt;&gt;,
+            <br/><br/>
+            Utilisez le code d'adhesion : $identifiant_adhesion
+            <br/>
+            ou connectez vous inscrivez-vous pour repondre a son invitation: <br/>
+            $adresse
+        ";
+        
+        
         foreach($liste_emails as $mail_item){
             // echo $mail_item . '<br/>';
             mail($mail_item,
             "REJOINS LA TONTINE $titre",
-            "
-                        Bonjour, le menbre $nom_complet de waribana vous invite a rejoindre la tontine <<$titre>>,
-                        Connectez vous inscrivez-vous pour repondre a son invitation;
-$adresse
-            ",$headers
+            $message ,$headers
             );
         }
         
@@ -125,8 +139,9 @@ $adresse
 
         $invitation_recues = [];
         if($email_inviter!=null){
-            $invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->orWhere('email_inviter','=',$telephone_inviter)->where('etat','=','attente')->get();
+            $invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->where('etat','=','attente')->orWhere('email_inviter','=',$telephone_inviter)->where('etat','=','invitation envoyee')->get();
         }
+        // dd($invitation_recues);
         return view("espace_menbre/tontine/invitations",compact('invitation_recues'));
     }
 
@@ -171,7 +186,7 @@ $adresse
                 $contenu_notification = SmsContenuNotification::first();
                 $message_notif = $contenu_notification['etat_tontine'];
 
-                $le_message = str_replace('$etat$',"prete",$message_notif);
+                $le_message = str_replace('$etat$',"prête",$message_notif);
                 $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
                 $le_message = str_replace('$motif$',"",$le_message);
 
@@ -238,6 +253,7 @@ $adresse
                     $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
 
 
+                    //NOMBRE DE PARTICPANT ATTEINDS, LA TONTINE EST PRETE
                     $la_tontine = Tontine::where('identifiant_adhesion','=',$code_invitation)->first();
                     if(sizeof($la_tontine->participants) == $la_tontine->nombre_participant){
                         Invitation::where('id_tontine','=',$la_tontine->id)->where('etat','=','attente')->update(['etat'=>"expiree"]);
@@ -248,7 +264,7 @@ $adresse
                         $contenu_notification = SmsContenuNotification::first();
                         $message_notif = $contenu_notification['etat_tontine'];
 
-                        $le_message = str_replace('$etat$',"prete",$message_notif);
+                        $le_message = str_replace('$etat$',"prête",$message_notif);
                         $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
                         $le_message = str_replace('$motif$',"",$le_message);
 

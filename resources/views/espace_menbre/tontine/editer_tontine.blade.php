@@ -1,3 +1,7 @@
+@php
+    $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+@endphp
+
 @extends('espace_menbre.base_espace_menbre')
 
 @section('content')
@@ -25,23 +29,23 @@
                         <div class="form-group">
                             <label for="exampleInputEmail1">Nombre de particpant</label>
                             <input
-                                required type="number"
+                                required type="number" onkeypress="return onlyNumberKey(event)"
                                 class="form-control" min="2" name="nombre_participant" value="{{$la_tontine['nombre_participant']}}"
                                 placeholder="14"
                                 {{sizeof($la_tontine->transactions) >0 ? "readonly" :""}}
                             >
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Montant ( montant par personne ) </label>
-                            <input required type="number"
-                                   class="form-control" name="montant" value="{{$la_tontine['montant']}}" placeholder="17500"
+                            <label for="exampleInputPassword1">Montant en <b>{{$la_session['devise']}}</b> (Minimum de {{ ($la_session['code_devise'] == 'XOF') ? '1000' : '5'  }} {{$la_session['devise']}})  </label>
+                            <input required type="number" onkeypress="return onlyNumberKey(event)"
+                                   class="form-control" name="montant" value="{{$la_tontine['montant']}}" placeholder="17500" min="{{ ($la_session['code_devise'] == 'XOF') ? '1000' : '5'  }}"
                                    {{sizeof($la_tontine->transactions) >0 ? "readonly" :""}}
                             >
 
                         </div>
                         <div class="form-group">
                             <label for="exampleInputConfirmPassword1">Frequence de depot (en jours)</label>
-                            <input required min="1" type="number" class="form-control" name="frequence_depot_en_jours"
+                            <input required min="1" type="number" onkeypress="return onlyNumberKey(event)" class="form-control" name="frequence_depot_en_jours"
                                    value="{{$la_tontine['frequence_depot_en_jours']}}"
                                    placeholder="7"
                                     {{sizeof($la_tontine->transactions) >0 ? "readonly" :""}}

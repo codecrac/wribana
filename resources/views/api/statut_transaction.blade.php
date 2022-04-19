@@ -17,7 +17,7 @@
 <body>
   
 
-      @if($statut_transaction !=null)
+      @if($statut_transaction !=null && !isset($_GET['probleme_lien_paiement']) )
           @if($statut_transaction == 'ACCEPTED')
             <div class="jumbotron text-center">
               <h1 class="display-3 text-success">Succes !</h1>

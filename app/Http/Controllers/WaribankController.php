@@ -66,7 +66,8 @@ class WaribankController extends Controller
                 $le_montant_en_xof = $le_montant;
             }
             // CONVERSION EN CFA AVANT PAIEMENT
-            $route_back_en_cas_derreur = route('api.index_waribank',[$id_menbre_connecter]);
+            $route_back_en_cas_derreur = route('espace_menbre.index_waribank',[$id_menbre_connecter]);
+            //dd($route_back_en_cas_derreur);
             $payment_url = CinetpayPaiementController::generer_lien_paiement($le_menbre,$le_montant_en_xof,$le_montant,$route_back_en_cas_derreur);
             return redirect($payment_url);
     }
@@ -142,7 +143,7 @@ class WaribankController extends Controller
         $monaie_dest = $le_destinataire->devise_choisie->monaie;
         
         
-        $le_message_dest = "Vous avez reçu un tranfert de $montant_en_monaie_expediteur $monaie_exp ($le_montant_equivalent_pour_destinataire $monaie_dest) de $le_menbre->nom_complet avec succes";
+        $le_message_dest = "Vous avez recu un depot de $montant_en_monaie_expediteur $monaie_exp ($le_montant_equivalent_pour_destinataire $monaie_dest) de $le_menbre->nom_complet avec succes";
         $le_message_exp = "Votre transfert de $montant_en_monaie_expediteur $monaie_exp ($le_montant_equivalent_pour_destinataire $monaie_dest) a $le_destinataire->nom_complet ($numero_destinataire) a bien été éffectué";
         
         SmsController::sms_info_bip($le_menbre->telephone, $le_message_exp);

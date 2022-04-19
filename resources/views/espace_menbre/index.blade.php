@@ -22,6 +22,9 @@ function convertCurrency($amount,$from_currency,$to_currency){
                         <h2>Bienvenue <small>{{$le_menbre['nom_complet']}}.</small></h2>
                         {{-- <h4>1 {{$la_session['code_devise']}} = <?php  echo convertCurrency(1, $la_session['code_devise'], 'XOF'); ?> XOF</h4> --}}
 {{--                        <p class="mb-md-0">Your analytics dashboard template.</p>--}}
+                       
+                        <h4 style="background-color:#fff;padding:5px"> Frais de gestion : {{$pourcentage_frais}}% </h4>
+
                     </div>
                     <div class="d-flex">
                     </div>
@@ -53,8 +56,7 @@ function convertCurrency($amount,$from_currency,$to_currency){
                     <div class="tab-content py-0 px-0">
                         <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
                             <div class="d-flex flex-wrap justify-content-xl-between">
-                                <div class="d-none d-xl-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
-{{--                                    <i class="mdi mdi-calendar-heart icon-lg mr-3 text-primary"></i>--}}
+                                <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
                                     <div class="d-flex flex-column justify-content-around">
                                         <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.liste_tontine')}}"> Mes Tontines </a> </small>
                                         <div class="dropdown">
@@ -63,14 +65,12 @@ function convertCurrency($amount,$from_currency,$to_currency){
                                     </div>
                                 </div>
                                 <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
-{{--                                    <i class="mdi mdi-currency-usd mr-3 icon-lg text-danger"></i>--}}
                                     <div class="d-flex flex-column justify-content-around">
                                         <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.liste_waricrowd')}}"> Mes Waricrowds </a> </small>
                                         <h5 class="mr-2 mb-0">{{sizeof($le_menbre->mes_waricrowd)}}</h5>
                                     </div>
                                 </div>
                                 <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
-{{--                                    <i class="mdi mdi-eye mr-3 icon-lg text-success"></i>--}}
                                     <div class="d-flex flex-column justify-content-around">
                                         <small class="mb-1 text-muted"> <a href="{{route('espace_menbre.invitations')}}">Mes Invitations</a></small>
                                         <h5 class="mr-2 mb-0">{{$nombre_invitation_recues}}</h5>
@@ -102,6 +102,7 @@ function convertCurrency($amount,$from_currency,$to_currency){
                             </div>
                         </div>
                     </form>
+                </div>
             </div>
         </div>
         <div class="col-md-4 grid-margin stretch-card">
@@ -115,6 +116,36 @@ function convertCurrency($amount,$from_currency,$to_currency){
         </div>
     </div>
 
+
+<button type="button" 
+            class="btn btn-primary mr-2" 
+            onclick="resumer_modal()" id="incitation_mdp" style="display:none"
+            class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
+            >
+            inciter au changement
+        </button>
+     {{-- MODAL RESUME --}}
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">CHANGEZ VOTRE MOT DE PASSE</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <h5>Bonjour M/Mme {{$le_menbre['nom_complet']}}, Nous vous conseillons de changer votre mot de passe apres reinitialisation. </h5>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+              <a href="{{route('espace_menbre.profil',[$le_menbre['id']])}}?action=mdp"  class="btn btn-success" >Changer mon mot de passe</a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+
 @endsection
 @section('script_completmentaire')
     <script>
@@ -123,7 +154,14 @@ function convertCurrency($amount,$from_currency,$to_currency){
             // alert("ks--s");
             setTimeout(() => {
                 document.getElementById("close_on_dashboard_1").click();
-                document.getElementById("close_on_dashboard_2").click();    
+                document.getElementById("close_on_dashboard_2").click();
+                document.getElementById("close_on_dashboard_3").click();
+                document.getElementById("close_on_dashboard_4").click();
+                
+                @if($le_menbre['incitation_mdp'] == 'oui')
+                    document.getElementById("incitation_mdp").click();
+                @endif
+                
             }, 500);
             
         };

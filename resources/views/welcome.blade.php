@@ -7,6 +7,21 @@
             color:#22f;
             border-radius: 5px;
         }
+        
+        @media only screen and (max-width: 600px) {
+            .pas_de_padding_top_mobile{
+                 padding-top : 10px !important;
+            }
+            .hero-text{
+                padding-bottom : 10px !important;
+            }
+            .petit_text_on_mobile{
+                font-size:22px;
+                padding-bottom : 10px !important;
+            }
+        }
+        
+        
     </style>
 @endsection
 
@@ -44,7 +59,7 @@
 
 
 	<!--====== Section Qui sommes nous ======-->
-	<section class="popular-categories section-gap" id="avantages">
+	<section class="popular-categories section-gap pas_de_padding_top_mobile" id="avantages">
 		<div class="container">
 			<div class="row align-items-center justify-content-lg-start justify-content-center">
 				<div class="col-12">
@@ -102,11 +117,11 @@
             <div class="container primary-bg" style="padding-bottom:50px">
                 <div class="row counter-boxes justify-content-xl-between justify-content-center">
                         <div class="col-md-6">
-                            <h3 class="title text-white text-center fadeInUp wow"> Waribana, on s’arrange. </h3> 
+                            <h3 class="title text-white text-center fadeInUp wow m-2"> Waribana, on s’arrange. </h3> 
                         </div>
-                        <div class="col-md-5">
-                                <a class="main-btn btn-blanc fadeInLeft wow" href='{{route('comment_ca_marche')}}'> En savoir plus </a>
-                                <a class="main-btn btn-blanc fadeInRight wow" href='{{route('inscription_menbre')}}'>S'inscrire </a>
+                        <div class="col-md-5 text-center">
+                                <a class="main-btn btn-blanc fadeInLeft wow m-2" href='{{route('comment_ca_marche')}}'> En savoir plus </a>
+                                <a class="main-btn btn-blanc fadeInRight wow m-2" href='{{route('inscription_menbre')}}'>S'inscrire </a>
                         </div>
                 </div>
             </div>
@@ -221,7 +236,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 section-gap">
+                <div class="col-12 section-gap pas_de_padding_top_mobile">
                     <div class="about-text mt-md-70 mb-md-50">
                         <div class="common-heading mb-30">
                             <h5 class="text-uppercase text-center fadeInUp wow"> Waricrowd  </h5>
@@ -302,10 +317,10 @@
                 <div class="counter-box">
                     <div class="content white-color text-center">
                         <div class="count-wrap" style="display:block">
-                            <h1 class="text-white fadeInUp wow">
+                            <h1 class="text-white fadeInUp wow petit_text_on_mobile">
                                 Des frais de gestion inédit,
                                 <br/>
-                                <span class="count">1</span>
+                                <span class="count-down">{{$frais_de_gestion}}</span>
                                 <span class="suffix">%</span>
                                 seulement
                             </h3>

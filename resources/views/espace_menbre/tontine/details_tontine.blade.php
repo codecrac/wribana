@@ -1,6 +1,7 @@
 <?php
 $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
 
+
 $en_retard = false;
 if ($la_tontine->caisse != null) {
     $prochaine_date_encaissement = $la_tontine->caisse->prochaine_date_encaissement;
@@ -55,6 +56,11 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
 @endsection
 
 @section('content')
+<!-- POUR BOOTSTRAP CONFIRMATION -->
+    <style>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    </style>
+
 
     {!! Session::get('notification','') !!}
     @if($statut_transaction !=null)
@@ -89,12 +95,16 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                             <br/><br/>
                             <div class="row">
                                 <div class="col-md-6 text-center p-2">
-                                    <a href="{{route('espace_menbre.editer_tontine',[$la_tontine['id']])}}"
-                                       class="badge badge-success">Editer la tontine</a>
+                                    @if( ($la_tontine->etat == 'constitution') || ($la_tontine->etat == 'prete') )
+                                        <a href="{{route('espace_menbre.editer_tontine',[$la_tontine['id']])}}"
+                                           class="badge badge-success">Editer la tontine</a>
+                                    @endif
                                 </div>
                                 <div class="col-md-6 text-center p-2">
-                                    <a href="{{route('espace_menbre.supprimer_tontine',[$la_tontine['id']])}}"
-                                       class="badge badge-info">Supprimer la tontine</a>
+                                    @if( ($la_tontine->etat == 'constitution') || ($la_tontine->etat == 'prete') )
+                                        <a href="{{route('espace_menbre.supprimer_tontine',[$la_tontine['id']])}}"
+                                           class="badge badge-info">Supprimer la tontine</a>
+                                    @endif
                                 </div>
                             </div>
                         @endif
@@ -124,22 +134,22 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
 
                                 {!!convertir($quotient_de_conversion,$la_tontine->montant,)!!}
 
-                            <small>par personnes</small></li>
+                            <small>Par personne</small></li>
                         @php
                             $montant_total = $la_tontine->montant * $la_tontine->nombre_participant;
-                            $frais = $montant_total * (1/100);
+                            $frais = $montant_total * ($pourcentage_frais/100);
                         @endphp
                         <li>
                             Montant Objectif : {{number_format($montant_total,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->symbole}}</b>
                             {!!convertir($quotient_de_conversion,$montant_total,)!!}
                         </li>
-                        <li>Frais de gestion (1%) : {{number_format($frais,2,',',' ')}}
+                        <li>Frais de gestion ({{$pourcentage_frais}}%) : {{number_format($frais,2,',',' ')}}
                             <b>{{$la_tontine->createur->devise_choisie->symbole}}</b>
                             / {{number_format($montant_total,0,',',' ')}}
                             <b>{{$la_tontine->createur->devise_choisie->symbole}}</b></li>
-                        <li> Nombre de participant : {{sizeof($la_tontine->participants)}}
+                        <li> Nombre de participants : {{sizeof($la_tontine->participants)}}
                             / {{$la_tontine->nombre_participant}} </li>
-                        <li> Frequence de depot : {{formater_frequence($la_tontine->frequence_depot_en_jours)}}</li>
+                        <li> Fréquence de depot : {{formater_frequence($la_tontine->frequence_depot_en_jours)}}</li>
                         <li> Tour de :
                             <mark class="badge badge-primary marquer_presence">
                                 @if($la_tontine->caisse !=null)
@@ -153,21 +163,23 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                     </ul>
 
 
-                    @if($la_tontine->createur->id == $la_session['id'] || $la_tontine->etat =='constitution' ||  $la_tontine->etat =='prete')
+                    @if($la_tontine->etat =='constitution' ||  $la_tontine->etat =='prete')
                        
                         @if($pret)
-                            <form method="post" action="{{route('espace_menbre.ouvrir_tontine',[$la_tontine['id']])}}">
-                                @if($la_tontine->createur->id == $la_session['id'])
-                                    @csrf
-                                    <h3 class="text-center">
-                                        <p class="badge badge-warning text-center">Ouvrez la tontine uniquement si vous êtes pret a
-                                            commencer les cotisations.</p>
-                                        <button type="submit" class="btn btn-success">Ouvrir la tontine</button>
-                                    </h3>
-                                @endif
-                            </form>
+                            @if($la_tontine->etat =='prete')
+                                <form method="post" action="{{route('espace_menbre.ouvrir_tontine',[$la_tontine['id']])}}">
+                                    @if($la_tontine->createur->id == $la_session['id'])
+                                        @csrf
+                                        <h3 class="text-center">
+                                            <p class="badge badge-warning text-center">Ouvrez la tontine uniquement si vous êtes pret a
+                                                commencer les cotisations.</p>
+                                            <button type="submit" class="btn btn-success">Ouvrir la tontine</button>
+                                        </h3>
+                                    @endif
+                                </form>
+                            @endif
                         @else
-                        <p class=" text-center">La tontine pourra être ouverte une fois le nombre de participant
+                        <p class=" text-center">La tontine pourra être ouverte une fois le nombre de participants spécifié est atteint
                             specifié atteinds.</p>
                             @if($la_tontine->createur->id == $la_session['id'])
                                 <h3 class="text-center">
@@ -190,8 +202,8 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                             @endif
                         </form>
                     @endif
-
                     <br/>
+                    <!--//LISTE MENBRE-->
                 </div>
             </div>
         </div>
@@ -281,76 +293,91 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
     </div>
 
     {{-- Cotisation et rotation --}}
-    @if($la_tontine->etat =='ouverte')
+    
         <div class="row">
+            @if($la_tontine->etat =='ouverte')
+                <div class="col-md-6 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <hr/>
+                            <h4 class="text-center text-uppercase">
+                                Cotisation courante
+                                @if($en_retard)
+                                    <span class="clignote badge badge-danger">
+                                        Cotisation en retard
+                                    </span>
+                                @endif
+                            </h4>
+                            <hr/>
+                            <br/>
+                            <p>Tour de :
+                                <b class="badge badge-info marquer_presence">
+                                    @if($la_tontine->caisse !=null)
+                                        {{$la_tontine->caisse->menbre_qui_prend->nom_complet}}
+                                    @else
+                                        #
+                                    @endif
+                                </b>
+                            </p>
+                            <p>Date limite : <b
+                                    class="badge badge-warning"> {{$la_tontine->caisse->prochaine_date_encaissement}} </b>
+                            </p>
+                            {{--                        <p>Montant Total Objectif : <span class="marquer_presence text-dark">{{number_format( ($la_tontine->montant * $la_tontine->nombre_participant),0,',',' ')}} F</span> </p>--}}
+                            <p>Montant à cotiser :
+                                <b> {{number_format($la_tontine->montant,0,',',' ')}} {{$la_tontine->createur->devise_choisie->monaie}}</b>
+                                {!!convertir($quotient_de_conversion,$la_tontine->montant,)!!}
+                            </p>
+                            <p>
+                                Montant en caisse : <span class="marquer_presence text-info">
+                                    {{number_format($la_tontine->caisse->montant,0,',',' ')}} {!!convertir($quotient_de_conversion,$la_tontine->caisse->montant,)!!}
+                                    / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->monaie}}</b> {!!convertir($quotient_de_conversion,$la_tontine->caisse->montant_objectif,)!!}
+    
+                                </span>
+                            </p>
+                            <p> de : <small> de {{sizeof($liste_ayant_cotiser)}}
+                                    personne(s)/{{sizeof($la_tontine->participants)}} <a href="#liste_cotiseur">Voir</a>
+                                </small></p>
+                            <br/>
+                            @if($a_deja_cotiser)
+                                <h5 class="text-center"><b style="padding: 15px" class="badge-success">Vous avez dejà payer
+                                        votre cotisation pour ce tour.</b></h5>
+                            @else
+                                <h3 class="text-center">
+                                     <form action="{{route('espace_menbre.paiement_cotisation',[$la_tontine->id])}}" method="post">
+                                        @csrf
+                                        <!--<span class="badge badge-info"> le montant sera converti en FCFA(XOF) au guichet </span>-->
+                                        
+                                        <button class="btn btn-primary" data-toggle="confirmation"
+                                            data-btn-ok-label="Continuer" data-btn-ok-class="btn btn-success"
+                                            data-btn-cancel-label="Annuler" data-btn-cancel-class="btn btn-danger"
+                                            data-title="Confirmer" data-content="Confirmer le paiement ? "
+                                        >
+                                            Payer ma cotisation
+                                        </button>
+                                    </form>
+                                </h3>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endif
             <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
                         <hr/>
                         <h4 class="text-center text-uppercase">
-                            Cotisation courante
-                            @if($en_retard)
-                                <span class="clignote badge badge-danger">
-                                    Cotisation en retard
-                                </span>
+                            @if($la_tontine->etat =='ouverte')
+                                Ordre de rotation
+                            @else
+                                Liste des membres
                             @endif
                         </h4>
-                        <hr/>
-                        <br/>
-                        <p>Tour de :
-                            <b class="badge badge-info marquer_presence">
-                                @if($la_tontine->caisse !=null)
-                                    {{$la_tontine->caisse->menbre_qui_prend->nom_complet}}
-                                @else
-                                    #
-                                @endif
-                            </b>
-                        </p>
-                        <p>Date limite : <b
-                                class="badge badge-warning"> {{$la_tontine->caisse->prochaine_date_encaissement}} </b>
-                        </p>
-                        {{--                        <p>Montant Total Objectif : <span class="marquer_presence text-dark">{{number_format( ($la_tontine->montant * $la_tontine->nombre_participant),0,',',' ')}} F</span> </p>--}}
-                        <p>Montant à cotiser :
-                            <b> {{number_format($la_tontine->montant,0,',',' ')}} {{$la_tontine->createur->devise_choisie->monaie}}</b>
-                            {!!convertir($quotient_de_conversion,$la_tontine->montant,)!!}
-                        </p>
-                        <p>
-                            Montant en caisse : <span class="marquer_presence text-info">
-                                {{number_format($la_tontine->caisse->montant,0,',',' ')}} {!!convertir($quotient_de_conversion,$la_tontine->caisse->montant,)!!}
-                                / {{number_format($la_tontine->caisse->montant_objectif,0,',',' ')}} <b>{{$la_tontine->createur->devise_choisie->monaie}}</b> {!!convertir($quotient_de_conversion,$la_tontine->caisse->montant_objectif,)!!}
-
-                            </span>
-                        </p>
-                        <p> de : <small> de {{sizeof($liste_ayant_cotiser)}}
-                                personne(s)/{{sizeof($la_tontine->participants)}} <a href="#liste_cotiseur">Voir</a>
-                            </small></p>
-                        <br/>
-                        @if($a_deja_cotiser)
-                            <h5 class="text-center"><b style="padding: 15px" class="badge-success">Vous avez dejà payer
-                                    votre cotisation pour ce tour.</b></h5>
-                        @else
-                            <h3 class="text-center">
-                                 <form action="{{route('espace_menbre.paiement_cotisation',[$la_tontine->id])}}" method="post">
-                                    @csrf
-                                    <span class="badge badge-info"> le montant sera converti en FCFA(XOF) au guichet </span>
-                                    <button type="submit" class="btn btn-primary" style="">Payer ma cotisation</button>
-                                </form>
-                            </h3>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <hr/>
-                        <h4 class="text-center text-uppercase">Ordre de rotation</h4>
-                        <h6 class="text-center"><small> par date d'adhesion </small></h6>
+                        <h6 class="text-center"><small> Par date d’adhésion </small></h6>
                         <hr/>
                         <table class="table table-bordered table-striped">
                             <thead>
                             <th>#</th>
-                            <th>Menbre</th>
+                            <th>Membre</th>
                             </thead>
                             <tbody>
                             @php $i=1; @endphp
@@ -372,7 +399,6 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                 </div>
             </div>
         </div>
-    @endif
 
     {{-- Liste des personnes ayants cotisee et statut invitation envoye --}}
     <div class="row">
@@ -381,14 +407,14 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
                 <div class="card">
                     <div class="card-header">
                         <hr/>
-                        <h4 class="text-center text-uppercase"> Personnes ayant payer leur cotisation </h4>
+                        <h4 class="text-center text-uppercase"> Personnes ayant payé leur cotisation </h4>
                         <hr/>
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered table-striped">
                             <thead>
-                            <th>Menbre</th>
-                            <th>Date paiement</th>
+                            <th>Membre</th>
+                            <th>Date de paiement</th>
                             </thead>
                             <tbody>
                             @foreach($liste_ayant_cotiser as $item_ayant_cotiser)
@@ -442,6 +468,19 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
             </div>
         </div>
     </div>
+    
+    
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-confirmation2/dist/bootstrap-confirmation.min.js"></script>
+<script>
+    $('[data-toggle=confirmation]').confirmation({
+       rootSelector: '[data-toggle=confirmation]'
+    });
+</script>
 @endsection
 
 @php

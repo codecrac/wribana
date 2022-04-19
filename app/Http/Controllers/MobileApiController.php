@@ -30,12 +30,26 @@ class MobileApiController extends Controller
 {
 
 //===================VITRINE#VITRINE---#----VITRINE#VITRINE--------#----------VITRINE#VITRINE#VITRINE#VITRINE#VITRINE
-    public function liste_crowd($index_pagination=0)
+    public function liste_crowd(Request $request,$index_pagination=0)
     {
-        $les_crowds = Waricrowd::orderBy('id','DESC')->where('etat','=','valider')->with('categorie')->with('createur')
-        ->with('caisse')->skip($index_pagination)->limit(25)->get();
+        if($request->query('id_categorie')){
+            $id_categorie = $request->query('id_categorie');
+            $les_crowds = Waricrowd::orderBy('id','DESC')
+                            ->where('id_categorie','=',$id_categorie)
+                            ->where('etat','=','valider')
+                            ->with('categorie')
+                            ->with('createur')
+                            ->with('caisse')
+                            ->skip($index_pagination)
+                            ->limit(100)
+                            ->get();    
+        }else{
+            $les_crowds = Waricrowd::orderBy('id','DESC')->where('etat','=','valider')->with('categorie')->with('createur')
+            ->with('caisse')->skip($index_pagination)->limit(100)->get();    
+        }
+        
         return $les_crowds;
-        return json_encode($les_crowds);
+        // return json_encode($les_crowds);
     }
 
 
@@ -88,7 +102,7 @@ class MobileApiController extends Controller
         $le_menbre->save();
 
         $success = true;
-        $message = "Votre profil a bien été mmodifié";
+        $message = "Votre profil a bien été modifié";
 
         
         $reponse = array(
@@ -489,13 +503,18 @@ class MobileApiController extends Controller
             $mdp_cacher = md5($nouveau_mdp);
 
             $telephone = $le_menbre->telephone;
-            $message = "Bonjour,votre mot de passe a bien été reinitialiser, utilisez le nouveau mot de passe pour vous connecter puis changez le.
-            nouveau mot de passe : $nouveau_mdp ";
+            $message = "Bonjour,
+
+Votre mot de passe a bien été réinitialisé, utilisez le nouveau mot de passe pour vous connecter puis changez le.
+ 
+Mot de passe : $nouveau_mdp ";
             SmsController::sms_info_bip($telephone,$message);
 
             $email = $le_menbre->email;
             if($email!=null){
-                $headers = 'From: no-reply@waribana.com' . "\r\n";
+                $headers = 'From: waribana@waribana.net' . "\r\n" .
+                 'Reply-To: no-reply@waribana.net' . "\r\n" .
+                 'X-Mailer: PHP/' . phpversion();
                 mail($email,'REINITIALISATION DE MOT DE PASSE',$message,$headers);
             }
 
@@ -521,10 +540,11 @@ class MobileApiController extends Controller
         $le_menbre = Menbre::find($id_menbre);
         // dd($le_menbre);
         $email_inviter = $le_menbre->email;
+        $telephone_inviter = $le_menbre->telephone;
         $invitation_recues = [];
         $nb_invitation_recues =0;
         if($email_inviter!=null){
-            $nb_invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->where('etat','=','attente')->count();
+            $nb_invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->where('etat','=','attente')->orWhere('email_inviter','=',$telephone_inviter)->where('etat','=','invitation envoyee')->count();
         }
 
         $infos_pour_tableau_de_bord = [];
@@ -885,7 +905,7 @@ class MobileApiController extends Controller
                             $monaie_dest = $le_destinataire->devise_choisie->monaie;
                             
                             $numero_destinataire = $le_destinataire->telephone;
-                            $le_message_dest = "Vous avez reçu un tranfert de $montant_en_monaie_expediteur $monaie_exp ($le_montant_equivalent_pour_destinataire $monaie_dest) de $le_menbre->nom_complet avec succes";
+                            $le_message_dest = "Vous avez recu un depot de $montant_en_monaie_expediteur $monaie_exp ($le_montant_equivalent_pour_destinataire $monaie_dest) de $le_menbre->nom_complet avec succes";
                             $le_message_exp = "Votre transfert de $montant_en_monaie_expediteur $monaie_exp ($le_montant_equivalent_pour_destinataire $monaie_dest) a $le_destinataire->nom_complet ($numero_destinataire) a bien été éffectué";
                             
                             SmsController::sms_info_bip($le_menbre->telephone, $le_message_exp);
@@ -949,13 +969,10 @@ class MobileApiController extends Controller
               
         // CONVERSION EN CFA AVANT TRANSFERT
             $le_montant = $montant_retrait;
-            if($le_menbre->devise_choisie->code != "XOF"){
-                $monaie_utilisateur = $le_menbre->devise_choisie->code;
-                $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_utilisateur,"XOF");
-                $le_montant_en_xof = $quotient_de_conversion * $le_montant;
-            }else{
-                $le_montant_en_xof = $le_montant;
-            }
+            $monaie_utilisateur = $le_menbre->devise_choisie->code;
+            $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_utilisateur,"XOF");
+            $le_montant_en_xof = $quotient_de_conversion * $le_montant;
+           
         // CONVERSION EN CFA AVANT TRANSFERT
 
             $response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait($le_menbre,$le_montant_en_xof);
@@ -966,19 +983,27 @@ class MobileApiController extends Controller
             
             if($code == 0){ // 0 = succes , les autres = prbleme
                 $success = true;
-                $notification = "Retrait bien effectué";
+                $notification = "votre retrait de $montant_retrait $monaie_utilisateur a bien été prise en compte et sera bien effectué.";
                 \App\Http\Controllers\CinetpayApiTransfertController::enregistrer_retrait($le_menbre,$montant_retrait);
                 $monaie = $le_menbre->devise_choisie->monaie;
                 
                 
-                $headers = 'From: no-reply@waribana.net' . "\r\n" .
-                     'Reply-To: no-reply@waribana.net' . "\r\n" .
-                     'X-Mailer: PHP/' . phpversion();
-                mail($le_menbre->email,'RETRAIT EFFECTUER',"Bonjour $le_menbre->nom_complet, votre retrait de $montant_retrait $monaie a bien été effectué.",$headers);
+               $headers = 'From: waribana@waribana.net' . "\r\n" .
+                 'Reply-To: no-reply@waribana.net' . "\r\n" .
+                 'X-Mailer: PHP/' . phpversion();
+                
+                $message_sms = "Bonjour $le_menbre->nom_complet, votre retrait de $montant_retrait $monaie a bien été prise en compte et sera bien effectué.";
+                mail($le_menbre->email,'RETRAIT EFFECTUER',$message_sms,$headers);
+                $numero = $le_menbre->telephone;
+                SmsController::sms_info_bip("$numero",$message_sms);
             }else{
                 $notification = "Echec de retrait, motif : $message ";
+                
+                if($message == 'INSUFFICIENT_BALANCE' ){
+                    $notification = "Impossible d'effectué le retrait de ce montant ($le_montant $monaie_utilisateur) pour le moment, veuillez rééssayer plus tard.";
+                }
             }
-            return redirect()->back()->with('notification',$notification);
+            // return redirect()->back()->with('notification',$notification);
         }else{
             $notification = " Mot de passe Incorrect";
         };
@@ -1119,9 +1144,9 @@ class MobileApiController extends Controller
                     $message = str_replace('$nom_menbre_qui_prend$',$la_tontine->caisse->menbre_qui_prend->nom_complet,$message);
                     $message = str_replace('$titre_tontine$',$titre_tontine,$message);
                     
-                    $headers = 'From: no-reply@waribana.net' . "\r\n" .
-                         'Reply-To: no-reply@waribana.net' . "\r\n" .
-                         'X-Mailer: PHP/' . phpversion();
+                  $headers = 'From: waribana@waribana.net' . "\r\n" .
+                 'Reply-To: no-reply@waribana.net' . "\r\n" .
+                 'X-Mailer: PHP/' . phpversion();
 
                     $numero = $item_participant->telephone;
                     SmsController::sms_info_bip($numero,$message);
@@ -1275,9 +1300,9 @@ class MobileApiController extends Controller
         $code_adhesion = $la_tontine->identifiant_adhesion;
         $liste_emails = explode(',',strtolower($donnees_formulaire['liste_emails']));
         $emails_to_string = implode(",",$liste_emails);
-        $headers = 'From: no-reply@waribana.net' . "\r\n" .
-             'Reply-To: no-reply@waribana.net' . "\r\n" .
-             'X-Mailer: PHP/' . phpversion();
+        $headers = 'From: waribana@waribana.net' . "\r\n" .
+                 'Reply-To: no-reply@waribana.net' . "\r\n" .
+                 'X-Mailer: PHP/' . phpversion();
         mail($emails_to_string,
             "REJOINS LA TONTINE $titre",
             "
@@ -1316,11 +1341,12 @@ class MobileApiController extends Controller
     {
         $le_menbre = Menbre::find($id_menbre_connecter);
         $email_inviter = $le_menbre['email'];
+        $telephone_inviter = $le_menbre['telephone'];
 
         $invitations_recues = [];
         if($email_inviter!=null){
-            $invitations_recues = Invitation::where('email_inviter','=',$email_inviter)->with('tontine')
-            ->with('menbre_inviteur')->where('etat','=','attente')->orderBy('id','desc')->get();
+            $invitations_recues = Invitation::with('tontine')
+            ->with('menbre_inviteur')->where('email_inviter','=',$email_inviter)->where('etat','=','attente')->orWhere('email_inviter','=',$telephone_inviter)->where('etat','=','invitation envoyee')->get();
         }
 
         return json_encode($invitations_recues);
@@ -1417,14 +1443,17 @@ public function liste_categorie_crowd()
 public function details_waricrowd($id_crowd,$id_menbre)
 {
     if($id_menbre !=null){ //quand c'est un crowd qui appartient au menbre
-        $liste_categorie_crowd = Waricrowd::with("categorie")->with("createur")->with("caisse")
+        $details_crowd = Waricrowd::with("categorie")->with("createur")->with("transactions")->with("caisse")
         ->where("id","=",$id_crowd)->first();
 
-        $transaction_du_menbre = TransactionWaricrowd::where('id_menbre','=',$id_menbre)->where('id_waricrowd','=',$id_crowd)->get();
-        $liste_categorie_crowd["transactions"] = $transaction_du_menbre;
+        $nombre_transaction_generale = TransactionWaricrowd::where('id_waricrowd','=',$id_crowd)->count();
+
+        $transaction_du_menbre = TransactionWaricrowd::where('id_menbre','=',$id_menbre)->where('id_waricrowd','=',$id_crowd)->with('souteneur')->get();
+        $details_crowd["mes_transactions"] = $transaction_du_menbre;
+        $details_crowd['nombre_transaction_generale'] = $nombre_transaction_generale;
     }
     
-    return json_encode($liste_categorie_crowd);
+    return json_encode($details_crowd);
 }
 
 public function enregistrer_un_waricrowd(Request $request,$id_menbre_connecter)

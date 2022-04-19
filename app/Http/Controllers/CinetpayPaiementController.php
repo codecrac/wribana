@@ -21,6 +21,7 @@ class CinetpayPaiementController extends Controller
     public static function generer_lien_paiement($le_menbre,$montant_convertit_en_fcfa,
              $montant,$route_back_en_cas_derreur,$from_mobile=false)
     {
+        
         $apikey = CinetpayPaiementController::$apikey ;
         $site_id = CinetpayPaiementController::$cpm_site_id ;
         $transaction_id = 'waribana-rechargement-'.time();
@@ -105,7 +106,8 @@ class CinetpayPaiementController extends Controller
        if(!isset($la_reponse_en_objet->data)){ //on a un probleme
             $notification = "Erreur : $la_reponse_en_objet->description;  (FCFA, XOF)";
             // on renvoi lurl de l'erreur
-            return "$route_back_en_cas_derreur?probleme_lien_paiement=$notification";
+            // return "https://groupe2ipg.com/";
+            return "$route_back_en_cas_derreur?probleme_lien_paiement=$notification&statut_transaction=REFUSED";
        }
         $la_reponse_en_objet = $la_reponse_en_objet->data;
         $payement_token = $la_reponse_en_objet->payment_token;

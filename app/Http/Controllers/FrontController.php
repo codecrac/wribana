@@ -5,13 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\CategorieWaricrowd;
 use App\Models\StatistiqueFrequentation;
 use App\Models\Waricrowd;
+use App\Models\Parametre;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
 
 class FrontController extends Controller
 {
-    public function accueil(Request $request){
+    
+    
+public function accueil(Request $request){
         $is_home=true;
 
 //dd(route('espace_menbre.notification_paiement_tontine'));
@@ -25,7 +29,9 @@ class FrontController extends Controller
         $stat->visiteur = $nouveau_nombre;
         $stat->save();
 
-        return view('welcome',['is_home'=>$is_home]);
+        $parametre = Parametre::first();
+        $pourcentage = $parametre->pourcentage_frais;
+        return view('welcome',['is_home'=>$is_home,'frais_de_gestion'=>$pourcentage]);
 
     }
 
@@ -95,6 +101,12 @@ class FrontController extends Controller
         $current=true; return view('comment_ca_marche',['is_comment_ca_marche'=>$current]);
 
     }
+    
+    public function comment_ca_marche_mobile(){
+        $current=true; return view('comment_ca_marche_mobile');
+
+    }
+    
     public function apropos(){
         $current=true; return view('apropos',['is_apropos'=>$current]);
 

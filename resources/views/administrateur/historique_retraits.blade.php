@@ -25,7 +25,7 @@
                         <div class="card">
                             <div class="card-header text-uppercase text-center">
                                 <hr/>
-                                    historique retraits des menbres ( {{sizeof($historique_retraits)}} )
+                                    historique retraits des membres ( {{sizeof($historique_retraits)}} )
                                 <hr/>
                                 <br/>
                                 <form method="get">
@@ -38,11 +38,11 @@
                                         </div>
                                         <div class="col-md-3">
                                             <h5>du</h5>
-                                            <input class="form-control" value="{{$date_debut}}" name="date_debut" type="date">
+                                            <input class="form-control" value="{{$date_debut}}" name="date_debut" type="datetime-local">
                                         </div>
                                         <div class="col-md-3">
                                             <h5>au</h5>
-                                            <input class="form-control" name="date_fin" type="date" value="{{$date_fin}}">
+                                            <input class="form-control" name="date_fin" type="datetime-local" value="{{$date_fin}}">
                                         </div>
                                         <div class="col-md-3">
                                             <h5>&nbsp;</h5>
@@ -55,10 +55,10 @@
                                <table class="table table-bordered table-striped">
                                     <thead>
                                         <th>Date</th>
-                                        <th>Menbre</th>
+                                        <th>Membre</th>
                                         <th>Solde Avant</th>
                                         <th>Montant Retiré</th>
-                                        <th>Solde Apres</th>
+                                        <th>Solde Après </th>
                                     </thead>
                                     <tbody>
                                         @foreach($historique_retraits as $item_retrait)
@@ -66,7 +66,7 @@
                                                 <td>{{date("d/m/Y H:m",strtotime($item_retrait['created_at']))}}</td>
                                                 <td>{{$item_retrait->menbre->nom_complet}}</td>
                                                 <td>{{number_format($item_retrait->solde_avant,0,',',' ')}} {{$item_retrait->menbre->devise_choisie->monaie}}</td>
-                                                <td>{{number_format($item_retrait->montant,0,',',' ')}} {{$item_retrait->menbre->devise_choisie->monaie}}</td>
+                                                <td>{{number_format($item_retrait->montant_retirer,0,',',' ')}} {{$item_retrait->menbre->devise_choisie->monaie}}</td>
                                                 <td>{{number_format($item_retrait->solde_apres,0,',',' ')}} {{$item_retrait->menbre->devise_choisie->monaie}}</td>
                                             </tr>
                                         @endforeach

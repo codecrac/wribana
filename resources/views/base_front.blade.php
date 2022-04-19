@@ -9,7 +9,11 @@
 @endphp
 
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="fr">
+
+<!--    dev by : yves ladde | http://yvesladde.straton-system.com/     -->
+<!--    dev by : yves ladde | http://yvesladde.straton-system.com/     -->
+<!--    dev by : yves ladde | http://yvesladde.straton-system.com/     -->
 
 <head>
     <!--====== Required meta tags ======-->
@@ -24,7 +28,7 @@
     <title> Waribana </title>
 
     <!--====== Favicon Icon ======-->
-    <link rel="shortcut icon" href="/assets/images/favicon-wari.ico" type="img/ico" />
+    <link rel="shortcut icon" href="/assets/images/logo-waribana.ico" type="img/ico" />
     <!--====== Animate Css ======-->
     <link rel="stylesheet" href="/template/assets/css/animate.min.css">
     <!--====== Bootstrap css ======-->
@@ -58,10 +62,11 @@
 <div id="preloader">
     <div id="loading-center">
         <div id="loading-center-absolute">
-            <div class="object" id="object_one"></div>
-            <div class="object" id="object_two"></div>
-            <div class="object" id="object_three"></div>
-            <div class="object" id="object_four"></div>
+            <!--<div class="object" id="object_one"></div>-->
+            <!--<div class="object" id="object_two"></div>-->
+            <!--<div class="object" id="object_three"></div>-->
+            <!--<div class="object" id="object_four"></div>-->
+            <img src="https://waribana.net/assets/images/logo-waribana.png" />
         </div>
     </div>
 </div>
@@ -162,28 +167,25 @@
         </div>
         <ul class="panel-menu">
             <li class="{{isset($is_home) ? "current" : "" }}">
-                <a href="{{route("accueil")}}">Accueil</a>
+                <a href="{{route('accueil')}}">Accueil</a>
+            </li>
+            <li class="{{isset($is_apropos) ? "current" : "" }}">
+                <a href="{{route("apropos")}}">Qui sommes nous</a>
             </li>
             <li class="{{isset($is_comment_ca_marche) ? "current" : "" }}">
                 <a href="{{route("comment_ca_marche")}}">Comment ça marche</a>
             </li>
-            <li class="{{isset($is_apropos) ? "current" : "" }}">
-                <a href="{{route("apropos")}}">Qui Sommes Nous</a>
+            <li class="{{isset($is_decouvrir_projets) ? "current" : "" }}">
+                <a href="{{route("decouvrir_projets")}}">Decouvrir les projets</a>
             </li>
+
             <li class="{{isset($is_faq) ? "current" : "" }}">
                 <a href="{{route("faq")}}">FAQ</a>
             </li>
+            
             <li class="{{isset($is_contact) ? "current" : "" }}">
                 <a href="{{route("contact")}}">Contact</a>
             </li>
-            
-            <!--<li>
-                @if($est_connecter)
-                    <a  href="{{route("espace_menbre.accueil")}}" > Mon Compte </a>
-                @else
-                    <a  href="{{route("connexion_menbre")}}" >Se Connecter </a>
-                @endif
-            </li>-->
             
             @if(!$est_connecter)
                 <li>
@@ -247,6 +249,18 @@
 <script src="/template/assets/js/wow.min.js"></script>
 <!--====== Main js ======-->
 <script src="/template/assets/js/main.js"></script>
+
+<script>
+   function onlyNumberKey(evt) {
+        // Only ASCII character in that range allowed
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)){
+            // alert("only number");
+            return false;
+        }
+        return true;
+    }
+</script>
     @yield("script_complementaire")
 </body>
 

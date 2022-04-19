@@ -25,7 +25,7 @@
                         <div class="card">
                             <div class="card-header text-uppercase text-center">
                                 <hr/>
-                                    historique versements des cagnotes des tontines aux menbres ( {{sizeof($historique_versements)}} )
+                                    historique versements des cagnotes des tontines aux membres ( {{sizeof($historique_versements)}} )
                                 <hr/>
                                 <br/>
                                 <form method="get">
@@ -38,11 +38,11 @@
                                         </div>
                                         <div class="col-md-3">
                                             <h5>du</h5>
-                                            <input class="form-control" value="{{$date_debut}}" name="date_debut" type="date">
+                                            <input class="form-control" value="{{$date_debut}}" name="date_debut" type="datetime-local"">
                                         </div>
                                         <div class="col-md-3">
                                             <h5>au</h5>
-                                            <input class="form-control" name="date_fin" type="date" value="{{$date_fin}}">
+                                            <input class="form-control" name="date_fin" type="datetime-local"" value="{{$date_fin}}">
                                         </div>
                                         <div class="col-md-3">
                                             <h5>&nbsp;</h5>
@@ -56,7 +56,7 @@
                                     <thead>
                                     <td>Date</td>
                                     <td>Tontine</td>
-                                    <td>Nom Complet beneficiaire</td>
+                                    <td>Nom complet bénéficiaire</td>
                                     <td>Montant cagnote</td>
                                     <td>Montant verser <br/> ( - 1% frais de gestion)</td>
                                     <td>Rotation No.</td>

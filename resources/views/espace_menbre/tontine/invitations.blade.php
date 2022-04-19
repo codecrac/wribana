@@ -28,8 +28,8 @@
                   <tr>
                       <th class="tr_bordered">Envoyée par</th>
                       <th class="tr_bordered">Tontine</th>
-                      <th class="tr_bordered">Montant a cotiser</th>
-                      <th class="tr_bordered">Frequence de depot</th>
+                      <th class="tr_bordered">Montant à cotiser</th>
+                      <th class="tr_bordered">Fréquence de depot</th>
                       <th class="tr_bordered">Statut</th>
                       <th class="tr_bordered">#</th>
                   </tr>

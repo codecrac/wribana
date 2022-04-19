@@ -46,7 +46,6 @@ class SmsController extends Controller
     $result = curl_exec($ch);
     if(curl_errno($ch)) {
         $result = "cURL ERROR: " . curl_errno($ch) . " " . curl_error($ch);
-        dd($result);
     } else {
         $returnCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
         switch($returnCode) {
@@ -56,34 +55,8 @@ class SmsController extends Controller
                 $result = "HTTP ERROR: " . $returnCode;
         }
     }
-    $response = curl_exec($ch);
     curl_close($ch);
-        
-        
-        // API INFOBIP
-        /*
-            curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://jd988v.api.infobip.com/sms/2/text/advanced' ,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => '{"messages":[{"from":"WARIBANA","destinations":[{"to":"'.$telephone.'"}],"text":"'.$message.'"}]}',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization:App f4768e32696944125f2735a7463bc6ed-658b77f4-0f2a-449c-b0f6-8d4b5c944b70',
-                'Content-Type: application/json',
-                'Accept: application/json'
-            ),
-        ));
-            $response = curl_exec($curl);
-            curl_close($curl);
-        */
-        
- //       dd($response);
-//        echo $response ."<br/>";
+    
 
     }
 
@@ -118,6 +91,10 @@ class SmsController extends Controller
             }
 
 //            dd($liste_retardataires);
+
+            $headers = 'From: waribana@waribana.net' . "\r\n" .
+                 'Reply-To: no-reply@waribana.net' . "\r\n" .
+                 'X-Mailer: PHP/' . phpversion();
             foreach ($les_participants as $item_participant){
                 $titre_tontine = $item_caisse_en_retard->tontine->titre;
                 $montant = $item_caisse_en_retard->tontine->montant;
@@ -130,7 +107,7 @@ class SmsController extends Controller
 
                 $numero = "$item_participant->telephone";
                 $this->sms_info_bip($numero,$message);
-                mail($item_participants->email,"RETARD DE PAIEMENT SUR TONTINE << $titre_tontine >>",$message);
+                mail($item_participants->email,"RETARD DE PAIEMENT SUR TONTINE << $titre_tontine >>",$message,$headers);
             }
         }
 

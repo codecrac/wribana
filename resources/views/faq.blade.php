@@ -22,8 +22,10 @@
                                         </h5>
                                         <div id="accordion-1-1" class="collapse show" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Oui ! Waribana est un site géré par la société …,
-                                                 une société régie par la loi ivoirienne et enregistrée auprès du tribunal de commerce sous le numéro de SIREN : ……….. Elle est domiciliée en Côte d’Ivoire.
+                                                Oui ! Waribana est un site géré par la société RECYPLAST,
+                                                 une société régie par la loi ivoirienne et enregistrée auprès du tribunal de commerce sous le numéro de 
+                                                 RCCM CI-ABJ-2018-B-23928 et le N•CC : 1916993D,
+                                                 Elle est domiciliée en Côte d’Ivoire.
                                             </div>
                                         </div>
                                     </div>
@@ -55,8 +57,7 @@
                                         </h5>
                                         <div id="accordion-1-4" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Le paiement des cotisations régulières des tontines se fait par carte.
-                                                 Le reversement se fait par paiement mobile, par carte de crédit et par virement bancaire.
+                                                Le paiement des cotisations régulières des tontines de fait par le compte Waribank. L’approvisionnement du compte Waribank se fait par carte de crédit, par mobile money et par virement bancaire.
                                             </div>
                                         </div>
                                     </div>
@@ -77,7 +78,7 @@
                                         </h5>
                                         <div id="accordion-1-6" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                L'argent collecté par les tontines est envoyé par virement bancaire sur votre compte.
+                                                L’argent collecté est envoyé sur votre compte Waribank qui  peut être ensuite transféré selon vos choix (mobile money, virement bancaire ou directement dans un guichet Waribank)
                                             </div>
                                         </div>
                                     </div>
@@ -87,7 +88,8 @@
                                         </h5>
                                         <div id="accordion-1-7" class="collapse" data-parent="#accordionFaqOne">
                                             <div class="accordion-content">
-                                                Vous pouvez ajouter des participants à des tontines soit en leur envoyant un lien soit par email à partir de votre espace personnel.
+                                                Vous pouvez ajouter des participants à des tontines soit en leur 
+                                                envoyant un lien soit par mail, par SMS, par Whatsapp, Facebook, Messenger, Twitter à partir de votre espace personnel.
                                             </div>
                                         </div>
                                     </div>

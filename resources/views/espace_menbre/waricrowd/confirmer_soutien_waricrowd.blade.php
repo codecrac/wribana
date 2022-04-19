@@ -54,8 +54,9 @@ function convertir($quotient,$montant) //pour l'esthetic dans le code html
 
                         <h3 class="text-center">
                             @csrf
-                            <span class="badge badge-info"> le montant sera converti en FCFA(XOF) au guichet </span>
+                            <!--<span class="badge badge-info"> le montant sera converti en FCFA(XOF) au guichet </span>-->
                             <button type="submit" class="btn btn-primary" style="">Confirmer</button>
+                            <a class='btn btn-default' href="{{route('details_projet',[$le_crowd->id])}}" >Annuler</a>
                         </h3>
                     </form>
                 </div>

@@ -8,7 +8,6 @@
 
 @endphp
 
-
 @extends('espace_menbre.base_espace_menbre')
 
 @section('style_completmentaire')
@@ -42,35 +41,44 @@
                             Waricrowd : {{$le_crowd->titre}}
                             <br/><br/>
                             <br/>
-                            <div class="row">
-                                <div class="col-md-6 text-center">
+                            <!--@if($le_crowd->etat == 'attente' )
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        @if($le_crowd->createur->id == $la_session['id'])
+                                            <a href="{{route('espace_menbre.editer_crowd',[$le_crowd['id']])}}" class="btn btn-success">Editer le waricrowd</a>
+                                        @endif
+                                    </div>
                                     @if($le_crowd->createur->id == $la_session['id'])
-                                        <a href="{{route('espace_menbre.editer_crowd',[$le_crowd['id']])}}" class="btn btn-success">Editer le waricrowd</a>
+                                             @if(sizeof($le_crowd->transactions)==0 )
+                                                <div class="col-md-6 text-center">
+                                                    <a href="{{route('espace_menbre.supprimer_waricrowd',[$le_crowd['id']])}}"
+                                                       class="btn btn-info">Supprimer</a>
+                                                </div>
+                                            @endif
                                     @endif
                                 </div>
-                                @if($le_crowd->createur->id == $la_session['id'])
-                                    @if(sizeof($le_crowd->transactions)==0)
-                                            <div class="col-md-6 text-center">
-                                                <a href="{{route('espace_menbre.supprimer_waricrowd',[$le_crowd['id']])}}"
-                                                   class="btn btn-info">Supprimer le waricrowd</a>
-                                            </div>
-                                        @endif
-                                @endif
-                            </div>
+                            @endif-->
                         </h4>
                     <hr/>
                     <ul>
+                        
                         @php
-                            if($le_crowd->etat=='attente'){
-                                $couleur = "dark";
-                            }elseif($le_crowd->etat=='valider' or $le_crowd->etat =='terminer'){
-                                $couleur = "success";
-                            }else{
+                            if($le_crowd->etat=='valider'){
+                                $couleur= "success";
+                                $etat = "Validé";
+                            }elseif($le_crowd->etat=='recaler'){
                                 $couleur = "danger";
-                            }
+                                $etat = "Recalé";
+                            }elseif($le_crowd->etat=='attente'){
+                                $couleur = "dark";
+                                $etat = "En attente";
+                            }else{
+                                    $couleur= "success";
+                                    $etat = "terminé";
+                                }
                         @endphp
                         <li>Categorie : {{$le_crowd->categorie->titre}} </li>
-                        <li>Statut : <mark class="badge badge-{{$couleur}}">{{$le_crowd->etat}}</mark> </li>
+                        <li>Statut : <mark class="badge badge-{{$couleur}}">{{$etat}}</mark> </li>
                         <li>Crée par : {{$le_crowd->createur->nom_complet}}</li>
                         <li>Montant objectif : {{number_format($le_crowd->montant_objectif,0,',',' ')}} <b>{{$le_crowd->createur->devise_choisie->monaie}}</b> </li>
 
@@ -78,7 +86,7 @@
                             $pourcentage = round($le_crowd->caisse->montant *100 / $le_crowd->caisse->montant_objectif,2);
                         @endphp
 
-                        <li> Montant atteind : <b>{{$pourcentage}} %</b> [ {{number_format($le_crowd->caisse->montant,0,',',' ')}} F ]</li>
+                        <li> Montant atteint : <b>{{$pourcentage}} %</b> [ {{number_format($le_crowd->caisse->montant,0,',',' ')}} {{$le_crowd->createur->devise_choisie->symbole}} ]</li>
                         <li> Nombre de soutien : {{sizeof($le_crowd->transactions)}}</li>
                         <li> Creer le  : {{ date('d/m/Y',strtotime($le_crowd->created_at)) }}</li>
 
@@ -147,7 +155,7 @@
                             <div class="form-group">
 
                                 <input class="form-control" type="hidden" name="id_crowd" value='{{$le_crowd->id}}' required/>
-                                <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="1" required/>
+                                <input class="form-control" type="number" onkeypress="return onlyNumberKey(event)" name="montant_soutien" placeholder="150000" min="1" required/>
                                 <br/>
                                 <h3 class="text-center">
                                     @csrf
@@ -162,7 +170,41 @@
     </div>
 
     <div class="row">
-        <div class="col-md-8 grid-margin stretch-card">
+        
+        @php // dd($le_crowd->id_menbre,$la_session['id']); @endphp
+        @if($le_crowd->id_menbre == $la_session['id'] )
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-header">
+                    <hr/>
+                    <h5 class="text-center"> Historique de Transactions </h5>
+                    <hr/>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <td>Date</td>
+                            <td>Waricrowd</td>
+                            <td>Nom Complet</td>
+                            <td>Montant</td>
+                        </thead>
+                        <tbody>
+                        @foreach($historique_transactions_waricrowd as $item_soutien)
+                            <tr>
+                                <td>{{date('d/m/Y H:m',strtotime($item_soutien['created_at']))}}</td>
+                                <td><a href="{{route('admin.details_waricrowd',[$item_soutien->waricrowd->id])}}"> {{$item_soutien->waricrowd->titre}} </a></td>
+                                <td>{{$item_soutien->souteneur->nom_complet}}</td>
+                                <td>{{number_format($item_soutien->montant,0,',',' ')}} {{ $item_soutien->waricrowd->createur->devise_choisie->monaie }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @endif
+        
+        <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-header">
                     <hr/>
@@ -178,10 +220,25 @@
                         </thead>
                         <tbody>
                         @foreach($mes_transactions_pour_ce_crowd as $item_soutien)
+                        
+                            
+                           
+                             @php
+                                if($item_soutien->statut=='ACCEPTED'){
+                                    $couleur= "success";
+                                    $etat = "REUSSI";
+                                }elseif($item_soutien->statut=='REFUSED'){
+                                    $couleur = "danger";
+                                    $etat = "REFUSER";
+                                }elseif($item_soutien->statut=='PENDING'){
+                                    $couleur = "dark";
+                                    $etat = "EN ATTENTE";
+                                }
+                            @endphp
                             <tr>
                                 <td>{{date('d/m/Y H:i',strtotime($item_soutien['created_at']))}}</td>
                                 <td>{{number_format($item_soutien->montant,0,',',' ')}} {{$item_soutien->waricrowd->createur->devise_choisie->monaie}}</td>
-                                <td> {{$item_soutien->statut}} </td>
+                                <td> {{$etat}} </td>
                             </tr>
                         @endforeach
                         </tbody>

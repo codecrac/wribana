@@ -42,7 +42,7 @@
 
                         <div class="form-group" style="display: {{$have_transactions ? 'none' : ''}}">
                             <label for="exampleInputUsername1">Objectif de financement (Montant)  en <b>{{$la_session['devise']}}</b> *</label>
-                            <input required type="number" class="form-control" name="montant_objectif"
+                            <input required type="number" onkeypress="return onlyNumberKey(event)" class="form-control" name="montant_objectif"
                                    value="{{$le_crowd->montant_objectif}}" placeholder="Tontine Elegante"
                                     {{$have_transactions ? 'readonly' : ''}}
                             >

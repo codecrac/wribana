@@ -15,7 +15,7 @@
                         <li>Comment ça marche</li>
                     </ul>
                 </div>
-            </div>
+            </div> 
         </div>
     </section>
     <!--====== Page Title End ======-->
@@ -59,11 +59,24 @@
                                     </ul>
                                 </div>
                             </div>
-                        <br/>
-                            <br/><br/>
-                                <h2 class="title text-center"> Tontines << Crédit epargne >> </h2>
-                            <br/><br/>
-                        <br/>
+    </section>
+          <!--====== En savoir plus ======-->
+        <section class="container-fluid counter-section-one mt-negative fadeInUp wow" style='margin:20px 0px;padding:0px'>
+            <div class="p-5 primary-bg" style="padding-bottom:50px">
+                <div class="row counter-boxes justify-content-xl-between justify-content-center">
+                        <div class="col-md-12 text-center">
+                            <h3 class="title text-white text-center fadeInUp wow">
+                                 Tontines Waribana : 
+                                 <span class='d-sm-block d-md-inline-block'>
+                                      << <span class='text-info'>  Crédit épargne </span> >>
+                                  </span>
+                            </h3> 
+                        </div>
+                </div>
+            </div>
+        </section>
+        <!--====== Counter Area End ======-->
+        <section>
                         <div class="container text-center">
                             <p>
                                 C’est une solution de ce qui s'appelle Tontines (Crédit-Epargne) entre proches.
@@ -122,11 +135,25 @@
                 </div>
             </div>
                 <div class="col-12">
-                    <br/>
-                    <br/>
-                        <h2 class="text-center"> Avantages </h2>
-                    <br/>
-                    <br/>
+    
+    </section>
+                    
+      <!--====== En savoir plus ======-->
+        <section class="container-fluid counter-section-one mt-negative fadeInUp wow" style='margin:20px 0px;padding:0px'>
+            <div class="p-5 primary-bg" style="padding-bottom:50px">
+                <div class="row counter-boxes justify-content-xl-between justify-content-center">
+                        <div class="col-md-12 text-center">
+                            <h3 class="title text-white text-center fadeInUp wow">
+                                 Avantages
+                            </h3> 
+                        </div>
+                </div>
+            </div>
+        </section>
+        
+        
+        <!--====== Counter Area End ======-->
+        <section class="about-section-four container" style="margin-bottom:40px">
                     Quand un client souhaite contracter un crédit classique, il doit disposer de :
                     <br/>
                     <ul style="padding-left: 15px">
@@ -158,7 +185,10 @@
                                 <li class="wow fadeInUp" data-wow-delay="0s">
                                     <h5 class="title">Solidaire</h5>
                                     <p>
-                                        Avec les tontines, c’est plus facile de prêter à ses proches car le montant prêté est réparti entre plusieurs personnes. Exemple : Sur un montant total d’une tontine de 1000 € sur 10 personnes, chaque personne ne va verser que 100 €. C’est plus facile pour tout le monde de verser 100 € régulièrement qu’avoir une seule personne qui prête 1000 € à une autre ;
+                                        Avec les tontines, 
+                                        c’est plus facile de prêter à ses proches car le montant prêté est réparti entre plusieurs personnes.
+                                        Exemple : Sur un montant de tontine de 100 000 fcfa sur 10 personnes, chaque personnes ne va verser que 10 000 fcfa.
+                                        C’est plus facile pour tout le monde de verser 10 000 fcfa régulièrement qu’avoir une personne qui prête 100 000 fcfa à une autre ;
                                     </p>
                                 </li>
                             </ul>

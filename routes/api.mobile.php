@@ -2,7 +2,7 @@
 <?php
 
 use App\Models\Waricrowd;
-use App\Models\Transaction;
+use App\Models\TransactionRechargementWaribank;
 use App\Http\Controllers\MobileApiController;
 
 Route::prefix('/mobile')->group(function(){
@@ -67,9 +67,10 @@ Route::post("/retirer_de_largent_waribank/{id_menbre}",[MobileApiController::cla
 
 //===========================
     Route::get("/statut-transaction/",function(){
-        if($_GET['trans_id']){
+        if(isset($_GET['trans_id'])){
             $trans_id = $_GET['trans_id'];
-            $la_transaction = \App\Models\Transaction::where('trans_id','=',$trans_id)->first();
+            $la_transaction = \App\Models\TransactionRechargementWaribank::where('trans_id','=',$trans_id)->first();
+            // dd($la_transaction->statut);
             $statut_transaction = $la_transaction->statut;
             $route = route('api.mobile.statut_transaction')."?statut_transaction=$statut_transaction";
             return redirect($route); 
@@ -79,12 +80,16 @@ Route::post("/retirer_de_largent_waribank/{id_menbre}",[MobileApiController::cla
     })->name("api.mobile.statut_transaction");
 
     Route::post("/statut-transaction/",function(){
-        $trans_id = $_GET['trans_id'];
-        $la_transaction = \App\Models\Transaction::where('trans_id','=',$trans_id)->first();
-        $statut_transaction = $la_transaction->statut;
-        
-        $route = route('api.mobile.statut_transaction')."?statut_transaction=$statut_transaction";
-        return redirect($route); //remener sur la route en get
+        if(isset($_GET['trans_id'])){
+            $trans_id = $_GET['trans_id'];
+            $la_transaction = \App\Models\TransactionRechargementWaribank::where('trans_id','=',$trans_id)->first();
+            $statut_transaction = $la_transaction->statut;
+            
+            $route = route('api.mobile.statut_transaction')."?statut_transaction=$statut_transaction";
+            return redirect($route); //remener sur la route en get
+        }else{
+         return view("api/statut_transaction");   
+        }
     });
 
 });

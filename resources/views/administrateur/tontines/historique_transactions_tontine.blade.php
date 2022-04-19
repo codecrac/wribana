@@ -38,11 +38,11 @@
                                         </div>
                                         <div class="col-md-3">
                                             <h5>du</h5>
-                                            <input class="form-control" value="{{$date_debut}}" name="date_debut" type="date">
+                                            <input class="form-control" value="{{$date_debut}}" name="date_debut" type="datetime-local"">
                                         </div>
                                         <div class="col-md-3">
                                             <h5>au</h5>
-                                            <input class="form-control" name="date_fin" type="date" value="{{$date_fin}}">
+                                            <input class="form-control" name="date_fin" type="datetime-local"" value="{{$date_fin}}">
                                         </div>
                                         <div class="col-md-3">
                                             <h5>&nbsp;</h5>
@@ -64,6 +64,19 @@
                                     </thead>
                                     <tbody>
                                     @foreach($historique_transactions_tontine as $item_cotisation)
+                                        
+                                         @php
+                                            if($item_cotisation->statut=='ACCEPTED'){
+                                                $couleur= "success";
+                                                $etat = "REUSSI";
+                                            }elseif($item_cotisation->statut=='REFUSED'){
+                                                $couleur = "danger";
+                                                $etat = "REFUSER";
+                                            }elseif($item_cotisation->statut=='PENDING'){
+                                                $couleur = "dark";
+                                                $etat = "EN ATTENTE";
+                                            }
+                                        @endphp
                                         <tr>
                                             <td>{{date('d/m/Y H:m',strtotime($item_cotisation['created_at']))}}</td>
                                             <td><a href="{{route('admin.details_tontine',[$item_cotisation->tontine->id])}}"> {{$item_cotisation->tontine->titre}} </a></td>
@@ -71,7 +84,7 @@
                                             <td>{{number_format($item_cotisation->montant,0,',',' ')}} {{ $item_cotisation->tontine->createur->devise_choisie->monaie }}</td>
                                             <td>{{$item_cotisation->menbre_qui_prend->nom_complet}}</td>
                                             <td>{{$item_cotisation->index_ouverture}}</td>
-                                            <td class="text-{{($item_cotisation->statut=='ACCEPTED') ? 'success' : 'danger'}}"> [ {{$item_cotisation->statut}} ]</td>
+                                            <td class="text-{{($item_cotisation->statut=='ACCEPTED') ? 'success' : 'danger'}}"> [ {{$etat}} ]</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

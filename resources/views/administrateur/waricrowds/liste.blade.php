@@ -25,7 +25,7 @@
                 <div class="row">
                     <hr/>
                     <h3 class="text-center">
-                        Mes Waricrowds ( {{sizeof($liste_waricrowd)}} )
+                         Waricrowds ( {{sizeof($liste_waricrowd)}} )
                     </h3>
                     <hr/>
 
@@ -33,8 +33,9 @@
                 <br/><br/>
                 <div class="row">
                     <div class="table-responsive">
-                        <table width="100%" class="table dataTable" border="1">
+                        <table width="100%" class="table dataTable" id="datatable" border="1">
                             <thead class="text-center">
+                            <th class="tr_bordered">Date</th>
                             <th class="tr_bordered">Titre</th>
                             <th class="tr_bordered">Montant Objectif</th>
                             <th class="tr_bordered">Progression Financement</th>
@@ -44,6 +45,7 @@
                             <tbody>
                             @foreach($liste_waricrowd as $item_crowd)
                                 <tr class="tr_bordered text-center">
+                                    <td class="tr_bordered">{{date('d/m/Y',strtotime($item_crowd['created_at']))}}</td>
                                     <td class="tr_bordered">{{$item_crowd['titre']}}</td>
                                     <td class="tr_bordered"> {{number_format($item_crowd['montant_objectif'],0,',',' ')}} <b>{{$item_crowd->createur->devise_choisie->monaie}}</b> </td>
                                     <td class="tr_bordered">

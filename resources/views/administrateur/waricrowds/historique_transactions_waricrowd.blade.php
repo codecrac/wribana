@@ -38,11 +38,11 @@
                                         </div>
                                         <div class="col-md-3">
                                             <h5>du</h5>
-                                            <input class="form-control" value="{{$date_debut}}" name="date_debut" type="date">
+                                            <input class="form-control" value="{{$date_debut}}" name="date_debut" type="datetime-local"">
                                         </div>
                                         <div class="col-md-3">
                                             <h5>au</h5>
-                                            <input class="form-control" name="date_fin" type="date" value="{{$date_fin}}">
+                                            <input class="form-control" name="date_fin" type="datetime-local"" value="{{$date_fin}}">
                                         </div>
                                         <div class="col-md-3">
                                             <h5>&nbsp;</h5>
@@ -62,12 +62,25 @@
                                     </thead>
                                     <tbody>
                                     @foreach($historique_transactions_waricrowd as $item_soutien)
+                                    
+                                         @php
+                                            if($item_soutien->statut=='ACCEPTED'){
+                                                $couleur= "success";
+                                                $etat = "REUSSI";
+                                            }elseif($item_soutien->statut=='REFUSED'){
+                                                $couleur = "danger";
+                                                $etat = "REFUSER";
+                                            }elseif($item_soutien->statut=='PENDING'){
+                                                $couleur = "dark";
+                                                $etat = "EN ATTENTE";
+                                            }
+                                        @endphp
                                         <tr>
                                             <td>{{date('d/m/Y H:m',strtotime($item_soutien['created_at']))}}</td>
                                             <td><a href="{{route('admin.details_waricrowd',[$item_soutien->waricrowd->id])}}"> {{$item_soutien->waricrowd->titre}} </a></td>
                                             <td>{{$item_soutien->souteneur->nom_complet}}</td>
                                             <td>{{number_format($item_soutien->montant,0,',',' ')}} {{ $item_soutien->waricrowd->createur->devise_choisie->monaie }}</td>
-                                            <td class="text-{{($item_soutien->statut=='ACCEPTED') ? 'success' : 'danger'}}"> [ {{$item_soutien->statut}} ]</td>
+                                            <td class="text-{{$couleur}}"> [ {{$etat}} ]</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

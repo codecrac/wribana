@@ -69,9 +69,13 @@ function ip_info($ip = NULL, $purpose = "location", $deep_detect = TRUE) {
 $ip_info = ip_info();
 //dd($ip_info);
 
-$country_code = $ip_info['country_code'];
-$ville = $ip_info['city'];
-//$code_postal = $ip_info['zip'];
+if( isset($ip_info['country_code']) ){
+    $country_code = $ip_info['country_code'];
+    $ville = $ip_info['city'];
+    //$code_postal = $ip_info['zip'];
+}else{
+    $country_code = '225';
+}
 
 
 $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($country_code);
@@ -115,7 +119,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                                         </div>
                                         <div class="col-md-7">
                                             <label><small>Telephone</small></label>
-                                            <input required class="form-control" placeholder="Entrez votre telephone" type="number" name="telephone" />
+                                            <input required class="form-control" placeholder="Entrez votre telephone" type="number" onkeypress="return onlyNumberKey(event)" min="0" inputmode="numeric" name="telephone" />
                                         </div>
                                     </div>
                                     
@@ -123,7 +127,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                                     <label>Mot de passe</label>
                                         <input required class="form-control" placeholder="Mot de passe" type="password" name="mot_de_passe" autocomplete="off" />
                                     <br/>
-                                    <h6>
+                                    <h6 class='col-12 text-right'>
                                         <a href="{{route('reinitialiser_mot_de_passe')}}">Mot de passe oublié ?</a>
                                     </h6>
                                     @csrf
@@ -156,5 +160,4 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
 		<br/><br/><br/>
 	</section>
 	<!--====== About Section End ======-->
-
 @endsection

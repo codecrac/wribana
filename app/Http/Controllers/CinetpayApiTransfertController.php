@@ -64,10 +64,10 @@ class CinetpayApiTransfertController extends Controller
         return $reponse_in_json;
     }
 
-    public static function ajouter_un_contact($token)
+    public static function ajouter_un_contact($data_json,$token)
     {
 
-       $data_json = 'data=[{ "prefix":"225", "phone":"0778735784","name":"yves","surname":"ladde","email":"yvessantoz@exemple.com" }]';
+    //   $data_json = 'data=[{ "prefix":"225", "phone":"0778735784","name":"yves","surname":"ladde","email":"yvessantoz@exemple.com" }]';
 //     dd($data_json);
 
          $curl = curl_init();
@@ -91,34 +91,51 @@ class CinetpayApiTransfertController extends Controller
         curl_close($curl);
 //        echo $response;
 //        dd($response);
+        return $response;
     }
 
 
     public static function effectuer_un_retrait($le_menbre,$montant_retirer)
     {
         $nom = $le_menbre->nom_complet;
+        $prenom = $nom;
+        $tableau = explode(" ",$nom);
+        if(sizeof($tableau) >1){
+            $nom = $tableau[0];
+            $prenom = $tableau[1];
+        }
+        
         $telephone = $le_menbre->telephone;
-        $email = $le_menbre->telephone;
-        $data_json = 'data=[{ "prefix":"225", "phone":"'.$telephone.'","name":"'.$nom.'","surname":"","email":"'.$email.'" }]';
+        
+        $prefixe = CountryPrefixController::getPrefix($le_menbre->pays);
+        $telephone = str_replace($prefixe,'',$telephone);
+        //dd($le_menbre->pays,$le_menbre->pays,$telephone);
+        
+        $email = $le_menbre->email;
+        if(empty($email)){
+            $email ="user".$le_menbre->id."waribana.net";
+        }
+        $data_json = 'data=[{ "prefix":"'.$prefixe.'", "phone":"'.$telephone.'","name":"'.$nom.'","surname":"'.$prenom.'","email":"'.$email.'" }]';
 
         $token = CinetpayApiTransfertController::recuperer_token_api_tranfert();
         
-        CinetpayApiTransfertController::ajouter_un_contact($data_json,$token);
+        $pp = CinetpayApiTransfertController::ajouter_un_contact($data_json,$token);
+        //dd($pp);
 
         $notify_url = route('api.notification_retrait_compte_client');
         // dd($notify_url);
         $notify_url = "http://waribana.jeberge.xyz/api/retour-retrait-compte-menbre/reponse-cinetpay";
         $trans_id = "retrait-".time();
 
-        $data = json_encode( array(
-            "prefix" => "225",
-            "phone" => $telephone,
-            "amount" => $montant_retirer,
-            "notify_url" => $notify_url,
-            "client_transaction_id" => $trans_id
-        ));
+        // $data = json_encode( array(
+        //     "prefix" => $prefixe,
+        //     "phone" => $telephone,
+        //     "amount" => $montant_retirer,
+        //     "notify_url" => $notify_url,
+        //     "client_transaction_id" => $trans_id
+        // ));
 
-        $data_json = 'data=[{ "prefix":"225", "phone":"'.$telephone.'","amount":"100","notify_url":"'.$notify_url.'","client_transaction_id":"'.$trans_id.'" }]';
+        $data_json = 'data=[{ "prefix":"'.$prefixe.'", "phone":"'.$telephone.'","amount":"'.$montant_retirer.'","notify_url":"'.$notify_url.'","client_transaction_id":"'.$trans_id.'" }]';
         // $data_json = "['data'=[$data]]";
         // dd($data_json);
 
@@ -139,7 +156,10 @@ class CinetpayApiTransfertController extends Controller
 
         $response = curl_exec($curl);
         curl_close($curl);
+        
+       // dd($response);
         return $response;
+        
         
     }
 

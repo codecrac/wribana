@@ -62,14 +62,17 @@
                                                 <input required type="text" class="form-control" name="titre"
                                                        value="{{$item['titre']}}" placeholder="Categorie Elegante">
                                             </div>
-                                            <div class="text-center col-12">
-                                                @method('put')
-                                                @csrf
-                                                <button type="submit" class="btn btn-warning mr-2">OK</button>
-                                                <br/><br/>
-                                                <a href="{{route('admin.effacer_categorie_waricrowd',[$item->id])}}"
-                                                   class="btn btn-danger">Supprimer</a>
-                                            </div>
+                                            
+                                            @if(auth()->user()->role == 'super_admin' )
+                                                <div class="text-center col-12">
+                                                    @method('put')
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-warning mr-2">OK</button>
+                                                    <br/><br/>
+                                                    <a href="{{route('admin.effacer_categorie_waricrowd',[$item->id])}}"
+                                                       class="btn btn-danger">Supprimer</a>
+                                                </div>
+                                            @endif
                                         </form>
                                         <div>
                                         </div>

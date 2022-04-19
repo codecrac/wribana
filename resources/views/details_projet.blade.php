@@ -104,8 +104,8 @@
                                     <div class="form-group">
 
                                         <input class="form-control" type="hidden" name="id_crowd" value='{{$le_crowd->id}}' required/>
-                                        <b>(montant en {{$le_crowd->createur->devise_choisie->monaie}})</b>
-                                        <input class="form-control" type="number" name="montant_soutien" placeholder="150000" min="1" required/>
+                                        <b>(montant en <b class='text-uppercase text-danger' >{{$le_crowd->createur->devise_choisie->monaie}}</b>)</b>
+                                        <input class="form-control" type="number" onkeypress="return onlyNumberKey(event)" name="montant_soutien" placeholder="150000" min="1" required/>
                                         <h3 class="text-center">
                                             @csrf
                                             <button type="submit" class="main-btn"> Soutenir le projet  <i class="far fa-arrow-right"></i></button>

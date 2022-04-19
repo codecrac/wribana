@@ -133,15 +133,7 @@
 				</div>
 				<div class="col-xl-7 col-lg-8 col-md-10">
 					<div class="about-gallery wow fadeInRight">
-						<div class="img-one">
-							<img src="template/assets/img/about/about-gallery-1.jpg" height="500px" alt="Image">
-						</div>
-						<div class="img-two wow fadeInUp">
-							<img src="template/assets/img/about/about-gallery-2.jpg" height="300px" alt="Image">
-						</div>
-						<div class="pattern">
-							<img src="template/assets/img/about/about-gallery-pattern.png" alt="Pattern">
-						</div>
+						<img src="template/assets/img/tontine-waribana.png" alt="Image">
 					</div>
 				</div>
 			</div>
@@ -194,15 +186,7 @@
 				
 				<div class="col-xl-7 col-lg-8 col-md-10">
 					<div class="about-gallery wow fadeInRight">
-						<div class="img-one">
-							<img src="template/assets/img/about/about-gallery-1.jpg" height="500px"  alt="Image">
-						</div>
-						<div class="img-two wow fadeInUp">
-							<img src="template/assets/img/about/about-gallery-2.jpg"  height="300px"  alt="Image">
-						</div>
-						<div class="pattern">
-							<img src="template/assets/img/about/about-gallery-pattern.png" alt="Pattern">
-						</div>
+					    <img src="/template/assets/img/waricrowd.png" />
 					</div>
 				</div>
 			</div>

@@ -112,7 +112,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                                 <div class="form-group">
 
                                     <label>Nom complet *</label>
-                                        <input required class="form-control text-uppercase" placeholder="LADDE YVES" type="text" name="nom_complet" />
+                                        <input required class="form-control text-uppercase" placeholder="Fayad SALAMÉ" type="text" name="nom_complet" />
                                     <br/>
 
                                     <label>Adresse (zone d'habitation) *</label>
@@ -125,14 +125,14 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                                         
                                         <div class="col-md-6">
                                             <label><small>pays</small></label>
-                                            {{-- <input required class="text-danger form-control" placeholder="prefix" type="number" name="prefixe" value="{{$code_prefixe}}" required /> --}}
+                                            {{-- <input required class="text-danger form-control" placeholder="prefix" name="prefixe" value="{{$code_prefixe}}" required /> --}}
                                             <select required class="form-control" name="prefixe">
                                                 {!! App\Http\Controllers\CountryPrefixController::listOptionChoisirPays() !!}
                                             </select>
                                         </div>
                                         <div class="col-md-6">
                                             <label><small>Telephone</small></label>
-                                            <input required class="form-control" placeholder="Entrez votre telephone" type="number" name="telephone" />
+                                            <input required class="form-control" placeholder="Entrez votre telephone" type="number" onkeypress="return onlyNumberKey(event)" name="telephone" />
                                         </div>
                                     </div>
 
@@ -141,10 +141,26 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                                         <input class="form-control" placeholder="monadresse@gmail.com" type="email" name="email" />
                                     <br/>
                                     <label>Mot de passe *</label>
-                                        <input required class="form-control" placeholder="Mot de passe" type="password" name="mot_de_passe" />
+                                    <span class="text-danger">-Le de mot de passe doit être composé de :</span><br/>
+                                    <span class="text-danger">-Au minimum 8 caractere</span><br/>
+                                    <span class="text-danger">-Composer de chiffre et de lettres</span>
+                                    <br/>
+                                        <input required class="form-control" 
+                                                placeholder="Mot de passe" 
+                                                type="password" 
+                                                name="mot_de_passe" 
+                                                pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+                                                title="Ex : motDePass3"
+                                                />
                                     <br/>
                                     <label>Confirmation du mot de passe *</label>
-                                        <input required class="form-control" placeholder="Confirmer le mot de passe" type="password" name="confirmer_mot_de_passe" />
+                                        <input required class="form-control" 
+                                                placeholder="Confirmer le mot de passe" 
+                                                type="password" 
+                                                name="confirmer_mot_de_passe" 
+                                                pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+                                                title="Ex : motDePass3"
+                                                />
                                     <br/>
 
                     <!-- ------------------------UTILE POUR CARTE BANCAIRE -->
@@ -163,7 +179,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                                     </div>
 
                                     <label>Ville *</label>
-                                        <input required class="form-control text-uppercase"  value="{{$ville}}" placeholder="Yammoussoukro" value="" type="text" name="ville" />
+                                        <input required class="form-control text-uppercase"  value="{{$ville}}" placeholder="ABIDJAN" value="" type="text" name="ville" />
                                     <br/>
                                     
                                     <label>Code postal (facultatif)</label>

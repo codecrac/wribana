@@ -20,7 +20,7 @@ class Waricrowd extends Model
     }
 
     public function transactions(){
-        return $this->hasMany(TransactionWaricrowd::class,'id_waricrowd');
+        return $this->hasMany(TransactionWaricrowd::class,'id_waricrowd')->with('souteneur');
     }
 
     public function createur(){

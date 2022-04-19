@@ -38,19 +38,28 @@ class MenbreController extends Controller
             $mdp_cacher = md5($nouveau_mdp);
 
             $telephone = $le_menbre->telephone;
-            $message = "Bonjour,votre mot de passe a bien été reinitialiser, utilisez le nouveau mot de passe pour vous connecter puis changez le.             mot de passe : $nouveau_mdp ";
+$message = "Bonjour,
+
+Votre mot de passe a bien été réinitialisé, utilisez le nouveau mot de passe pour vous connecter puis changez le.
+ 
+Mot de passe : $nouveau_mdp ";
+            
+            
             SmsController::sms_info_bip($telephone,$message);
 
             $email = $le_menbre->email;
             if($email!=null){
 
-                $headers = 'From: no-reply@waribana.com' . "\r\n";
+            $headers = 'From: waribana@waribana.net' . "\r\n" .
+                 'Reply-To: no-reply@waribana.net' . "\r\n" .
+                 'X-Mailer: PHP/' . phpversion();
                 mail($email,'REINITIALISATION DE MOT DE PASSE',$message,$headers);
             }
 
 //            dd($nouveau_mdp,$email);
 
             $le_menbre->mot_de_passe = $mdp_cacher;
+            $le_menbre->incitation_mdp = 'oui';
             $le_menbre->save();
         }else{
             $notification = "<div class='alert alert-info'> Ce identifiant n'est associé à aucun compte. </div> ";
@@ -89,8 +98,8 @@ class MenbreController extends Controller
 
         //        dd($numero);
         //        ---------------Verifie existence des identifiant
+        $route_connexion = route('connexion_menbre');
         if ($email != null) {
-            $route_connexion = route('connexion_menbre');
             $email_existe_deja = $this->checkExistenceEmail($email);
             if ($email_existe_deja) {
                 $message = "Cette adresse email est déja utilisée. <a href='$route_connexion' >connectez-vous</a>";
@@ -166,7 +175,7 @@ class MenbreController extends Controller
                 $this->creer_session_menbre($le_menbre);
                 return redirect()->route('espace_menbre.accueil');
             }else{
-                $message = "mot de passe Incorrect";
+                $message = "Mot de passe Incorrect";
                 $notification = "<div class='alert alert-danger'> $message  </div>";
                 return redirect()->route('connexion_menbre')->with('notification', $notification);
                 return redirect()->route('connexion_menbre');

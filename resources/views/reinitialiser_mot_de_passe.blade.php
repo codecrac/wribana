@@ -87,7 +87,7 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
 		<div class="container">
 			<div class="row align-items-center">
 
-				<div class="offset-md-4 col-md-4 text-center">
+				<div class="offset-md-3 col-md-6 text-left table-bordered p-2">
 
                     {!! Session::get('notification','') !!}
 
@@ -97,38 +97,61 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
 								<i class="fas fa-plus"></i> Reinitialiser mon mot de passe
 								<span class="heading-shadow-text"></span>
 							</span>
-{{--							<h2 class="title">Se connecter</h2>--}}
+							<span class="text-center"> Vous recevrez un nouveau mot de passe, sur le telephone ou l'adresse email fourni.  </span>
 
 						</div>
 						<div class="container">
 						    
-                            <form class="form-group" method="post">
-                                <div class="form-group">
-                                    <label>
-                                        Utiliser votre numero de telephone 
-                                        <br/>
-                                        <small class='text-danger'>verifier le prefixe avant d'entrer le numero</small>
-                                    </label>
-
-                                    <div class='row'>
-                                        <div class='col-md-8'>
-                                            <input required class="form-control" placeholder="2250578765467" value="{{$code_prefixe}}" type="text" name="identifiant"
-                                                                                   autocomplete="off" />
+						    @if( !isset($_GET['use']) || empty($_GET['use']) )
+						        
+						        <h5 class='text-center'>
+						            Quel moyen de reinitialisation preferez-vous ? :
+						            <br/>
+						            <a href="?use=phone" class='btn' style='background-color:#4c648a;color:#fff;margin:5px' > Mon numero de telephone </a>
+        						    <br/>
+        						    <a href="?use=mail" class='btn' style='background-color:#4c648a;color:#fff;margin:5px'>Mon adresse email </a>    
+        						    <br/>
+						        </h3>
+    						    
+						    @endif
+						    
+						    @if( isset($_GET['use']) && $_GET['use'] == 'phone' )
+                                <form class="form-group" method="post">
+                                    <div class="form-group">
+                                        
+                                        <a class="fadeInUp btn btn-dark" href="?use=email" style="margin-bottom:10px">
+                                            <i class="far fa-arrow-left"></i> Utiliser mon adresse email 
+                                        </a>
+                                        <label>
+                                            Tapez votre numero de telephone 
+                                            <br/>
+                                            <small class='text-danger'>verifier le prefixe avant d'entrer le numero</small>
+                                        </label>
+    
+                                        <div class='row'>
+                                            <div class='col-md-8'>
+                                                <input required class="form-control" placeholder="2250578765467" value="{{$code_prefixe}}" type="number"  onkeypress="return onlyNumberKey(event)" name="identifiant"
+                                                                                       autocomplete="off" />
+                                            </div>
+                                            <div class='col-md-4'>
+                                        @csrf
+                                            <button class="fadeInUp btn btn-dark m-1" type="submit">
+                                                    Reinitialiser <i class="far fa-arrow-right"></i>
+                                            </button>
+                                            </div>
                                         </div>
-                                        <div class='col-md-4'>
-                                    @csrf
-                                        <button class="fadeInUp btn btn-dark" type="submit">
-                                                Reinitialiser <i class="far fa-arrow-right"></i>
-                                        </button>
-                                        </div>
+                                        
                                     </div>
-                                    
-                                </div>
-                            </form>
+                                </form>
+                            @endif
                             
-                            <form class="form-group" method="post">
+                            @if( isset($_GET['use']) && $_GET['use'] == 'email' )
+                                <form class="form-group" method="post">
                                 
-                                <label>Utiliser votre adresse email</label>
+                                <a class="fadeInUp btn btn-dark" href="?use=phone" style="margin-bottom:10px">
+                                    <i class="far fa-arrow-left"></i> Utiliser mon numero telephone
+                                </a>
+                                <label>Tapez votre adresse email</label>
                                 <div class="form-group row">
                                     <div class='col-md-8'>
                                         <input required class="form-control" placeholder="monadresse@gmail.com" type="text" name="identifiant"
@@ -136,17 +159,20 @@ $code_prefixe = \App\Http\Controllers\CountryPrefixController::getPrefix($countr
                                     </div>
                                     <div class='col-md-4'>
                                         @csrf
-                                        <button class="fadeInUp btn btn-dark" type="submit">
+                                        <button class="fadeInUp btn btn-dark m-1" type="submit">
                                                 Reinitialiser <i class="far fa-arrow-right"></i>
                                         </button>    
                                     </div>
                                     
                                 </div>
                             </form>
-                            
-                            <h6>
-                                <a href="{{route('connexion_menbre')}}">Se connecter</a>
-                            </h6>
+                            @endif
+                            <h3 class="text-center" >
+                                <a href="{{route('connexion_menbre')}}" class="btn btn-dark" >
+                                    <i class="far fa-arrow-left"></i>
+                                    Se connecter
+                                </a>
+                            </h3>
                         </div>
 					</div>
 				</div>

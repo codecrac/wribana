@@ -1,7 +1,9 @@
 @php
     $la_session = session(\App\Http\Controllers\MenbreController::$cle_session);
+  
+    //dd($la_session);
     $nb_invitation_email = \App\Models\Invitation::where('email_inviter','=',$la_session['email'])->where('etat','=','attente')->count();
-    $nb_invitation_telephone = \App\Models\Invitation::where('email_inviter','=',$la_session['telephone'])->where('etat','=','attente')->count();
+    $nb_invitation_telephone = \App\Models\Invitation::where('email_inviter','=',$la_session['email'])->where('etat','=','attente')->orWhere('email_inviter','=',$la_session['telephone'])->where('etat','=','invitation envoyee')->count();
 
    // dd($la_session);
     $nb_invitations_en_attente = $nb_invitation_email + $nb_invitation_telephone;
@@ -11,6 +13,10 @@
 <!DOCTYPE html>
 <html lang="fr">
 
+
+<!--    dev by : yves ladde | http://yvesladde.straton-system.com/     -->
+<!--    dev by : yves ladde | http://yvesladde.straton-system.com/     -->
+<!--    dev by : yves ladde | http://yvesladde.straton-system.com/     -->
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -144,7 +150,7 @@
                      aria-expanded="false" aria-controls="auth"
                       id="close_on_dashboard_2"
                      >
-                        <i class="mdi mdi-account-multiple menu-icon"></i>
+                        <i class="mdi mdi-database menu-icon"></i>
                             <span class="menu-title">Waricrowd</span>
                         <i class="menu-arrow"></i>
                     </a>
@@ -166,18 +172,71 @@
                     </div>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('espace_menbre.profil',[$la_session['id']] ) }}">
-                        <i class="mdi mdi-account menu-icon"></i>
-                        <span class="menu-title">Mon Profil</span>
-                    </a>
-                </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{route('espace_menbre.index_waribank',[$la_session['id']] ) }}">
-                        <i class="mdi mdi-account menu-icon"></i>
-                        <span class="menu-title">Waribank </span>
+                    <a class="nav-link" data-toggle="collapse" href="#autNohBasic"
+                     aria-expanded="false" aria-controls="auth"
+                      id="close_on_dashboard_3"
+                     >
+                        <i class="mdi mdi-account-outline menu-icon"></i>
+                            <span class="menu-title">Mon Profil</span>
+                        <i class="menu-arrow"></i>
                     </a>
+                    <div class="collapse" id="autNohBasic">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('espace_menbre.profil',[$la_session['id']] ) }}?action=profil">
+                                    Modifier mon profil
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('espace_menbre.profil',[$la_session['id']] ) }}?action=telephone">
+                                    Changer mon numéro
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('espace_menbre.profil',[$la_session['id']] ) }}?action=mdp">
+                                    Modifier mon mot de passe
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                
+                
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#auth4"
+                     aria-expanded="false" aria-controls="auth4"
+                      id="close_on_dashboard_4"
+                     >
+                        <i class="mdi mdi-bank menu-icon"></i>
+                            <span class="menu-title">Waribank</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="auth4">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.index_waribank',[$la_session['id']] ) }}?action=recharger">Recharger mon compte</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('espace_menbre.index_waribank',[$la_session['id']] ) }}?action=retirer"> Retirer de l’argent </a> </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('espace_menbre.index_waribank',[$la_session['id']] ) }}?action=transferer">Transférer à un compte WARIBANK</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('espace_menbre.index_waribank',[$la_session['id']] ) }}?action=h_rechargement">Mes rechargements</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('espace_menbre.index_waribank',[$la_session['id']] ) }}?action=h_virement">Virement de tontine</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('espace_menbre.index_waribank',[$la_session['id']] ) }}?action=h_t_recus">Transferts recus</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('espace_menbre.index_waribank',[$la_session['id']] ) }}?action=h_t_effectue">Tranferts effectués</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('espace_menbre.index_waribank',[$la_session['id']] ) }}?action=h_retrait">Mes retraits</a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
 
                 <!-- <li class="nav-item">-->
@@ -249,6 +308,16 @@
             }
         );
     } );
+
+   function onlyNumberKey(evt) {
+        // Only ASCII character in that range allowed
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)){
+            // alert("only number");
+            return false;
+        }
+        return true;
+    }
 </script>
 
 {{--<script src="./js/app.js"></script>--}}

@@ -14,6 +14,7 @@ use App\Models\MenbreTontine;
 use App\Models\SmsContenuNotification;
 use App\Models\Tontine;
 use App\Models\Transaction;
+use App\Models\Parametre;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use DateTime;
@@ -26,6 +27,10 @@ class EspaceMenbre extends Controller
 {
 
     public function accueil(){
+        
+        $parametre = Parametre::first();
+        $pourcentage_frais = $parametre->pourcentage_frais;
+        
         $la_session = session(MenbreController::$cle_session);
         $id_menbre_connecter = $la_session['id'];
         $le_menbre = Menbre::find($id_menbre_connecter);
@@ -35,7 +40,7 @@ class EspaceMenbre extends Controller
         if($email_inviter!=null){
             $nombre_invitation_recues = Invitation::where('email_inviter','=',$email_inviter)->where('etat','=','attente')->count();
         }
-        return view('espace_menbre/index',compact('le_menbre','nombre_invitation_recues'));
+        return view('espace_menbre/index',compact('le_menbre','nombre_invitation_recues','pourcentage_frais'));
     }
 
     public function deconnexion(){
@@ -112,6 +117,8 @@ class EspaceMenbre extends Controller
         $montant = $donnees_formulaire['montant'];
         $frequence_de_depot = $donnees_formulaire['frequence_depot_en_jours'];
         $nombre_participant = $donnees_formulaire['nombre_participant'];
+        $parametre = Parametre::first();
+        $pourcentage_frais = $parametre->pourcentage_frais;
 
         if(!empty($titre) && !empty($montant) && !empty($frequence_de_depot) && !empty($nombre_participant)){
             $la_tontine = Tontine::find($id_tontine);
@@ -135,7 +142,7 @@ class EspaceMenbre extends Controller
 
                     $la_caisse_tontine = $la_tontine->caisse;
                     $la_caisse_tontine->montant_objectif = $la_tontine->montant * $la_tontine->nombre_participant;
-                    $la_caisse_tontine->montant_a_verser = $la_caisse_tontine->montant_objectif - ($la_caisse_tontine->montant_objectif * (1/100) );
+                    $la_caisse_tontine->montant_a_verser = $la_caisse_tontine->montant_objectif - ($la_caisse_tontine->montant_objectif * ($pourcentage_frais/100) );
                     // dd($la_caisse_tontine->montant_a_verser);
                     $la_caisse_tontine->save();
                 }
@@ -152,6 +159,10 @@ class EspaceMenbre extends Controller
 
     public function supprimer_tontine(Request $request,$id_tontine){
         $la_tontine = Tontine::find($id_tontine);
+        if(($la_tontine->etat != 'constitution') && ($la_tontine->etat != 'prete')){
+            $notification = "<div class='alert alert-danger text-center'> Vous ne pouvez pas supprimer un tontine apres qu'elle est été ouverte </div> ";
+             return redirect()->back()->with('notification',$notification);
+        }
         return view('espace_menbre/tontine/supprimer_tontine',compact('la_tontine'));
     }
 
@@ -179,6 +190,9 @@ class EspaceMenbre extends Controller
     {
 
 
+        $parametre = Parametre::first();
+        $pourcentage_frais = $parametre->pourcentage_frais;
+        
         $la_tontine = Tontine::find($id_tontine);
 
         $la_session = session(MenbreController::$cle_session);
@@ -227,7 +241,7 @@ class EspaceMenbre extends Controller
         //        parse_str($a, $output);
         return view("espace_menbre.tontine.details_tontine",compact('la_tontine','invitations_envoyees',
                             'pret','a_deja_cotiser','liste_ayant_cotiser',
-                            'notre_custom_field'));
+                            'notre_custom_field','pourcentage_frais'));
     }
 
     public function ouvrir_tontine($id_tontine)
@@ -235,6 +249,9 @@ class EspaceMenbre extends Controller
         $la_tontine = Tontine::find($id_tontine);
         $la_tontine->etat = 'ouverte';
         $la_tontine->save();
+        
+        $parametre = Parametre::first();
+        $pourcentage_frais = $parametre->pourcentage_frais;
 
         //la date prochaine on ajoute le nombre de jour definit dans la frequence de pot a partir d'aujourd'hui
         $aujourdhui = new \DateTime("now", new \DateTimeZone("UTC"));
@@ -253,7 +270,7 @@ class EspaceMenbre extends Controller
         }
 
         $montant_objectif = $la_tontine->montant * $la_tontine->nombre_participant;
-        $frais_de_gestion = round( $montant_objectif * (1/100) );
+        $frais_de_gestion = $montant_objectif * ($pourcentage_frais/100);
         $montant_moins_frais = $montant_objectif - $frais_de_gestion;
 
         $la_caisse_de_la_tontine->montant_objectif= $montant_objectif;
@@ -264,6 +281,17 @@ class EspaceMenbre extends Controller
         $la_caisse_de_la_tontine->prochaine_date_encaissement= $prochaine_date_encaissement;
         $la_caisse_de_la_tontine->save();
 
+        //notifier les participant de l'ouverture
+        $contenu_notification = SmsContenuNotification::first();
+        $message_notif = $contenu_notification['etat_tontine'];
+
+        $le_message = str_replace('$etat$',"Ouverte",$message_notif);
+        $le_message = str_replace('$titre$',$la_tontine->titre,$le_message);
+        $le_message = str_replace('$motif$',"",$le_message);
+
+        foreach($la_tontine->participants as $item_participant){
+            SmsController::sms_info_bip($item_participant->telephone,$le_message);
+        }
 
         $notification = " <div class='alert alert-success text-center'> Operation bien effectuée </div>";
         return redirect()->back()->with('notification',$notification);
@@ -283,7 +311,7 @@ class EspaceMenbre extends Controller
 
         // verif portefeuille
         if($le_menbre->compte->solde < $montant){
-            $notification = "<div class='alert alert-danger'> Votre compte est insuffisant. </div>";
+            $notification = "<div class='alert alert-danger'> Le solde de votre compte est insuffisant. </div>";
             return redirect()->back()->with('notification',$notification);
         }
 
@@ -364,7 +392,7 @@ class EspaceMenbre extends Controller
                     $message = str_replace('$nom_menbre_qui_prend$',$la_tontine->caisse->menbre_qui_prend->nom_complet,$message);
                     $message = str_replace('$titre_tontine$',$titre_tontine,$message);
 
-                    $headers = 'From: no-reply@waribana.net' . "\r\n" .
+                    $headers = 'From: waribana@waribana.net' . "\r\n" .
                          'Reply-To: no-reply@waribana.net' . "\r\n" .
                          'X-Mailer: PHP/' . phpversion();
 
@@ -405,10 +433,7 @@ class EspaceMenbre extends Controller
     }
 
     public function recu_de_paiement_tontine($infos_pour_recu=null){
-        if($infos_pour_recu==null){
-            $infos_pour_recu = ['email_destinataire'=>'yvessantoz@gmail.com','nom_complet'=>'sh sdfds','montant'=>'232343','titre_tontine'=>'tontine ice','nom_menbre_qui_prend'=>'djsdh dskhdsjk'];
-        }
-
+   
         $pdf = PDF::loadView('espace_menbre/recu_paiement_tontine',compact('infos_pour_recu'));
         $nom_fichier = time().'.pdf';
         Storage::put("public/recu/tontines/$nom_fichier", $pdf->output());
@@ -418,7 +443,7 @@ class EspaceMenbre extends Controller
         // $chemin_fichier = route('get_recu',[$nom_fichier]);
         $chemin_fichier = Storage::disk('public')->path("recu/tontines/".$nom_fichier);
 
-        $rep = EspaceMenbreWaricrowdController::envoyer_email_avec_fichier($email,"RECU DE PAIEMENT WARICROWD",$message,$chemin_fichier,$nom_fichier);
+        $rep = EspaceMenbreWaricrowdController::envoyer_email_avec_fichier($email,"RECU DE PAIEMENT TONTINE",$message,$chemin_fichier,$nom_fichier);
 //        dd($chemin_fichier,$nom_fichier,$rep);
 //        return $pdf->stream();
     }
@@ -487,6 +512,11 @@ class EspaceMenbre extends Controller
         $couleur = "danger";
         $donnee_formulaire = $request->all();
         $mot_de_passe_actuel = $donnee_formulaire['mot_de_passe_actuel'];
+        
+        $mot_de_passe = $donnee_formulaire['mot_de_passe'];
+        $confirmer_mot_de_passe = $donnee_formulaire['confirmer_mot_de_passe'];
+        
+        
         $bon_mot_de_passe = $this->VerifieLeMotDePasse($mot_de_passe_actuel,$id_menbre);
 
         if($bon_mot_de_passe){
@@ -507,9 +537,29 @@ class EspaceMenbre extends Controller
              //        ---------------Verifie mot de passe et enregistrement
 
             $le_menbre = Menbre::find($id_menbre);
-            $le_menbre->nom_complet = $nom_complet;
-              //            $le_menbre->telephone = $telephone;
-            $le_menbre->email = $email;
+            
+            $modif = null;
+            if($le_menbre->nom_complet != $nom_complet){
+                $modif = "a changer son Nom d'utilisateur
+Ancien : $le_menbre->nom_complet 
+Nouveau : $nom_complet
+";
+                $le_menbre->nom_complet = $nom_complet;
+            }
+            
+            if($le_menbre->email != $email){
+                $modif .= "a changer son Adresse Email 
+Ancienne : $le_menbre->email 
+Nouvelle : $email";
+                $le_menbre->email = $email;
+            }
+            
+            if($modif != null){
+                $stock_modif = new \App\Models\HistoriqueModifProfilMembre();
+                $stock_modif->id_menbre = $id_menbre;
+                $stock_modif->modif = $modif;
+                $stock_modif->save();
+            }
 
             if(!empty($mot_de_passe) && !empty($confirmer_mot_de_passe) ){
                 if($mot_de_passe != $confirmer_mot_de_passe){
@@ -520,6 +570,7 @@ class EspaceMenbre extends Controller
                 }
                 $mot_de_passe_cacher = md5($confirmer_mot_de_passe);
                 $le_menbre->mot_de_passe = $mot_de_passe_cacher;
+                $le_menbre->incitation_mdp = 'non';
             }
 
             if($le_menbre->save()){
@@ -545,45 +596,59 @@ class EspaceMenbre extends Controller
 
     public function modifier_telephone_compte(Request $request)
     {
-        $la_session = session(MenbreController::$cle_session);
-        if ($la_session == null) {
-            return redirect()->route('connexion_menbre');
-        } else {
-            $id_menbre_connecter = $la_session['id'];
-            $le_menbre = Menbre::find($id_menbre_connecter);
-            if ($le_menbre == null) {
+        
+            $la_session = session(MenbreController::$cle_session);
+            if ($la_session == null) {
                 return redirect()->route('connexion_menbre');
-            } elseif ($le_menbre->etat != 'actif') {
-                return redirect()->route('espace_menbre.deconnexion');
+            } else {
+                $id_menbre_connecter = $la_session['id'];
+                $le_menbre = Menbre::find($id_menbre_connecter);
+                if ($le_menbre == null) {
+                    return redirect()->route('connexion_menbre');
+                } elseif ($le_menbre->etat != 'actif') {
+                    return redirect()->route('espace_menbre.deconnexion');
+                }
             }
-        }
-
-        //nouveau code
-        $code_de_confirmation = rand(1111, 9999) * 12;
-        $le_menbre->code_de_confirmation = $code_de_confirmation;
-        $le_menbre->save();
-
-        $notification = "<div class='alert alert-danger text-center'>Numero Invalide</div>";
+        
+        
         $donnees_formulaire = $request->all();
-        $telephone = $donnees_formulaire['nouveau_telephone'];
-        if (is_numeric($telephone)) {
-            if (!($this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre_connecter))) {
-                $le_numero = $telephone;
-                $code = $le_menbre->code_de_confirmation;
-        //                dd($code);
-                $contenu_notification = SmsContenuNotification::first();
-                $message_confirmation = $contenu_notification['confirmation_compte'];
-                $le_message = str_replace('$code$',$code,$message_confirmation);
-        //                dd($le_numero);
-                SmsController::sms_info_bip($le_numero, $le_message);
-        //                return redirect()->route('espace_menbre.entrer_code_confirmation_pour_modification',compact('le_numero'));
-                return view('espace_menbre/profil/entrer_code_confirmation_pour_modification',compact('le_numero'));
+        $mot_de_passe_actuel = $donnees_formulaire['mot_de_passe_actuel'];
+        $bon_mot_de_passe = $this->VerifieLeMotDePasse($mot_de_passe_actuel,$id_menbre_connecter);
+
+        
+        if($bon_mot_de_passe){
+            //nouveau code
+            $code_de_confirmation = rand(1111, 9999) * 12;
+            $le_menbre->code_de_confirmation = $code_de_confirmation;
+            $le_menbre->save();
+    
+            $notification = "<div class='alert alert-danger text-center'>Numero Invalide</div>";
+            $telephone = $donnees_formulaire['nouveau_telephone'];
+            if (is_numeric($telephone)) {
+                if (!($this->checkExistenceNumeroPourAutrePersonne($telephone,$id_menbre_connecter))) {
+                    $le_numero = $telephone;
+                    $code = $le_menbre->code_de_confirmation;
+            //                dd($code);
+                    $contenu_notification = SmsContenuNotification::first();
+                    $message_confirmation = $contenu_notification['confirmation_compte'];
+                    $le_message = str_replace('$code$',$code,$message_confirmation);
+            //                dd($le_numero);
+                    SmsController::sms_info_bip($le_numero, $le_message);
+            //                return redirect()->route('espace_menbre.entrer_code_confirmation_pour_modification',compact('le_numero'));
+                    return view('espace_menbre/profil/entrer_code_confirmation_pour_modification',compact('le_numero'));
+                } else {
+                    return redirect()->back()->with('notification', $notification);
+                }
             } else {
                 return redirect()->back()->with('notification', $notification);
             }
-        } else {
-            return redirect()->back()->with('notification', $notification);
-        };
+            
+        }else{
+            $message = "Mot de passe actuel incorrect";
+            $notification = "<div class='alert alert-danger'> $message  </div>";
+            return redirect()->back()->with('notification',$notification);
+        }
+        
     }
 
     public function entrer_code_confirmation_pour_modification(){
@@ -623,8 +688,26 @@ class EspaceMenbre extends Controller
         $le_code = $donnees_formulaire['code'];
         $nouveau_telephone = $donnees_formulaire['nouveau_telephone'];
         if ($le_code == $le_menbre->code_de_confirmation) {
-            $le_menbre->telephone = $nouveau_telephone;
-            $le_menbre->save();
+            
+            
+            $modif = null;
+            // if($le_menbre->telephone != $nouveau_telephone){
+                $modif = "a changer son Numero de Telephone
+Ancien : $le_menbre->telephone 
+Nouveau : $nouveau_telephone";
+                
+                $le_menbre->telephone = $nouveau_telephone;
+                $le_menbre->save();
+            // }
+            
+            if($modif != null){
+                $stock_modif = new \App\Models\HistoriqueModifProfilMembre();
+                $stock_modif->id_menbre = $id_menbre_connecter;
+                $stock_modif->modif = $modif;
+                $stock_modif->save();
+            }
+
+            
             $notification = "<div class='alert alert-success text-center'>Operation bien effectuée.</div>";
             return redirect()->route('espace_menbre.profil',[$id_menbre_connecter])->with('notification',$notification);
         }else {
@@ -644,6 +727,7 @@ class EspaceMenbre extends Controller
 
         $utlisateur_existe = Menbre::where('id','=',$id_menbre_connecter)->where('mot_de_passe','=',$mdp_md5)->first();
 
+        $notification = "<div class='alert alert-danger text-center'> Echec, un probleme est survenu. </div>";
         if($utlisateur_existe){
             $le_menbre = Menbre::find($id_menbre_connecter);
 
@@ -655,33 +739,50 @@ class EspaceMenbre extends Controller
 
             // CONVERSION EN CFA AVANT TRANSFERT
             $le_montant = $montant_retrait;
-            if($le_menbre->devise_choisie->code != "XOF"){
+            // if($le_menbre->devise_choisie->code != "XOF"){
                 $monaie_utilisateur = $le_menbre->devise_choisie->code;
                 $quotient_de_conversion = \App\Http\Controllers\CurrencyConverterController::recuperer_quotient_de_conversion($monaie_utilisateur,"XOF");
                 $le_montant_en_xof = $quotient_de_conversion * $le_montant;
-            }else{
-                $le_montant_en_xof = $le_montant;
+            // }else{
+            //     $le_montant_en_xof = $le_montant;
+            // }
+        //- CONVERSION EN CFA AVANT TRANSFERT
+        
+            if($le_montant_en_xof < 200){
+                $notification = "<div class='alert alert-danger text-center'> Erreur, le montant minimum est de 200 XOF </div>";
+                return redirect()->back()->with('notification',$notification);
             }
-        // CONVERSION EN CFA AVANT TRANSFERT
 
             $response = \App\Http\Controllers\CinetpayApiTransfertController::effectuer_un_retrait($le_menbre,$le_montant_en_xof);
             $reponse_decoder = json_decode($response);
+           // dd($le_montant_en_xof,$reponse_decoder);
             $code = $reponse_decoder->code;
-            $message = $reponse_decoder->message;
+            
 
 
             if($code == 0){ // 0 = succes , les autres = prbleme
-                $notification = "<div class='alert alert-success text-center'> Retrait bien effectué </div>";
                 \App\Http\Controllers\CinetpayApiTransfertController::enregistrer_retrait($le_menbre,$montant_retrait);
                 $monaie = $le_menbre->devise_choisie->monaie;
+                $notification = "<div class='alert alert-success text-center'> Votre retrait de $montant_retrait $monaie a bien été prise en compte et sera bien effectué. </div>";
 
 
-                $headers = 'From: no-reply@waribana.net' . "\r\n" .
+                $headers = 'From: waribana@waribana.net' . "\r\n" .
                      'Reply-To: no-reply@waribana.net' . "\r\n" .
                      'X-Mailer: PHP/' . phpversion();
-                mail($le_menbre->email,'RETRAIT EFFECTUER',"Bonjour $le_menbre->nom_complet, votre retrait de $montant_retrait $monaie a bien été effectué.",$headers);
+                     
+                $message_sms = "Bonjour $le_menbre->nom_complet, votre retrait de $montant_retrait $monaie a bien été prise en compte et sera bien effectué.";
+                mail($le_menbre->email,'RETRAIT EFFECTUER',$message_sms,$headers);
+                $numero = $le_menbre->telephone;
+                SmsController::sms_info_bip("$numero",$message_sms);
             }else{
-                $notification = "<div class='alert alert-danger text-center'> Echec de retrait, motif : $message </div>";
+                
+                if($reponse_decoder->message == 'INSUFFICIENT_BALANCE' ){
+                    $notification = "<div class='alert alert-danger text-center'>Impossible d'effectué le retrait de ce montant ($le_montant $monaie_utilisateur) pour le moment, veuillez rééssayer plus tard. </div>";
+                }else{
+                    $message = ' [ ' .$reponse_decoder->message . ' ]';
+                    //dd($reponse_decoder);
+                    $notification = "<div class='alert alert-danger text-center'> Echec de retrait, motif : $message </div>";    
+                }
             }
             return redirect()->back()->with('notification',$notification);
         }else{

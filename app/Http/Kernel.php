@@ -2,8 +2,12 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\MenbreConnecter;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use App\Http\Middleware\AdministrateurActifMiddleware;
+use App\Http\Middleware\OnlyGestTontine;
+use App\Http\Middleware\OnlyGestCrowd;
+use App\Http\Middleware\OnlyAdmin;
+use App\Http\Middleware\MenbreConnecter;
 
 class Kernel extends HttpKernel
 {
@@ -64,6 +68,10 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'menbre_connecter' => MenbreConnecter::class,
+        'menbre_connecter' =>  MenbreConnecter::class,
+        'etat_compte_admin' => AdministrateurActifMiddleware::class,
+        'only_gest_tontine' => OnlyGestTontine::class,
+        'only_gest_crowd' => OnlyGestCrowd::class,
+        'only_admin' => OnlyAdmin::class,
     ];
 }
